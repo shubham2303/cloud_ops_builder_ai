@@ -38,11 +38,14 @@ gem 'jbuilder', '~> 2.5'
 gem 'mongoid'
 
 group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'dotenv-rails', :require => 'dotenv/rails-now'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
 end
 
 group :development do
+  gem 'foreman'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'
@@ -52,6 +55,12 @@ group :development do
   gem 'pry'
   gem 'pry-doc'
   gem 'pry-rails'
+end
+
+group :test do
+  gem 'database_cleaner'
+  gem 'rspec-rails'
+  gem 'mongoid-rspec'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
