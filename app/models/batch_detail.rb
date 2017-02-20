@@ -9,13 +9,7 @@ class BatchDetail < ApplicationRecord
   validates :n, uniqueness: true
 
   def number
-    if @number.nil?
-      str = n.reverse
-      str = str.scan(/.{1,4}/).map { |x| x.reverse }
-      str = str.reverse.join("-")
-      @number = str
-    end
-    @number
+    @number ||= Card.beautify_number(n)
   end
 
   def self.csv(batch)

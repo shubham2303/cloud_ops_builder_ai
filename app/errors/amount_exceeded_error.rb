@@ -1,0 +1,2 @@
+class AmountExceededError < RuntimeError
+end
