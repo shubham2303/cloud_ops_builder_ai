@@ -36,6 +36,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'mongoid'
+gem 'rsa'
 
 group :development, :test do
   gem 'factory_girl_rails'
