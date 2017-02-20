@@ -57,4 +57,36 @@ module ApplicationHelper
 
   end
 
+  class TripleDESHelper
+    # http://timolshansky.com/2011/10/23/ruby-triple-des-encryption.html
+
+    def initialize(secret, algo = 'DES-EDE3-CBC')
+      @secret = secret
+      @algo = algo
+    end
+
+    def decrypt(data)
+      cipher = OpenSSL::Cipher::Cipher.new(@algo)
+      cipher.decrypt
+
+      cipher.pkcs5_keyivgen(@secret)
+
+      output = cipher.update(Base64.decode64(data))
+      output << cipher.final
+      output
+    end
+
+    def encrypt(data)
+      cipher = OpenSSL::Cipher::Cipher.new(@algo)
+      cipher.encrypt
+
+      cipher.pkcs5_keyivgen(@secret)
+
+      output = cipher.update(data)
+      output << cipher.final
+      Base64.encode64(output)
+    end
+
+  end
+
 end
