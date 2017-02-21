@@ -1,6 +1,6 @@
 module Api
   module V1
-    class OtpController < ApplicationController
+    class OtpController < BaseController
 
       def generate_otp
         otp =  Otp.make

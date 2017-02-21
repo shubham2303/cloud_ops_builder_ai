@@ -19,14 +19,6 @@ module Api
         params.require(:agent).permit(:phone, :name, :address, :birthplace, :state, :lga)
       end
 
-      def check_headers
-        @agent = Agent.find(request.headers["uid"] )
-        app_config = JSON.parse(ENV["APP_CONFIG"])
-        unless @agent.token.token == request.headers["token"] || app_config['config_version'] == request.headers["config_version"] || app_config['android_version'] == request.headers["android_version"]
-          render json: {success: 0}
-          return
-        end
-      end
     end
   end
 end
