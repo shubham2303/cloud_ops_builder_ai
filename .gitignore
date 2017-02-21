@@ -234,5 +234,7 @@ bower.json
 .powenv
 
 # Ignore Byebug command history file.
-.byebug_history
+.byebug_history..
+dump.rdb
+db/structure.sql
 

@@ -38,6 +38,9 @@ gem 'jbuilder', '~> 2.5'
 gem 'mongoid'
 gem 'rsa'
 
+gem 'redis', '~>3.2'
+gem 'redis-namespace'
+
 group :development, :test do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'

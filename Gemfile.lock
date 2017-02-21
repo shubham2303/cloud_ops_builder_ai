@@ -145,6 +145,9 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
+    redis (3.3.2)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     rsa (0.1.4)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
@@ -228,6 +231,8 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.0)
   rails (~> 5.0.1)
+  redis (~> 3.2)
+  redis-namespace
   rsa
   rspec-rails
   sass-rails (~> 5.0)
