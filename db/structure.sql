@@ -96,7 +96,8 @@ CREATE TABLE admin_users (
     current_sign_in_ip inet,
     last_sign_in_ip inet,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    role character varying
 );
 
 
@@ -129,7 +130,9 @@ CREATE TABLE agents (
     name character varying,
     address character varying,
     birthplace character varying,
-    state character varying
+    state character varying,
+    dob date,
+    lga character varying
 );
 
 
@@ -283,7 +286,8 @@ CREATE TABLE tokens (
     id integer NOT NULL,
     device_id character varying,
     token character varying,
-    expiry time without time zone
+    expiry time without time zone,
+    agent_id integer
 );
 
 
@@ -463,6 +467,13 @@ CREATE UNIQUE INDEX index_admin_users_on_reset_password_token ON admin_users USI
 
 
 --
+-- Name: index_agents_on_phone; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_agents_on_phone ON agents USING btree (phone);
+
+
+--
 -- Name: index_batch_details_on_batch_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -491,6 +502,20 @@ CREATE UNIQUE INDEX index_cards_on_x ON cards USING btree (x);
 
 
 --
+-- Name: index_tokens_on_agent_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_tokens_on_agent_id ON tokens USING btree (agent_id);
+
+
+--
+-- Name: index_tokens_on_device_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_tokens_on_device_id ON tokens USING btree (device_id);
+
+
+--
 -- Name: fk_rails_15d85007e9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -507,6 +532,14 @@ ALTER TABLE ONLY cards
 
 
 --
+-- Name: fk_rails_9f5991200a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tokens
+    ADD CONSTRAINT fk_rails_9f5991200a FOREIGN KEY (agent_id) REFERENCES agents(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -517,7 +550,12 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170217085303'),
 ('20170221060001'),
 ('20170221060010'),
+('20170221064942'),
+('20170221074310'),
+('20170221074416'),
 ('20170221083740'),
-('20170221083751');
+('20170221083751'),
+('20170221094253'),
+('20170221192836');
 
 

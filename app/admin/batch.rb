@@ -24,7 +24,7 @@ end
 controller do
 	def create
 		Batch.generate(p_batch)
-		redirect_to :admin_batches_path
+		# redirect_to :admin_batches_path
 	end	
 
 	private
