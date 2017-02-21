@@ -35,8 +35,10 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'mongoid'
+# gem 'mongoid'
 gem 'rsa'
+gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
+gem 'devise'
 
 group :development, :test do
   gem 'factory_girl_rails'
