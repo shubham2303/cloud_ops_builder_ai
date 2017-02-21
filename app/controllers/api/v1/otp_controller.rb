@@ -10,7 +10,6 @@ module Api
       end
 
       def verify
-        byebug
         otp = $redis.get(params.require(:number))
         if otp.nil? || otp != params.require(:otp)
           render json: {success: 0}
