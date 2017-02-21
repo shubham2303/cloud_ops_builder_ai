@@ -57,6 +57,37 @@ module ApplicationHelper
 
   end
 
+  class StaticRSAHelper
+
+    attr_reader :key
+
+    def initialize(path = Rails.root + 'keys/private.pem', passphrase = 'othello-69')
+      @key = OpenSSL::PKey::RSA.new File.read(path), passphrase
+      unless @key.private? && @key.public?
+        raise RuntimeError.new 'RSA Key-Pair invalid'
+      end
+    end
+
+    def encrypt(data)
+      Base64.encode64(@key.private_encrypt(data))
+    end
+
+    def decrypt(data)
+      @key.private_decrypt(Base64.decode64(data))
+    end
+
+    # NOT TO BE USED BY SERVER - FOR TESTING PURPOSES ONLY
+    def public_encrypt(data)
+      Base64.encode64(@key.public_encrypt(data))
+    end
+
+    # NOT TO BE USED BY SERVER - FOR TESTING PURPOSES ONLY
+    def public_decrypt(data)
+      @key.public_decrypt(Base64.decode64(data))
+    end
+
+  end
+
   class TripleDESHelper
     # http://timolshansky.com/2011/10/23/ruby-triple-des-encryption.html
 
