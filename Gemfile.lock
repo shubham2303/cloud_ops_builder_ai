@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/activeadmin/activeadmin
-  revision: 13ab1d63605570356a15aaeec74dadb0a0eb4a46
+  revision: e9c65ab9c00345ddca4677ff81ca2082f18c2462
   specs:
     activeadmin (1.0.0.pre4)
       arbre (~> 1.0, >= 1.0.2)
@@ -168,12 +168,12 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-doc (0.9.0)
+    pry-doc (0.10.0)
       pry (~> 0.9)
-      yard (~> 0.8)
-    pry-rails (0.3.4)
+      yard (~> 0.9)
+    pry-rails (0.3.5)
       pry (>= 0.9.10)
-    puma (3.7.0)
+    puma (3.7.1)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -210,6 +210,9 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
+    redis (3.3.3)
+    redis-namespace (1.5.3)
+      redis (~> 3.0, >= 3.0.4)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     rsa (0.1.4)
@@ -274,7 +277,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    yard (0.9.5)
+    yard (0.9.8)
 
 PLATFORMS
   ruby
@@ -298,6 +301,8 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.0)
   rails (~> 5.0.1)
+  redis (~> 3.2)
+  redis-namespace
   rsa
   rspec-rails
   sass-rails (~> 5.0)
@@ -309,4 +314,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.13.6
+   1.12.5

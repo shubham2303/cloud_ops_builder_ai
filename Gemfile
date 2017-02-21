@@ -40,6 +40,9 @@ gem 'rsa'
 gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
 gem 'devise'
 
+gem 'redis', '~>3.2'
+gem 'redis-namespace'
+
 group :development, :test do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
