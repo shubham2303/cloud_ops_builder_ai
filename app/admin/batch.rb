@@ -15,9 +15,12 @@ ActiveAdmin.register Batch do
 
 form title: 'Create Batch' do |f|
 	f.inputs 'Details' do
-		f.input :amount, collection: [200,300,400], input_html: {name: "batch[][:amount]"}
-		f.input :count, input_html: {name: "batch[][:count]"}
-	end	
+    div id:"batch_form" do
+    # f.input :amount, collection: [200,300,400], input_html: {name: "batch[][:amount]"}, wrapper_html: {class: 'drop_down'}
+    render(:partial => 'test')
+    end
+
+  end
 	actions
 end	
 
