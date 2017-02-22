@@ -284,12 +284,3 @@ ActiveAdmin.setup do |config|
   #
   # config.order_clause = MyOrderClause
 end
-
-
-ActiveAdmin::ResourceController.class_eval do
-  protected
-
-  def current_ability
-    @current_ability ||= Ability.new(current_admin_user)
-  end
-end

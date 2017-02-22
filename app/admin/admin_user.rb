@@ -19,6 +19,7 @@ ActiveAdmin.register AdminUser do
   form do |f|
     f.inputs "Admin Details" do
       f.input :email
+      f.input :role, collection: AdminUser::USER_ROLE
       f.input :password
       f.input :password_confirmation
     end

@@ -3,12 +3,18 @@ class Ability
 
   def initialize(user)
     role = user.role
+    can :manage, ActiveAdmin::Page, :name => "Dashboard"
     case role
-      when 'admin'
-        can :read, Agent
-      when 'super'
-        # can :read, Agent
-    end    
+    when 'admin'
+      can :manage, Agent
+      can :manage, Individual
+      can :manage, Business
+    when 'super_admin'
+      can :manage, Agent
+      can :manage, AdminUser
+      can :manage, Individual
+      can :manage, Business
+    end
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)
