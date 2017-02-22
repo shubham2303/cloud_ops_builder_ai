@@ -12,7 +12,7 @@ module Api
       end
 
       # POST /api/v1/otp/verify
-      #
+      
       # {"number": "9990170198",
       #  "otp": "1111",
       #  "device_id": "123"
@@ -30,7 +30,7 @@ module Api
             agent.create_token(device_id: params.require(:device_id))
           end
         end
-        render json: {success: 1}
+        render json: {success: 1, agent: agent}
       end
     end
   end
