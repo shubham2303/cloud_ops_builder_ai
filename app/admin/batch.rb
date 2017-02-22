@@ -27,12 +27,21 @@ end
 controller do
 	def create
 		Batch.generate(p_batch)
-		# redirect_to :admin_batches_path
+		redirect_to :admin_batches
 	end	
 
 	private
 	def p_batch
-		params.permit(batch: [:amount, :count])
+		amt_arr = params.require(:batch)[:amount]
+		count_arr = params.require(:batch)[:count]
+		final_arr = []
+		amt_arr.zip(count_arr).each do |x| 
+			hsh = {}
+			hsh[:amount] = x[0] 
+			hsh[:count] = x[1] 
+			final_arr << hsh
+		end
+		final_arr
 	end	
 
 end	

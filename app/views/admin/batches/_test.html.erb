@@ -1,9 +1,9 @@
 <div class="batch_form">
 	<%= label_tag :amount, "Amount", class: 'amount_label'%>
 	<%= select_tag 'amount', options_for_select((['Please select'] + JSON.parse(ENV['AMT'])).map{|x| [x,x] } ),
-	    class: 'amount_select_field' %>
+	    class: 'amount_select_field', name: 'batch[amount][]' %>
 	<%= label_tag :count, "Count", class: 'count_label' %>
-	<%= text_field_tag 'count',"", :class => "count_text_field" %>
+	<%= text_field_tag 'count',"", :class => "count_text_field", name: 'batch[count][]' %>
 </div>
 <div id="add">add</div>
 
