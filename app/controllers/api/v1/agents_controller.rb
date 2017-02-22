@@ -5,14 +5,15 @@ module Api
 
       # PUT  /api/v1/agents/:uid
       #
-      #  {"agent": {
+      #  {
+      #   "agent": {
       #   "state": "Abia",
       #   "phone": "9908907897",
       #   "address": "fwferrr",
       #   "device_id": "1211",
       #   "birthplace": "sdfdff",
-      #   "lga": "fwefrf"
-      #  "dob": 23-03-1992
+      #   "lga": "fwefrf",
+      #   "dob": "23-03-1992"
       #  }
       # }
       def update_me

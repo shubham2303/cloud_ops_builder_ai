@@ -13,7 +13,8 @@ module Api
       end
 
       def ar_obj_not_found(exception)
-        render json: {success: 0, error_code: 404, data: nil, message: exception.message}
+        # render json: {success: 0, error_code: 404, data: nil, message: exception.message}
+        render json: {success: 0, error_code: 1001, data: nil, message: exception.message}
       end
 
       def ar_validation_failed(exception)
@@ -26,12 +27,26 @@ module Api
       ################### END exception handlers ##################
 
       def check_headers
-        @agent = Agent.find(request.headers["uid"] )
+        @agent = Agent.find( request.headers["HTTP_UID"] )
         app_config = JSON.parse(ENV["APP_CONFIG"])
-        unless @agent.token.token == request.headers["token"] || app_config['config_version'] == request.headers["config_version"] || app_config['android_version'] == request.headers["android_version"]
-          render json: {success: 0}
+
+        @theApp = AppString.new request.headers['HTTP_ANDRIOD_VER'], request.headers['HTTP_CONFIG_VER']
+
+        unless @theApp.is_valid_version?
+          render json: {success: 0, error_code: 1004, data: nil, message: I18n.t(:outdated_version)}
           return
         end
+
+        unless @agent.token.token == request.headers["HTTP_TOKEN"]
+          render json: {success: 0, error_code: 1002, data: nil, message: I18n.t(:outdated_token)}
+          return
+        end
+
+        unless @theApp.is_valid_config?
+          render json: {success: 0, error_code: 1003, data: nil, message: I18n.t(:outdated_config)}
+          return
+        end  
+
       end
     end
   end

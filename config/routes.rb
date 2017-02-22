@@ -8,10 +8,14 @@ Rails.application.routes.draw do
       match '/agents/me',           to: 'agents#update_me',    via: :put, format: false, defaults: {format: :json}
       match '/individuals/:pid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
       match '/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
-      resources :otp  do
-        get :generate_otp, on: :collection
-        post :verify, on: :collection
+
+      resources :otp, only: []  do
+        collection do
+          get :generate_otp
+          post :verify
+        end  
       end
+
       resources :individuals
     end
   end
