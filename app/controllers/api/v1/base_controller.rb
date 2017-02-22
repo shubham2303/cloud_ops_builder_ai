@@ -8,7 +8,7 @@ module Api
 
       ################### start exception handlers ##################
 
-      def mongo_required_params(exception)
+      def ar_required_params(exception)
         render json: {success: 0, error_code: 400, data: nil, message: exception.message}
       end
 
@@ -24,6 +24,15 @@ module Api
         render json: {success: 0, error_code: 422, data: nil, message: exception.message}
       end
       ################### END exception handlers ##################
+
+      def check_headers
+        @agent = Agent.find(request.headers["uid"] )
+        app_config = JSON.parse(ENV["APP_CONFIG"])
+        unless @agent.token.token == request.headers["token"] || app_config['config_version'] == request.headers["config_version"] || app_config['android_version'] == request.headers["android_version"]
+          render json: {success: 0}
+          return
+        end
+      end
     end
   end
 end

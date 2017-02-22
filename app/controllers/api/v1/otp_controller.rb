@@ -1,14 +1,27 @@
 module Api
   module V1
-    class OtpController < ApplicationController
+    class OtpController < BaseController
 
+      # GET  /api/v1/otp/generate_otp?number=9990170198
+      # ---
       def generate_otp
-        otp =  Otp.make
-        $redis.set(params[:number], Otp.make)
-        $redis.expire(params[:number], 20)
-        render json: {success: 1, otp: otp}
+        if params[:number]
+          otp =  Otp.make
+          $redis.set(params[:number], Otp.make)
+          $redis.expire(params[:number], 20)
+          render json: {success: 1, otp: otp}
+        else
+          render json: {success: 0, message: "number parameter is missing"}
+        end  
       end
 
+      # POST /api/v1/otp/verify
+      
+      # {"number": "9990170198",
+      #  "otp": "1111",
+      #  "device_id": "123"
+      # }
+      # ---
       def verify
         otp = $redis.get(params.require(:number))
         if otp.nil? || otp != params.require(:otp)
@@ -21,7 +34,7 @@ module Api
             agent.create_token(device_id: params.require(:device_id))
           end
         end
-        render json: {success: 1}
+        render json: {success: 1, agent: agent}
       end
     end
   end
