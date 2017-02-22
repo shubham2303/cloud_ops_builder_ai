@@ -5,10 +5,14 @@ module Api
       # GET  /api/v1/otp/generate_otp?number=9990170198
       # ---
       def generate_otp
-        otp =  Otp.make
-        $redis.set(params[:number], Otp.make)
-        $redis.expire(params[:number], 20)
-        render json: {success: 1, otp: otp}
+        if params[:number]
+          otp =  Otp.make
+          $redis.set(params[:number], Otp.make)
+          $redis.expire(params[:number], 20)
+          render json: {success: 1, otp: otp}
+        else
+          render json: {success: 0, message: "number parameter is missing"}
+        end  
       end
 
       # POST /api/v1/otp/verify
