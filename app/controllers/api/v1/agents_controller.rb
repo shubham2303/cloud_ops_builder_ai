@@ -22,7 +22,7 @@ module Api
           end
           @agent.update!(agent_params)
         end
-        render json: {success: 1}
+        render json: {success: 1, agent: @agent.as_json(include: :token)}
       end
 
       private
