@@ -1,15 +1,14 @@
-<div id="test" class="form2">
-<%= label_tag :amount, "Amount", class: 'amount_label'%>
-<%= select_tag 'amount', options_for_select([ "Please select amount", "200", "300", "400" ], "Please select amount"),class: 'amount_select_field' %>
-<%= label_tag :count, "Count", class: 'count_label' %>
-<%= text_field_tag 'count',"", :class => "count_text_field" %>
+<div class="batch_form">
+	<%= label_tag :amount, "Amount", class: 'amount_label'%>
+	<%= select_tag 'amount', options_for_select(['Please select'] + JSON.parse(ENV['AMT']).map{|x| [x,x] } ),
+	    class: 'amount_select_field' %>
+	<%= label_tag :count, "Count", class: 'count_label' %>
+	<%= text_field_tag 'count',"", :class => "count_text_field" %>
 </div>
 <div id="add">add</div>
 
-<%#= f.input :count, input_html: {:style => "width:20%;", name: "batch[][:count]"}, wrapper_html: {class: 'text_field'}%>
-
 <script>
-  $('#add').click(function(){
-    $('.form2').after($('#test').html());
-  });
+	$('#add').click(function(){
+		$('.batch_form:last').after('<div class="batch_form">'+$('.batch_form:last').html()+ '</div');
+	});
 </script>
