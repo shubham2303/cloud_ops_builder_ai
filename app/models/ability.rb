@@ -14,6 +14,7 @@ class Ability
       can :manage, AdminUser
       can :manage, Individual
       can :manage, Business
+      can :manage, Batch
     end
     # Define abilities for the passed in user here. For example:
     #

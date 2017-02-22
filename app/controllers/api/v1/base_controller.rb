@@ -14,7 +14,7 @@ module Api
 
       def ar_obj_not_found(exception)
         # render json: {success: 0, error_code: 404, data: nil, message: exception.message}
-        render json: {success: 0, error_code: 1001, data: nil, message: exception.message}
+        render json: {success: 0, error_code: 1004, data: nil, message: exception.message}
       end
 
       def ar_validation_failed(exception)
@@ -33,7 +33,7 @@ module Api
         @theApp = AppString.new request.headers['HTTP_ANDRIOD_VER'], request.headers['HTTP_CONFIG_VER']
 
         unless @theApp.is_valid_version?
-          render json: {success: 0, error_code: 1004, data: nil, message: I18n.t(:outdated_version)}
+          render json: {success: 0, error_code: 1003, data: nil, message: I18n.t(:outdated_version)}
           return
         end
 
@@ -43,7 +43,7 @@ module Api
         end
 
         unless @theApp.is_valid_config?
-          render json: {success: 0, error_code: 1003, data: nil, message: I18n.t(:outdated_config)}
+          render json: {success: 0, error_code: 1001, data: {config: JSON.parse(ENV["APP_CONFIG"])}, message: I18n.t(:outdated_config)}
           return
         end  
 

@@ -13,8 +13,12 @@ module Api
       #     }
       # }
       def create
-        individual = Individual.create!(individual_params)
-        render json: {success: 1, individual: individual}
+        individual = Individual.new(individual_params)
+        if individual.save
+          render json: {success: 1, individual: individual}
+        else
+          render json: {success: 0}
+        end  
       end
 
       private

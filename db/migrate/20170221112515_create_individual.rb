@@ -3,7 +3,7 @@ class CreateIndividual < ActiveRecord::Migration[5.0]
     create_table :individuals do |t|
       t.string :phone
       t.string :name
-      t.string :address
+      t.text :address
       t.string :pid
     end
   end

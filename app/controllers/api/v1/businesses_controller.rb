@@ -5,9 +5,10 @@ module Api
 
       # POST   /api/v1/individuals/:pid/businesses
       #              OR
-      # POST   /api/v1/individuals/businesses
+      # POST   /api/v1/businesses
       #
-      #{"id": 1,
+      #{
+      # "pid": 1, // individual id
       # "business":
       #     {
       #         "address": "9999999999",
@@ -25,11 +26,8 @@ module Api
       # }
       #---
       def create
-        if params[:pid]
-          individual = Individual.find_by(pid: params[:pid])
-        else
-          individual = Individual.find(params.require(:id))
-        end
+        individual = Individual.find_by(pid: pid_param)
+
         if params[:individual]
           individual.update!(individual_params)
         end
@@ -38,6 +36,10 @@ module Api
       end
 
       private
+
+      def pid_param
+        params[:pid] || params.require(:id)
+      end  
 
       def individual_params
         params.require(:individual).permit(:phone, :name, :address)

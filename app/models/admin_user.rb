@@ -8,4 +8,6 @@ class AdminUser < ApplicationRecord
 
   validates_inclusion_of :role, :in => USER_ROLE, :allow_nil => false
 
+  validates :role, presence: true
+
 end

@@ -3,7 +3,7 @@ class CreateAgent < ActiveRecord::Migration[5.0]
     create_table :agents do |t|
       t.string :phone
       t.string :name
-      t.string :address
+      t.text :address
       t.string :birthplace
       t.string :state
     end

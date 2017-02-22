@@ -1,7 +1,7 @@
 class CreateBusiness < ActiveRecord::Migration[5.0]
   def change
     create_table :businesses do |t|
-      t.string :address
+      t.text :address
       t.string :category
       t.float :turnover
       t.string :year
