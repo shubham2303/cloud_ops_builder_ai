@@ -129,7 +129,9 @@ CREATE TABLE agents (
     name character varying,
     address character varying,
     birthplace character varying,
-    state character varying
+    state character varying,
+    dob date,
+    lga character varying
 );
 
 
@@ -231,6 +233,41 @@ ALTER SEQUENCE batches_id_seq OWNED BY batches.id;
 
 
 --
+-- Name: businesses; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE businesses (
+    id integer NOT NULL,
+    address character varying,
+    category character varying,
+    turnover double precision,
+    year character varying,
+    lga character varying,
+    guid character varying,
+    individual_id integer
+);
+
+
+--
+-- Name: businesses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE businesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: businesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE businesses_id_seq OWNED BY businesses.id;
+
+
+--
 -- Name: cards; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -267,6 +304,38 @@ ALTER SEQUENCE cards_id_seq OWNED BY cards.id;
 
 
 --
+-- Name: individuals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE individuals (
+    id integer NOT NULL,
+    phone character varying,
+    name character varying,
+    address character varying,
+    pid character varying
+);
+
+
+--
+-- Name: individuals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE individuals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: individuals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE individuals_id_seq OWNED BY individuals.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -283,7 +352,8 @@ CREATE TABLE tokens (
     id integer NOT NULL,
     device_id character varying,
     token character varying,
-    expiry time without time zone
+    expiry time without time zone,
+    agent_id integer
 );
 
 
@@ -345,7 +415,21 @@ ALTER TABLE ONLY batches ALTER COLUMN id SET DEFAULT nextval('batches_id_seq'::r
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY businesses ALTER COLUMN id SET DEFAULT nextval('businesses_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY cards ALTER COLUMN id SET DEFAULT nextval('cards_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY individuals ALTER COLUMN id SET DEFAULT nextval('individuals_id_seq'::regclass);
 
 
 --
@@ -404,11 +488,27 @@ ALTER TABLE ONLY batches
 
 
 --
+-- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY businesses
+    ADD CONSTRAINT businesses_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: cards_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY cards
     ADD CONSTRAINT cards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: individuals_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY individuals
+    ADD CONSTRAINT individuals_pkey PRIMARY KEY (id);
 
 
 --
@@ -463,6 +563,13 @@ CREATE UNIQUE INDEX index_admin_users_on_reset_password_token ON admin_users USI
 
 
 --
+-- Name: index_agents_on_phone; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_agents_on_phone ON agents USING btree (phone);
+
+
+--
 -- Name: index_batch_details_on_batch_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -477,6 +584,13 @@ CREATE UNIQUE INDEX index_batch_details_on_n ON batch_details USING btree (n);
 
 
 --
+-- Name: index_businesses_on_individual_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_businesses_on_individual_id ON businesses USING btree (individual_id);
+
+
+--
 -- Name: index_cards_on_batch_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -488,6 +602,27 @@ CREATE INDEX index_cards_on_batch_id ON cards USING btree (batch_id);
 --
 
 CREATE UNIQUE INDEX index_cards_on_x ON cards USING btree (x);
+
+
+--
+-- Name: index_individuals_on_phone; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_individuals_on_phone ON individuals USING btree (phone);
+
+
+--
+-- Name: index_tokens_on_agent_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_tokens_on_agent_id ON tokens USING btree (agent_id);
+
+
+--
+-- Name: index_tokens_on_device_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_tokens_on_device_id ON tokens USING btree (device_id);
 
 
 --
@@ -507,6 +642,22 @@ ALTER TABLE ONLY cards
 
 
 --
+-- Name: fk_rails_9f5991200a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tokens
+    ADD CONSTRAINT fk_rails_9f5991200a FOREIGN KEY (agent_id) REFERENCES agents(id);
+
+
+--
+-- Name: fk_rails_c963c0661c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY businesses
+    ADD CONSTRAINT fk_rails_c963c0661c FOREIGN KEY (individual_id) REFERENCES individuals(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -517,7 +668,14 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170217085303'),
 ('20170221060001'),
 ('20170221060010'),
+('20170221064942'),
+('20170221074310'),
+('20170221074416'),
 ('20170221083740'),
-('20170221083751');
+('20170221083751'),
+('20170221094253'),
+('20170221112515'),
+('20170221113223'),
+('20170221115541');
 
 

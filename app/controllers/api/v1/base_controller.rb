@@ -8,7 +8,7 @@ module Api
 
       ################### start exception handlers ##################
 
-      def mongo_required_params(exception)
+      def ar_required_params(exception)
         render json: {success: 0, error_code: 400, data: nil, message: exception.message}
       end
 

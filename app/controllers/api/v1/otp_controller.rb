@@ -2,6 +2,8 @@ module Api
   module V1
     class OtpController < BaseController
 
+      # GET  /api/v1/otp/generate_otp?number=9990170198
+      # ---
       def generate_otp
         otp =  Otp.make
         $redis.set(params[:number], Otp.make)
@@ -9,6 +11,13 @@ module Api
         render json: {success: 1, otp: otp}
       end
 
+      # POST /api/v1/otp/verify
+      #
+      # {"number": "9990170198",
+      #  "otp": "1111",
+      #  "device_id": "123"
+      # }
+      # ---
       def verify
         otp = $redis.get(params.require(:number))
         if otp.nil? || otp != params.require(:otp)
