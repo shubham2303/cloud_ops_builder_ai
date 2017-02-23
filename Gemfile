@@ -39,7 +39,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'rsa'
 gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
 gem 'devise'
-gem 'cancan'
+gem 'cancancan'
 
 gem 'redis', '~>3.2'
 gem 'redis-namespace'
