@@ -5,7 +5,7 @@ class AppString
 
 	def initialize(ver = nil, config = nil)
 		@version = ver.to_i
-		@config  = config
+		@config  = config.to_i
 	end
 
 	def is_valid_version?
