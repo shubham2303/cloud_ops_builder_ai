@@ -1,0 +1,47 @@
+<div class="batch_form" id="batch_1">
+	<%= label_tag :amount, "Amount", class: 'amount_label'%>
+  <%= select_tag 'amount', options_for_select((['Please select'] + JSON.parse(ENV['AMT'])).map{|x| [x,x] }, :disabled => 'Please select'),
+	    class: 'amount_select_field', name: "atch[amount][]"%>
+	<%= label_tag :count, "Count", class: 'count_label' %>
+	<%= number_field_tag 'count1',"", :class => "count_text_field", name: "batch[count][]" %>
+  <%= image_tag("plus_icon.png", size: "16x10", alt: "Edit Entry", id: "add")%>
+  <!--<div class="error_text", style="color:red;margin-left: 24%; display: none">please enter count field</div>-->
+</div>
+
+
+<script>
+	$(document).ready(function(){
+    initialize_add();
+    initialize_remove();
+  });
+
+    function initialize_add()
+    {
+      $(document).on('click',"#add",function(){
+        if ($('.count_text_field:last').val() == "")
+        {
+          $('.error_text').remove();
+          $('#add').after('<div class="error_text" style="color:red;margin-left: 24%;">please enter value</div>');
+        }else {
+          $('.batch_form:last .count_text_field').after('<img alt="Edit Entry" class="remove_icon" src="/assets/remove_icon.png" width="16" height="10">')
+          $('.batch_form:last').after('<div class="batch_form">' + $('.batch_form:last').html() + '</div>');
+          $('.batch_form:last').attr('id','batch_'+$('.batch_form').length);
+          $('.batch_form:last .count_text_field').attr('id', 'count'+$('.batch_form').length);
+          $('.error_text').remove();
+          $('.batch_form:last .remove_icon').remove();
+          $(this).remove();
+          $('.batch_form .count_text_field').attr('disabled',true);
+          $('.batch_form .count_text_field:last').attr('disabled',false);
+        }
+      });
+    }
+
+    function initialize_remove()
+    {
+      $(document).on('click', '.remove_icon', function(e) {
+
+        $(this).parent().remove();
+
+      });
+    }
+</script>

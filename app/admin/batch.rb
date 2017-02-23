@@ -15,9 +15,10 @@ ActiveAdmin.register Batch do
 
 form title: 'Create Batch' do |f|
 	f.inputs 'Details' do
-    render(:partial => 'test')
+    render(:partial => 'batch_form')
   end
   actions
+
 end	
 
 controller do
