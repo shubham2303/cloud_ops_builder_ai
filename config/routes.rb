@@ -17,6 +17,11 @@ Rails.application.routes.draw do
       end
 
       resources :individuals
+      resources :collections do
+        collection do
+          post :test_decryption
+        end  
+      end
     end
   end
 
