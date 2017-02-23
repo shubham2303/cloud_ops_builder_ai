@@ -1,6 +1,8 @@
 module Api
   module V1
     class BaseController < ApplicationController
+      include ApplicationHelper
+
       rescue_from ActiveRecord::RecordNotFound, :with => :ar_obj_not_found
       rescue_from ActionController::ParameterMissing, :with => :ar_required_params
       rescue_from ActiveRecord::RecordInvalid, :with => :ar_validation_failed
@@ -39,19 +41,28 @@ module Api
 
 
       def check_common_headers
-        theApp = AppString.new request.headers['HTTP_ANDRIOD_VER'], request.headers['HTTP_CONFIG_VER']
-
-        unless theApp.is_valid_version?
+        unless AppConfig.android_version_valid?(request.headers['HTTP_ANDRIOD_VER'])
           render json: {success: 0, error_code: 1003, data: nil, message: I18n.t(:outdated_version)}
           return
         end
 
-
-        unless theApp.is_valid_config?
-          render json: {success: 0, error_code: 1001, data: {config: JSON.parse(ENV["APP_CONFIG"])}, message: I18n.t(:outdated_config)}
+        unless AppConfig.config_version_valid?(request.headers['HTTP_CONFIG_VER'])
+          render json: {success: 0, error_code: 1001, data: {config: AppConfig.json}, message: I18n.t(:outdated_config)}
           return
         end
 
+      end
+
+      def get_data_using_decryption
+        begin
+          static_rsa = StaticRSAHelper.new
+          decrypted_secret_key = static_rsa.decrypt(params.require(:secret))
+          des = TripleDESHelper.new(decrypted_secret_key)
+          decrypted_data = des.decrypt(params.require(:data))
+          @data = JSON.parse(decrypted_data)
+        rescue
+
+        end
       end
     end
   end
