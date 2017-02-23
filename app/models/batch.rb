@@ -32,4 +32,11 @@ class Batch < ApplicationRecord
     end
   end
 
+  def to_csv
+    CSV.generate do |csv|
+      csv << Batch.column_names
+      csv << attributes.values_at(*Batch.column_names)
+    end  
+  end  
+
 end
