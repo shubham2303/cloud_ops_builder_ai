@@ -2,8 +2,6 @@ class Batch < ApplicationRecord
 
   has_many :batch_details
   has_many :cards
-  attr_accessor :count
-  attr_accessor :amount
 
   def self.generate(arr)
     raise Exception.new 'Illegal arguments' unless arr.is_a? Array

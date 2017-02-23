@@ -16,11 +16,26 @@
 //
 //   .status_tag { background: #6090DB; }
 .amount_label, .amount_select_field, .count_label{
-  margin-left: 3%;
-  font-weight: bold;
+font-weight: bold;
 }
 
 .count_text_field {
-  width:9%!important;
+width:9%!important;
+}
 
+.mrgn_lft_3{
+margin-left: 3%;
+}
+
+.mrgn_top_1{
+	margin-top: 1%;
+}
+.mrgn_lft_28{
+	margin-left: 28%;
+}
+.c_red{
+	color:red;
+}
+mrgn_btm_5_neg_px{
+	margin-bottom: -5px !important;
 }

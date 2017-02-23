@@ -1,47 +1,55 @@
-<div class="batch_form" id="batch_1">
-	<%= label_tag :amount, "Amount", class: 'amount_label'%>
-  <%= select_tag 'amount', options_for_select((['Please select'] + JSON.parse(ENV['AMT'])).map{|x| [x,x] }, :disabled => 'Please select'),
-	    class: 'amount_select_field', name: "atch[amount][]"%>
-	<%= label_tag :count, "Count", class: 'count_label' %>
-	<%= number_field_tag 'count1',"", :class => "count_text_field", name: "batch[count][]" %>
-  <%= image_tag("plus_icon.png", size: "16x10", alt: "Edit Entry", id: "add")%>
-  <!--<div class="error_text", style="color:red;margin-left: 24%; display: none">please enter count field</div>-->
-</div>
+<div class="batch_form" id="batch_0">
+	<%= label_tag :amount, "Amount", class: 'mrgn_lft_3 amount_label'%>
+  <%= select_tag 'amount', options_for_select((['Please select'] + JSON.parse(ENV['AMT'])).map{|x| [x,x] },
+    selected: 'Please select',
+    disabled: 'Please select'),
+    class: 'amount_select_field mrgn_lft_3', name: "batch[amount][]" %>
+    <%= label_tag :count, "Count", class: 'mrgn_lft_3 count_label' %>
+    <%= number_field_tag 'count1',"", :class => "count_text_field mrgn_lft_3", name: "batch[count][]" %>
+    <%= image_tag("plus_icon.png", size: "16x10", alt: "Edit Entry", id: "add" )%>
+  </div>
 
 
-<script>
-	$(document).ready(function(){
+  <script>
+   $(document).ready(function(){
     initialize_add();
     initialize_remove();
   });
 
-    function initialize_add()
-    {
-      $(document).on('click',"#add",function(){
-        if ($('.count_text_field:last').val() == "")
-        {
-          $('.error_text').remove();
-          $('#add').after('<div class="error_text" style="color:red;margin-left: 24%;">please enter value</div>');
-        }else {
-          $('.batch_form:last .count_text_field').after('<img alt="Edit Entry" class="remove_icon" src="/assets/remove_icon.png" width="16" height="10">')
-          $('.batch_form:last').after('<div class="batch_form">' + $('.batch_form:last').html() + '</div>');
-          $('.batch_form:last').attr('id','batch_'+$('.batch_form').length);
-          $('.batch_form:last .count_text_field').attr('id', 'count'+$('.batch_form').length);
-          $('.error_text').remove();
-          $('.batch_form:last .remove_icon').remove();
-          $(this).remove();
-          $('.batch_form .count_text_field').attr('disabled',true);
-          $('.batch_form .count_text_field:last').attr('disabled',false);
-        }
-      });
-    }
+   function initialize_add()
+   {
+    $(document).on('click',"#add",function(){
+      if ($('.count_text_field:last').val() == "")
+      {
+        $('.error_text').remove();
+        $('#add').after('<div class="error_text mrgn_lft_28 c_red">Count can"t be blank</div>');
+      }
+      // else if($('.amount_select_field:last').val() == null)
+      // {
+      //   $('#error_amount_select').remove();
+      //   $('#add').after('<div id="error_amount_select" class="mrgn_lft_3 c_red">RE</div>');
+      // }
+      else
+      {
+        var batch_count = $('.batch_form').length;
+        $('.batch_form:last .count_text_field').after('<img alt="Edit Entry" class="mrgn_btm_5_neg_px remove_icon" src="/assets/cross.png" width="22" height="17">')
+        $('.batch_form:last').after('<div class="batch_form mrgn_top_1">' + $('.batch_form:last').html() + '</div>');
+        $('.batch_form:last').attr('id','batch_'+batch_count);
+        $('.batch_form:last .count_text_field').attr('id', 'count'+batch_count);
+        $('.error_text').remove();
+        $('.batch_form:last .remove_icon').remove();
+        $(this).remove();
+        $('.batch_form:nth-child('+(batch_count)+') .count_text_field').prop("readonly", true);
+      }
+    });
+  }
 
-    function initialize_remove()
-    {
-      $(document).on('click', '.remove_icon', function(e) {
+  function initialize_remove()
+  {
+    $(document).on('click', '.remove_icon', function(e) {
 
-        $(this).parent().remove();
+      $(this).parent().remove();
 
-      });
-    }
+    });
+  }
 </script>

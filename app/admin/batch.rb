@@ -1,29 +1,6 @@
 ActiveAdmin.register Batch do
 
-# See permitted parameters documentation:
-# https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-#
-# permit_params :list, :of, :attributes, :on, :model
-#
-# or
-#
-# permit_params do
-#   permitted = [:permitted, :attributes]
-#   permitted << :other if params[:action] == 'create' && current_user.admin?
-#   permitted
-# end
-
-form title: 'Create Batch' do |f|
-	f.inputs 'Details' do
-    render(:partial => 'batch_form')
-  end
-  actions
-
-end	
-
-
 	actions :index, :show, :create, :new
-
 
 	index do
 		id_column
@@ -35,16 +12,15 @@ end
 		end
 	end
 
-	form title: 'Create Batch' do |f|
+	form title: 'Create Batch', :html => { :class => "validations" }  do |f|
 		f.inputs 'Details' do
-			div id:"batch_form" do
-				render(:partial => 'test')
-			end
+			render(:partial => 'batch_form')
 		end
 		actions
-	end	
+	end
 
 	controller do
+
 		def create
 			Batch.generate(p_batch)
 			redirect_to :admin_batches
@@ -54,7 +30,7 @@ end
 			@batch = Batch.find(params[:id])
 			send_data @batch.to_csv, type: 'text/csv; charset=windows-1251; header=present', 
 			disposition: "attachment; filename=batch_#{DateTime.now.to_s}.csv"
-		end	
+		end
 
 		private
 
