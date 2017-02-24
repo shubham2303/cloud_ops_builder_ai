@@ -10,7 +10,6 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
 require "sprockets/railtie"
-require 'dotenv/load'
 require 'csv'
 # require "rails/test_unit/railtie"
 
