@@ -32,7 +32,7 @@ module Api
           individual.update!(individual_params)
         end
         business = individual.businesses.create!(business_params)
-        render json: {success: 1,business: business}
+        render json: {status: 1,business: business}
       end
 
       private

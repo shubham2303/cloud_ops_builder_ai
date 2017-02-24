@@ -5,6 +5,8 @@ module Api
 
       before_action :authenticate_headers
 
+      attr_reader :theAgent
+
       rescue_from ActiveRecord::RecordNotFound, :with => :ar_obj_not_found
       rescue_from ActionController::ParameterMissing, :with => :ar_required_params
       rescue_from ActiveRecord::RecordInvalid, :with => :ar_validation_failed
@@ -16,7 +18,7 @@ module Api
       ################### start exception handlers ##################
 
       def ar_required_params(exception)
-        render json: {success: 0, error_code: 400, data: nil, message: exception.message}
+        render json: {status: 400, data: nil, message: exception.message}
       end
 
       def ar_obj_not_found(exception)
@@ -44,8 +46,12 @@ module Api
       end  
       ################### END exception handlers ##################
 
+      def theAgent
+        return nil unless request.headers["HTTP_UID"]
+      end  
+
       def authenticate_headers
-        unless AppConfig.android_version_valid?(request.headers['HTTP_ANDRIOD_VER'])
+        unless AppConfig.android_version_valid?(request.headers['HTTP_ANDROID_VER'])
           @agent.token.update(token: nil) unless @agent.nil?
           raise VersionBlocked.new
         end 

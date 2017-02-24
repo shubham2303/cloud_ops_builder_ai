@@ -9,9 +9,9 @@ module Api
           otp =  Otp.make
           $redis.set(params[:number], otp)
           $redis.expire(params[:number], 20)
-          render json: { success: 1, otp: otp }
+          render json: { status: 1, otp: otp }
         else
-          render json: { success: 0, message: "number parameter is missing" }
+          render json: { status: 0, message: "number parameter is missing" }
         end  
       end
 
@@ -25,7 +25,7 @@ module Api
       def verify
         otp = $redis.get(phone_params)
         if otp.nil? || otp != params.require(:otp)
-          render json: { success: 0, message: 'Otp expired or wrong otp, try again'}
+          render json: { status: 0, message: 'Otp expired or wrong otp, try again'}
           return
         end
         ActiveRecord::Base.transaction do
@@ -33,7 +33,7 @@ module Api
           if agent.token.nil?
             agent.create_token(device_id: params.require(:device_id))
           end
-          render json: { success: 1, agent: agent }
+          render json: { status: 1, agent: agent }
         end
       end
 

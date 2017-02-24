@@ -15,9 +15,9 @@ module Api
       def create
         individual = Individual.new(individual_params)
         if individual.save
-          render json: {success: 1, individual: individual}
+          render json: {status: 1, individual: individual}
         else
-          render json: {success: 0}
+          render json: {status: 0}
         end  
       end
 
