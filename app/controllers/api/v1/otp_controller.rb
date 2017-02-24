@@ -1,7 +1,7 @@
 module Api
   module V1
     class OtpController < BaseController
-      before_action :check_common_headers
+      # before_action :check_common_headers
       # GET  /api/v1/otp/generate_otp?number=9990170198
       # ---
       def generate_otp
