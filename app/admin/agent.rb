@@ -25,7 +25,10 @@ form do |f|
 end
 
 controller do
-	include ActiveAdminCanCan
+  def active_admin_collection
+    super.accessible_by current_ability
+  end
+	# include ActiveAdminCanCan
 end	
 
 end
