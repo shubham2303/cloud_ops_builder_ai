@@ -14,12 +14,12 @@ permit_params :phone, :name, :address
 # end
 
 form do |f|
-  f.inputs "Subscription Plan" do
-    f.input :phone
-    f.input :name
-    f.input :address
-  end
-  f.actions
+	f.inputs "Subscription Plan" do
+		f.input :phone
+		f.input :name
+		f.input :address
+	end
+	f.actions
 end
 
 controller do
