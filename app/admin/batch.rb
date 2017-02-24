@@ -27,7 +27,7 @@ ActiveAdmin.register Batch do
 
 		def show
 			@batch = Batch.find(params[:id])
-			send_data @batch.to_csv, type: 'text/csv; charset=windows-1251; header=present', 
+			send_data BatchDetail.csv(@batch) , type: 'text/csv; charset=windows-1251; header=present', 
 			disposition: "attachment; filename=batch_#{DateTime.now.to_s}.csv"
 		end
 
