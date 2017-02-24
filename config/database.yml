@@ -78,6 +78,12 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+staging:
+  <<: *default
+  database: card-vault_staging
+  username: card-vault
+  password: <%= ENV['CARD-VAULT_DATABASE_PASSWORD'] %>
+
 production:
   <<: *default
   database: card-vault_production
