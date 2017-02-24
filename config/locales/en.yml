@@ -23,4 +23,5 @@ en:
   hello: "Hello world"
   outdated_version: "You are using an outdated version of the app. Please update and try again"
   outdated_config:  "You are using an outdated config."
-  outdated_token: 'token expire or invalid'
+  outdated_token: 'Token Invalid'
+  token_expiration: 'Token was Expired'

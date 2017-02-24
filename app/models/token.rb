@@ -7,4 +7,8 @@ class Token < ApplicationRecord
     self.token =  ShortUUID.unique
     self.expiry =  Time.now + 1.hour
   end
+
+  def expired?
+  	expiry <= Time.now
+  end	
 end

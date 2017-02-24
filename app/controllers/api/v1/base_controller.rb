@@ -5,7 +5,7 @@ module Api
 
       before_action :authenticate_headers
 
-      attr_reader :theAgent
+      attr_reader :theAgent, :theToken
 
       rescue_from ActiveRecord::RecordNotFound, :with => :ar_obj_not_found
       rescue_from ActionController::ParameterMissing, :with => :ar_required_params
@@ -14,6 +14,7 @@ module Api
       rescue_from ::AccessBlocked, :with => :blocked_access_detected
       rescue_from ::VersionBlocked, :with => :blocked_version_detected
       rescue_from ::ConfigBlocked, :with => :blocked_config_detected
+      rescue_from TokenExpired, :with => :token_expiration_detected
 
       ################### start exception handlers ##################
 
@@ -34,6 +35,7 @@ module Api
       end
 
       def blocked_access_detected(exception)
+        theAgent.token.update_columns(expiry: Time.now)
         render json: {status: 1004, data: nil, message: exception.message}
       end
 
@@ -44,31 +46,39 @@ module Api
       def blocked_config_detected(exception)
         render json: {status: 1001, data: nil, message: exception.message}
       end  
+
+      def token_expiration_detected(exception)
+        theToken.update_other_fields
+        theToken.save
+        render json: {status: 1004, data: {token: theToken.token}, message: exception.message}
+      end  
       ################### END exception handlers ##################
 
       def theAgent
         return nil unless request.headers["HTTP_UID"]
+        Agent.find( request.headers["HTTP_UID"] )
+      end  
+
+      def theToken
+        theAgent.token
       end  
 
       def authenticate_headers
         unless AppConfig.android_version_valid?(request.headers['HTTP_ANDROID_VER'])
-          @agent.token.update(token: nil) unless @agent.nil?
           raise VersionBlocked.new
         end 
 
         unless AppConfig.config_version_valid?(request.headers['HTTP_CONFIG_VER'])
-          @agent.token.update(token: nil) unless @agent.nil?
           raise ConfigBlocked.new
         end  
       end  
 
       def check_headers
-        @agent = Agent.find( request.headers["HTTP_UID"] )
-
-        unless @agent.token.token == request.headers["HTTP_TOKEN"]
-          @agent.token.update(token: nil) 
-          raise AccessBlocked.new @agent.token
-        end  
+        if theAgent.token.token != request.headers["HTTP_TOKEN"]
+          raise AccessBlocked.new theAgent.token
+        elsif theAgent.token.expired?
+          raise TokenExpired.new
+        end
       end
 
       def get_data_using_decryption
@@ -79,7 +89,7 @@ module Api
           decrypted_data = des.decrypt(params.require(:data))
           @data = JSON.parse(decrypted_data)
         rescue
-          @agent.token.update(token: nil)
+          theToken.update_columns(expiry: Time.now) unless theAgent.nil?
         end
       end
     end

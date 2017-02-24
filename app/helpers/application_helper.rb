@@ -11,7 +11,7 @@ module ApplicationHelper
     end
 
     def self.android_version_valid?(client_version)
-      eval(client_version).to_i >= min_android_version
+      eval(client_version.to_s).to_i >= min_android_version
     end
 
     def self.config_version
@@ -19,7 +19,7 @@ module ApplicationHelper
     end
 
     def self.config_version_valid?(config_version)
-      eval(config_version).to_i == self.config_version
+      eval(config_version.to_s).to_i == self.config_version
     end
 
   end
