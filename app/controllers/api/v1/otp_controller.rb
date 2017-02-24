@@ -33,7 +33,7 @@ module Api
           if agent.token.nil?
             agent.create_token(device_id: params.require(:device_id))
           end
-          render json: { status: 1, agent: agent }
+          render json: { status: 1, agent: agent, token: agent.token.token }
         end
       end
 
