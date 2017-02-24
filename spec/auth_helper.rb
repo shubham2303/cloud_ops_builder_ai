@@ -14,7 +14,7 @@ module AuthHelper
   def set_headers(agent)
     reset_headers
     @request.env['HTTP_UID'] = agent.id
-    @request.env['HTTP_TOKEN'] = agent.token.token
+    @request.env['HTTP_TOKEN'] = agent.reload.token.token
     @request.env['HTTP_CONFIG_VER'] = json['config_version']
     @request.env['HTTP_ANDROID_VER'] = json['android_version']
   end

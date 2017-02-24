@@ -10,9 +10,9 @@ RSpec.describe Api::V1::CollectionsController, type: :controller do
   let (:token) { FactoryGirl.create :token, agent: agent }
 
   it "should pass decryption testing" do
-    agent
+    a = agent
     token
-    set_headers(agent)
+    set_headers(a)
     rsa =  ApplicationHelper::StaticRSAHelper.new
     encrypted_secret = rsa.public_encrypt("123")
     decrypted_secret = rsa.decrypt(encrypted_secret)
