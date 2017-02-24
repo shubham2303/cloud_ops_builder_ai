@@ -9,7 +9,6 @@ class Token < ApplicationRecord
   end
 
   def expired?
-    false
-  	# expiry <= Time.now
+  	expiry <= Time.now
   end	
 end
