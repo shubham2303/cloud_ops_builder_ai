@@ -43,6 +43,7 @@ gem 'cancancan'
 
 gem 'redis', '~>3.2'
 gem 'redis-namespace'
+gem 'unicorn'
 
 group :development, :test, :staging do
   gem 'factory_girl_rails'
