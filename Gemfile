@@ -44,7 +44,7 @@ gem 'cancancan'
 gem 'redis', '~>3.2'
 gem 'redis-namespace'
 
-group :development, :test do
+group :development, :test, :staging do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
