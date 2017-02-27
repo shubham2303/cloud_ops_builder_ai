@@ -44,7 +44,7 @@ module Api
       end  
 
       def blocked_config_detected(exception)
-        render json: {status: 1001, data: nil, message: exception.message}
+        render json: {status: 1001, data: {config: AppConfig.json}, message: exception.message}
       end  
 
       def token_expiration_detected(exception)
