@@ -4,6 +4,7 @@ class CreateToken < ActiveRecord::Migration[5.0]
       t.string :device_id
       t.string :token
       t.time :expiry
+      t.timestamps
     end
   end
 end

@@ -8,6 +8,7 @@ class CreateBusiness < ActiveRecord::Migration[5.0]
       t.string :lga
       t.string :guid
       t.references :individual, foreign_key: true
+      t.timestamps
     end
   end
 end

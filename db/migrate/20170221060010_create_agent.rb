@@ -6,6 +6,7 @@ class CreateAgent < ActiveRecord::Migration[5.0]
       t.text :address
       t.string :birthplace
       t.string :state
+      t.timestamps
     end
   end
 end

@@ -35,7 +35,7 @@ module Api
       end
 
       def blocked_access_detected(exception)
-        theAgent.token.update_columns(expiry: Time.now)
+        theToken.update_columns(expiry: Time.now)
         render json: {status: 1004, data: nil, message: exception.message}
       end
 
@@ -75,7 +75,7 @@ module Api
 
       def check_headers
         if theAgent.token.token != request.headers["HTTP_TOKEN"]
-          raise AccessBlocked.new theAgent.token
+          raise AccessBlocked.new
         elsif theAgent.token.expired?
           raise TokenExpired.new
         end
