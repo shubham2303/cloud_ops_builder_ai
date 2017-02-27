@@ -23,7 +23,7 @@ module Api
           end
           @agent.update!(agent_params)
         end
-        render json: {status: 1, agent: @agent.as_json(include: :token)}
+        render json: {status: 1, data: {agent: @agent.token.token}}
       end
 
       private
