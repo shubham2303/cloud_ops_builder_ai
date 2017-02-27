@@ -8,7 +8,7 @@ module Api
         if params[:number]
           otp =  Otp.make
           $redis.set(params[:number], otp)
-          $redis.expire(params[:number], 20)
+          $redis.expire(params[:number], 60)
           render json: { status: 1, data: {otp: otp} }
         else
           render json: { status: 0, message: "number parameter is missing" }
