@@ -19,11 +19,11 @@ module Api
       def update_me
         ActiveRecord::Base.transaction do
           if params[:device_id]
-            theAgent.token.update!(device_id: params[:device_id])
+            theToken.update!(device_id: params[:device_id])
           end
           theAgent.update!(agent_params)
         end
-        render json: {status: 1, data: {agent: theAgent.token.token}}
+        render json: {status: 1, data: {agent: theAgent, token: theToken.token}}
       end
 
       private
