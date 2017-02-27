@@ -3,7 +3,7 @@ module Api
     class AgentsController < BaseController
       before_action :check_headers
 
-      # PUT  /api/v1/agents/:uid
+      # PUT  /api/v1/agents/me
       #
       #  {
       #   "agent": {

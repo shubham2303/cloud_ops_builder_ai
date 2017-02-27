@@ -22,6 +22,30 @@ module ApplicationHelper
       eval(config_version.to_s).to_i == self.config_version
     end
 
+    def self.check_type_subtype_valid?(type, subtype)
+      value = type_exist?(type)
+      unless value
+        return false
+      end
+      if subtype_exist?(value, subtype)
+        type_enabled?(value)
+      end
+    end
+
+    def self.type_exist?(type)
+      hsh = {}
+      json['categories'].any?{|t| hsh =  t; return hsh if t['id'] == type }
+    end
+
+    def self.subtype_exist?(hsh, subtype)
+      byebug
+      hsh['subcategories'].any?{|s| s['id']==subtype}
+    end
+
+    def self.type_enabled? type
+      type['enabled'] == true
+    end
+
   end
 
   class DynamicRSAHelper

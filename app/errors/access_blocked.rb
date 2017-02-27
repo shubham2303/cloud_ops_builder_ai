@@ -7,4 +7,5 @@ class AccessBlocked < StandardError
   def to_s
     @message
   end
-end 
+end
+
