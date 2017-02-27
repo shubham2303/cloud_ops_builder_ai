@@ -5,7 +5,7 @@ class Token < ApplicationRecord
 
   def update_other_fields
     self.token =  ShortUUID.unique
-    self.expiry =  Time.now + 1.hour
+    self.expiry =  Time.now + 1.minute
   end
 
   def expired?
