@@ -90,6 +90,7 @@ module Api
           @data = JSON.parse(decrypted_data)
         rescue
           theToken.update_columns(expiry: Time.now) unless theAgent.nil?
+          raise TokenExpired.new
         end
       end
     end

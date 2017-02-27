@@ -9,7 +9,7 @@ module Api
           otp =  Otp.make
           $redis.set(params[:number], otp)
           $redis.expire(params[:number], 20)
-          render json: { status: 1, otp: otp }
+          render json: { status: 1, data: {otp: otp} }
         else
           render json: { status: 0, message: "number parameter is missing" }
         end  
@@ -33,7 +33,7 @@ module Api
           if agent.token.nil?
             agent.create_token(device_id: params.require(:device_id))
           end
-          render json: { status: 1, agent: agent }
+          render json: { status: 1, data:{agent: agent} }
         end
       end
 
