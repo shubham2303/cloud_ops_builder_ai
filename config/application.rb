@@ -37,7 +37,7 @@ module CardVault
     # Dump schema as sql rather than ruby for advanced feature readability
     config.active_record.schema_format = :sql
 
-    config.active_record.time_zone_aware_types = [:datetime, :time]
+    # config.active_record.time_zone_aware_types = [:datetime, :time]
 
     config.generators do |g|
       g.test_framework :rspec

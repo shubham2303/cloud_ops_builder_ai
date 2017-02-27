@@ -48,7 +48,6 @@ module Api
       end  
 
       def token_expiration_detected(exception)
-        theToken.update_other_fields
         theToken.save
         render json: {status: 1004, data: {token: theToken.token}, message: exception.message}
       end  
