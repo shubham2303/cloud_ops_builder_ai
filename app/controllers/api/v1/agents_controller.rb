@@ -21,7 +21,7 @@ module Api
           if params[:device_id]
             theAgent.token.update!(device_id: params[:device_id])
           end
-          @agent.update!(agent_params)
+          theAgent.update!(agent_params)
         end
         render json: {status: 1, data: {agent: theAgent.token.token}}
       end
