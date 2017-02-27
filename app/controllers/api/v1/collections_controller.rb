@@ -9,6 +9,7 @@ module Api
 
       def create
         if AppConfig.check_type_subtype_valid?(params[:type], params[:subtype])
+          collection = Collection.create!(data)
         else
         end
       collection = Collection.create!(data)
