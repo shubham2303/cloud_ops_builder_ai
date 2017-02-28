@@ -12,14 +12,19 @@ module Api
         if type.nil?
           render json: {status: 0, message: "type is not valid"}
           return
+        elsif !AppConfig.type_enabled? type
+          render json: {status: 0, message: "type is not enabled"}
+          return
         elsif !AppConfig.subtype_exist?(type, @data['subtype'])
           render json: {status: 0, message: "subtype is not valid"}
           return
         else
+          # nothing to do
         end
         begin
-          card = Card.verify_and_use(@data['number'], @data['amount'])
-          # batch = card.batch
+          Card.verify_and_use(@data['number'], @data['amount'])
+          batch_detail = BatchDetail.find_by!(n: @data['number'])
+          batch = batch_detail.batch
         rescue Exception => msg
           render json: {status: 0, message: msg}
           return
@@ -27,18 +32,14 @@ module Api
         if @data['uuid'][0] == 'I'
           individual = Individual.find_by!(uuid: @data['uuid'])
         else
-          business = Business.find_by!(uuid: @data['uuid'])
+          @business = Business.find_by!(uuid: @data['uuid'])
+          individual = @business.individual
         end
-        byebug
-        collection = Collection.create!(type: @data['type'], subtype: @data['subtype'], number: @data[:number], amount: @data['amount'])
+        collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
+                                        number: @data['number'], amount: @data['amount'],
+                                        batch: batch, agent: theAgent, individual: individual, business: @business)
         render json: {status: 1, data: {collection: collection}}
 
-      end
-
-      private
-
-      def collection_params
-        params.require(:collection).permit(:type, :subtype, :number, :amount, :agent_id, :individual_id, :business_id)
       end
     end
   end

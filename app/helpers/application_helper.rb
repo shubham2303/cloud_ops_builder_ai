@@ -22,16 +22,6 @@ module ApplicationHelper
       eval(config_version.to_s).to_i == self.config_version
     end
 
-    def self.check_type_subtype_valid?(type, subtype)
-      value = type_exist?(type)
-      unless value
-        return false
-      end
-      if subtype_exist?(value, subtype)
-        type_enabled?(value)
-      end
-    end
-
     def self.type_exist?(type)
       type = json['categories'].find {|x| x['id'] == type}
       return type

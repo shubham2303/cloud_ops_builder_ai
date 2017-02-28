@@ -23,7 +23,7 @@ module Api
       #     "business":
       #         {
       #             "address": "9999999999",
-      #             "category": "Abia",
+      #             "name": "Abia",
       #             "lga": "Egor",
       #             "year": "2017"
       #         },
@@ -47,7 +47,7 @@ module Api
       end
 
       def business_params
-        params.require(:business).permit(:address, :category, :turnover, :year, :lga)
+        params.require(:business).permit(:name, :address, :turnover, :year, :lga)
       end
     end
   end

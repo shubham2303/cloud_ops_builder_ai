@@ -29,7 +29,7 @@ module Api
       end  
 
       def business_params
-        params.require(:business).permit(:address, :category, :turnover, :year, :lga)
+        params.require(:business).permit(:name, :address, :turnover, :year, :lga)
       end
     end
   end
