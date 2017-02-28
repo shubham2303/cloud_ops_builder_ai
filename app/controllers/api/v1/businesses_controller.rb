@@ -5,7 +5,7 @@ module Api
 
       # POST   /api/v1/individuals/:uuid/businesses
       #
-      #{
+      # {
       # "business":
       #     {
       #         "address": "9999999999",
@@ -18,8 +18,8 @@ module Api
       #---
       def create
         individual = Individual.find_by!(uuid: uuid_param)
-        business = individual.businesses.create!(business_params)
-        render json: {status: 1,data: {business: business}}
+        individual.businesses.create!(business_params)
+        render json: {status: 1,data: {uuid: individual.uuid}}
       end
 
       private

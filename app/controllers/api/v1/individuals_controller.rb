@@ -14,7 +14,7 @@ module Api
       # }
       def create
         individual = Individual.create!(individual_params)
-        render json: {status: 1, data: {individual: individual}}
+        render json: {status: 1, data: {uuid: individual.uuid}}
       end
 
       # create business for an existing or new individual
@@ -36,8 +36,8 @@ module Api
       def business
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
         individual.update!(individual_params)
-        business = individual.businesses.create!(business_params)
-        render json: {status: 1, data: {individual: individual}, business: business}
+        individual.businesses.create!(business_params)
+        render json: {status: 1, data: {uuid: individual.uuid}}
       end
 
       private
