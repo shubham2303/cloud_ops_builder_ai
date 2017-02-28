@@ -6,8 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
 
       match '/agents/me',           to: 'agents#update_me',    via: :put, format: false, defaults: {format: :json}
-      match '/individuals/:pid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
-      match '/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
+      match '/individuals/:uuid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
 
       resources :otp, only: []  do
         collection do
@@ -16,7 +15,11 @@ Rails.application.routes.draw do
         end  
       end
 
-      resources :individuals
+      resources :individuals do
+        collection do
+          post :business
+        end
+      end
       resources :collections do
         collection do
           post :test_decryption

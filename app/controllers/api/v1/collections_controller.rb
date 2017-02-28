@@ -1,26 +1,38 @@
 module Api
   module V1
     class CollectionsController < BaseController
-      before_action :check_headers
+      before_action :check_headers, :get_data_using_decryption
 
       def test_decryption
         render json: {status: 1, data: @data}
       end
 
-      def create
-        if AppConfig.check_type_subtype_valid?(params[:type], params[:subtype])
-          collection = Collection.create!(data)
-        else
-        end
-      collection = Collection.create!(data)
-      render json: {status: 1, data: {collection: collection}}
-      end
+      # def create
+      #   type= AppConfig.type_exist?(@data['type'])
+      #   if type.nil?
+      #     render json: {status: 0, message: "type is not valid"}
+      #     return
+      #   elsif !AppConfig.subtype_exist?(type, @data['subtype'])
+      #     render json: {status: 0, message: "subtype is not valid"}
+      #     return
+      #   else
+      #   end
+      #   begin
+      #     Card.verify_and_use(@data['number'], @data['amount'])
+      #   rescue Exception => msg
+      #     render json: {status: 0, message: msg}
+      #     return
+      #   end
+      #   collection = Collection.create!(collection_params)
+      #   render json: {status: 1, data: {collection: collection}}
+      #
+      # end
 
-      private
-
-      def collection_params
-        params.require(:collection).permit(:type, :subtype, :number, :amount, :agent_id, :individual_id, :business_id)
-      end
+      # private
+      #
+      # def collection_params
+      #   params.require(:collection).permit(:type, :subtype, :number, :amount, :agent_id, :individual_id, :business_id)
+      # end
     end
   end
 end

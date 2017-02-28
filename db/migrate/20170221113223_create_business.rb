@@ -6,7 +6,7 @@ class CreateBusiness < ActiveRecord::Migration[5.0]
       t.float :turnover
       t.string :year
       t.string :lga
-      t.string :guid
+      t.string :uuid
       t.references :individual, foreign_key: true
       t.timestamps
     end

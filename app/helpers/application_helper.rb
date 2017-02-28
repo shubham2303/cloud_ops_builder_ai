@@ -33,13 +33,12 @@ module ApplicationHelper
     end
 
     def self.type_exist?(type)
-      hsh = {}
-      json['categories'].any?{|t| hsh =  t; return hsh if t['id'] == type }
+      type = json['categories'].find {|x| x['id'] == type}
+      return type
     end
 
-    def self.subtype_exist?(hsh, subtype)
-      byebug
-      hsh['subcategories'].any?{|s| s['id']==subtype}
+    def self.subtype_exist?(type, subtype)
+      type['subcategories'].any?{|s| s['id']==subtype}
     end
 
     def self.type_enabled? type

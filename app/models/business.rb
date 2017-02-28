@@ -9,7 +9,7 @@ class Business < ApplicationRecord
   before_create :update_guid
 
   def update_guid
-    self.guid = ShortUUID.unique
+    self.uuid = 'B-'+ShortUUID.unique
   end
 
 end
