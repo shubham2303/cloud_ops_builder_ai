@@ -4,7 +4,7 @@ class Business < ApplicationRecord
   has_many :collections
 
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
-  validates :address, :category, :lga, :year, presence: true
+  validates :address, :lga, :year, presence: true
 
   before_create :update_guid
 

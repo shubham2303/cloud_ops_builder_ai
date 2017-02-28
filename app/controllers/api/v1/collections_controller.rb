@@ -18,16 +18,23 @@ module Api
       #   else
       #   end
       #   begin
-      #     Card.verify_and_use(@data['number'], @data['amount'])
+      #     card = Card.verify_and_use(@data['number'], @data['amount'])
+      #     batch = card.batch
       #   rescue Exception => msg
       #     render json: {status: 0, message: msg}
       #     return
       #   end
-      #   collection = Collection.create!(collection_params)
+      #   if @data['uuid'][0] == 'I'
+      #     individual = Individual.find_by!(uuid: @data['uuid'])
+      #   else
+      #     business = Business.find_by!(uuid: @data['uuid'])
+      #   end
+      #   byebug
+      #   collection = Collection.create!(type: @data['type'], subtype: @data['subtype'], number: @data[:number], amount: @data['amount'])
       #   render json: {status: 1, data: {collection: collection}}
       #
       # end
-
+      #
       # private
       #
       # def collection_params

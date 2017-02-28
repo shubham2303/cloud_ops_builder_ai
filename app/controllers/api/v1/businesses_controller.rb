@@ -15,7 +15,7 @@ module Api
       #         "turnover": 2000
       #     }
       # }
-      #---
+      # ---
       def create
         individual = Individual.find_by!(uuid: uuid_param)
         individual.businesses.create!(business_params)
