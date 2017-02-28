@@ -19,7 +19,7 @@ module Api
       def create
         individual = Individual.find_by!(uuid: uuid_param)
         individual.businesses.create!(business_params)
-        render json: {status: 1,data: {uuid: individual.uuid}}
+        render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]) }}
       end
 
       private

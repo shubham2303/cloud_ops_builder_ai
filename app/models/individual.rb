@@ -7,6 +7,7 @@ class Individual < ApplicationRecord
   validates :name, :phone, presence: true
 
   def update_pid
+    #FIX ME
     self.uuid = 'I-'+ShortUUID.unique
   end
 end
