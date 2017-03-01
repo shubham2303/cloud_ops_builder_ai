@@ -54,8 +54,12 @@ module Api
       ################### END exception handlers ##################
 
       def theAgent
-        return nil unless request.headers["HTTP_UID"]
-        Agent.find( request.headers["HTTP_UID"] )
+        unless @theAgent
+          return nil unless request.headers["HTTP_UID"]
+          @theAgent = Agent.find( request.headers["HTTP_UID"] )
+        end
+        @theAgent
+
       end  
 
       def theToken
