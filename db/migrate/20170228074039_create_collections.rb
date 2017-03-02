@@ -5,6 +5,7 @@ class CreateCollections < ActiveRecord::Migration[5.0]
       t.string :subtype
       t.string :number
       t.float :amount
+      t.string :period
       t.references :agent
       t.references :individual
       t.references :business

@@ -7,7 +7,6 @@ class CreateBusiness < ActiveRecord::Migration[5.0]
       t.string :year
       t.string :lga
       t.string :uuid
-      t.string :period
       t.references :individual, index: true, foreign_key: true
       t.timestamps
     end
