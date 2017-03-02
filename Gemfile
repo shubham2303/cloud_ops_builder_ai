@@ -37,6 +37,7 @@ gem 'jbuilder', '~> 2.5'
 
 # gem 'mongoid'
 gem 'rsa'
+gem 'aescrypt'
 gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
 gem 'devise'
 gem 'cancancan'
