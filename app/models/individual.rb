@@ -8,6 +8,6 @@ class Individual < ApplicationRecord
   validates :name, :phone, presence: true
 
   def update_uuid
-    self.uuid = "123"
+    self.uuid = ShortUUID.create("I")
   end
 end
