@@ -6,10 +6,10 @@ class Business < ApplicationRecord
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
   validates :name, :address, :lga, :year, presence: true
 
-  before_create :update_guid
+  before_create :update_uuid
 
-  def update_guid
-    self.uuid = 'B-'+ShortUUID.unique
+  def update_uuid
+    self.uuid = ShortUUID.create("B")
   end
 
 end

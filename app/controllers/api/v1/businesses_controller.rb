@@ -18,7 +18,17 @@ module Api
       # ---
       def create
         individual = Individual.find_by!(uuid: uuid_param)
-        individual.businesses.create!(business_params)
+        try = 0
+        begin
+          individual.businesses.create!(business_params)
+        rescue Exception=> e
+          if (e.message.include? ("index_businesses_on_uuid")) && (try< 5)
+            try+=1
+            retry
+          else
+            super
+          end
+        end
         render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]) }}
       end
 

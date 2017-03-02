@@ -29,14 +29,14 @@ module Api
           render json: {status: 0, message: msg}
           return
         end
-        if @data['uuid'][0] == 'I'
-          individual = Individual.find_by!(uuid: @data['uuid'])
+        if @data['uuid'].upcase[0] == 'I'
+          individual = Individual.find_by!(uuid: @data['uuid'].upcase)
         else
-          @business = Business.find_by!(uuid: @data['uuid'])
+          @business = Business.find_by!(uuid: @data['uuid'].upcase)
           individual = @business.individual
         end
         collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
-                                        number: @data['number'], amount: @data['amount'],
+                                        number: @data['number'], amount: @data['amount'], period: @data['period'],
                                         batch: batch, agent: theAgent, individual: individual, business: @business)
         render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]), amount: collection.amount }}
 

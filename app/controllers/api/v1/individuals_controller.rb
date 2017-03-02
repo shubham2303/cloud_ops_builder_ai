@@ -13,9 +13,20 @@ module Api
       #     }
       # }
       def create
-        individual = Individual.create!(individual_params)
+        try = 0
+        begin
+          individual = Individual.create!(individual_params)
+        rescue Exception=> e
+          if (e.message.include?("index_individuals_on_uuid")) && (try< 5)
+            try+=1
+            retry
+          else
+            super
+          end
+        end
         render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]) }}
       end
+
 
       # create business for an existing or new individual
       # POST /api/v1/individuals/business
@@ -34,9 +45,21 @@ module Api
       #         }
       # }
       def business
+        try = 0
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
-        individual.update!(individual_params)
-        individual.businesses.create!(business_params)
+        begin
+          ActiveRecord::Base.transaction do
+            individual.update!(individual_params)
+            individual.businesses.create!(business_params)
+          end
+        rescue Exception=> e
+          if (e.message.include?(("index_individuals_on_uuid")||("index_businesses_on_uuid"))) && (try < 5)
+            try+=1
+            retry
+          else
+            super
+          end
+        end
         render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]) }}
       end
 
