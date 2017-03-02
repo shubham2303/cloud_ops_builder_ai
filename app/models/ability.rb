@@ -12,6 +12,7 @@ class Ability
     when 'super_admin'
       can :manage, Agent
       can :manage, AdminUser
+      cannot :destroy, AdminUser, id: user.id
       can :manage, Individual
       can :manage, Business
       can :manage, Batch

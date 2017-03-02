@@ -49,7 +49,7 @@ ActiveAdmin.register Batch do
 			dirty_hsh.each do |k,v|
 				hsh = {}
 				hsh[:amount] = k
-				hsh[:count] = v.map(&:count).reduce(&:+)  
+				hsh[:count] = v.map{|x| x[:count]}.map(&:to_i).reduce(&:+)
 				final_arr << hsh
 			end	
 			final_arr
