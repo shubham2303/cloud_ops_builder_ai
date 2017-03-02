@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
   namespace :api, format: false, defaults: {format: :json} do
     namespace :v1 do
 
@@ -25,6 +26,7 @@ Rails.application.routes.draw do
           post :test_decryption
         end  
       end
+
     end
   end
 

@@ -1,13 +1,19 @@
 ActiveAdmin.register Batch do
 
-	actions :index, :show, :create, :new
+	actions :index, :show , :new, :create
 
 	index do
 		id_column
 		column :net_worth
 		column :created_at
 		actions defaults: false do |batch|
-			link_to "Download CSV", admin_batch_path(batch)
+			if batch.count == batch.batch_details.count
+				link_to "Download CSV", admin_batch_path(batch) 
+			else
+				div id: 'reload_me_partial_batch' do
+					render 'reload_form', { batch: batch } 
+				end					
+			end	
 		end
 	end
 
@@ -27,8 +33,10 @@ ActiveAdmin.register Batch do
 
 		def show
 			@batch = Batch.find(params[:id])
-			send_data BatchDetail.csv(@batch) , type: 'text/csv; charset=windows-1251; header=present', 
-			disposition: "attachment; filename=batch_#{DateTime.now.to_s}.csv"
+			unless request.xhr?
+				send_data BatchDetail.csv(@batch) , type: 'text/csv; charset=windows-1251; header=present', 
+				disposition: "attachment; filename=batch_#{DateTime.now.to_s}.csv"
+			end
 		end
 
 		private

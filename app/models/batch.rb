@@ -16,8 +16,9 @@ class Batch < ApplicationRecord
       raise Exception.new 'Illegal arguments' unless count > 0 && denomination > 0
       total += count * denomination
     end
-    ActiveRecord::Base.transaction do
-      batch = Batch.create! net_worth: total, details: arr, count: total_count
+    batch = Batch.create! net_worth: total, details: arr, count: total_count
+
+    Thread.new do
       arr.each do |hsh|
         count = hsh[:count].to_i
         denomination = hsh[:amount].to_i
@@ -30,7 +31,7 @@ class Batch < ApplicationRecord
           Card.create! batch_id: batch.id, x: x, y: y, z: z, amount: denomination
         end
       end
-    end
+    end  
   end
 
 end

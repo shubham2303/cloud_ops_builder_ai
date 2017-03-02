@@ -1,0 +1,4 @@
+<% @batch ||= batch %>
+<% r_count = @batch.batch_details.count %>
+<%= "#{(r_count.to_f/(@batch.count)*100).floor}% completed" %>
+<%= link_to "Refresh", admin_batch_path(@batch), remote: true %>
