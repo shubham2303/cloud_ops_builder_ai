@@ -1,21 +1,23 @@
 
 class Batch < ApplicationRecord
 
-  has_many :batch_details
-  has_many :cards
+  has_many :batch_details, dependent: :delete_all
+  has_many :cards, dependent: :delete_all
 
   def self.generate(arr)
     raise Exception.new 'Illegal arguments' unless arr.is_a? Array
 
     total = 0
+    total_count = 0
     arr.each do |hsh|
       count = hsh[:count].to_i
+      total_count += count
       denomination = hsh[:amount].to_i
       raise Exception.new 'Illegal arguments' unless count > 0 && denomination > 0
       total += count * denomination
     end
     ActiveRecord::Base.transaction do
-      batch = Batch.create! net_worth: total, details: arr
+      batch = Batch.create! net_worth: total, details: arr, count: total_count
       arr.each do |hsh|
         count = hsh[:count].to_i
         denomination = hsh[:amount].to_i
@@ -30,12 +32,5 @@ class Batch < ApplicationRecord
       end
     end
   end
-
-  # def to_csv
-  #   CSV.generate do |csv|
-  #     csv << Batch.column_names
-  #     csv << attributes.values_at(*Batch.column_names)
-  #   end  
-  # end  
 
 end
