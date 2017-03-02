@@ -5,10 +5,11 @@ class CreateCollections < ActiveRecord::Migration[5.0]
       t.string :subtype
       t.string :number
       t.float :amount
-      t.references :agent, foreign_key: true
-      t.references :individual, foreign_key: true
-      t.references :business, foreign_key: true
-      t.references :batch, foreign_key: true
+      t.string :period
+      t.references :agent
+      t.references :individual
+      t.references :business
+      t.references :batch
       t.timestamps
     end
   end

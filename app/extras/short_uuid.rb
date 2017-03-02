@@ -142,6 +142,12 @@ class ShortUUID
     [prefix, key].compact.join('-')
   end
 
+  def self.create(prefix=nil)
+    time   = Time.now.to_i
+    key    = encode time
+    [prefix, key].compact.join('-')
+  end
+
   def self.to_time(short_uuid)
     Time.at(decode(short_uuid) / 10000)
   end
