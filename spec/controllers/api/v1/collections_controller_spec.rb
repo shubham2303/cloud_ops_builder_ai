@@ -15,8 +15,9 @@ RSpec.describe Api::V1::CollectionsController, type: :controller do
     rsa =  ApplicationHelper::StaticRSAHelper.new
     encrypted_secret = rsa.public_encrypt("123")
     decrypted_secret = rsa.decrypt(encrypted_secret)
-    des =  ApplicationHelper::TripleDESHelper.new(decrypted_secret)
-    encrypted_data = des.encrypt( '{"status":1, "otp":"1111"}')
+    # des =  ApplicationHelper::TripleDESHelper.new(decrypted_secret)
+    # encrypted_data = des.encrypt( '{"status":1, "otp":"1111"}')
+    encrypted_data = AESCrypt.encrypt('{"status":1, "otp":"1111"}', decrypted_secret)
     post :test_decryption, params: { secret: encrypted_secret, data: encrypted_data }
     expect( JSON.parse(response.body)['status'] ).to eq(1)
   end

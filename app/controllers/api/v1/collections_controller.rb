@@ -29,11 +29,16 @@ module Api
           render json: {status: 0, message: msg}
           return
         end
-        if @data['uuid'].upcase[0] == 'I'
-          individual = Individual.find_by!(uuid: @data['uuid'].upcase)
-        else
-          @business = Business.find_by!(uuid: @data['uuid'].upcase)
-          individual = @business.individual
+        begin
+          if @data['uuid'].upcase[0] == 'I'
+            individual = Individual.find_by!(uuid: @data['uuid'].upcase)
+          else
+            @business = Business.find_by!(uuid: @data['uuid'].upcase)
+            individual = @business.individual
+          end
+        rescue
+          render json: {status: 0, message: "uuid is not valid"}
+          return
         end
         collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
