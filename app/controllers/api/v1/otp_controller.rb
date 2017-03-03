@@ -38,7 +38,7 @@ module Api
           agent.token.delete unless agent.token.nil?
           token = Token.find_by(device_id: params.require(:device_id))
           token.delete unless token.nil?
-          agent.create_token(expiry: Time.now.utc + 1.hour, token: ShortUUID.unique, device_id: params.require(:device_id))
+          agent.create_token(device_id: params.require(:device_id))
           render json: { status: 1, data: {agent: agent, token: agent.token.token} }
         end
       end
