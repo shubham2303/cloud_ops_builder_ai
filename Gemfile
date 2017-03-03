@@ -41,10 +41,10 @@ gem 'aescrypt'
 gem 'activeadmin', git: 'https://github.com/activeadmin/activeadmin'
 gem 'devise'
 gem 'cancancan'
-
 gem 'redis', '~>3.2'
 gem 'redis-namespace'
 gem 'unicorn'
+
 
 group :development, :test, :staging do
   gem 'factory_girl_rails'
@@ -64,6 +64,7 @@ group :development do
   gem 'pry'
   gem 'pry-doc'
   gem 'pry-rails'
+  gem 'rack-mini-profiler'
 end
 
 group :test do

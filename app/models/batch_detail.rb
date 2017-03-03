@@ -4,7 +4,7 @@ class BatchDetail < ApplicationRecord
 
   attr_reader :number
 
-  belongs_to :batch
+  belongs_to :batch, counter_cache: :batch_details_count
 
   validates :n, uniqueness: true
 
