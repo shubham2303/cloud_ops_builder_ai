@@ -21,9 +21,9 @@ class BatchDetail < ApplicationRecord
     # filename = Rails.root + 'tmp' + "#{the_batch.id}_#{the_batch.created_at.to_formatted_s(:number)}.csv"
     # CSV.open(filename, "wb") do |csv|
     CSV.generate do |csv|  
-      csv << ["Card Number", "Denomination"]
+      csv << ["Sr No", "Card Number", "Denomination"]
       the_batch.batch_details.each do |bd|
-        csv << [bd.number, bd.amount]
+        csv << [bd.id, bd.number, bd.amount]
       end
     end
   end

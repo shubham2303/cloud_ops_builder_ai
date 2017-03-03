@@ -9,13 +9,9 @@ ActiveAdmin.register Batch do
 		column :net_worth
 		column :created_at
 		actions defaults: false do |batch|
-			if batch.count == batch.batch_details_count
-				link_to "Download CSV", admin_batch_path(batch) 
-			else
-				div id: 'reload_me_partial_batch' do
-					render 'reload_form', { batch: batch } 
-				end					
-			end	
+			div id: 'reload_me_partial_batch' do
+				render 'reload_form', { batch: batch } 
+			end
 		end
 	end
 
