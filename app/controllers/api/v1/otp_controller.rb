@@ -6,6 +6,7 @@ module Api
       # ---
       def generate_otp
         if params[:number]
+          Agent.find_by!(phone: params[:number]) if Rails.env.production?
           otp =  Otp.make
           $redis.set(params[:number], otp)
           $redis.expire(params[:number], 60)
@@ -29,10 +30,15 @@ module Api
           return
         end
         ActiveRecord::Base.transaction do
-          agent = Agent.find_or_create_by!(phone: phone_params)
-          if agent.token.nil?
-            agent.create_token(device_id: params.require(:device_id))
-          end
+          agent = if Rails.env.production?
+                    Agent.find_by!(phone: phone_params)
+                  else
+                    Agent.find_or_create_by!(phone: phone_params)
+                  end
+          agent.token.delete unless agent.token.nil?
+          token = Token.find_by(device_id: params.require(:device_id))
+          token.delete unless token.nil?
+          agent.create_token(device_id: params.require(:device_id))
           render json: { status: 1, data: {agent: agent, token: agent.token.token} }
         end
       end

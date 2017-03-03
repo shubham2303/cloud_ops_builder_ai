@@ -31,7 +31,7 @@ module Api
       end
 
       def ar_not_unique(exception)
-        render json: {status: 422, data: nil, message: exception.message}
+        render json: {status: 422, data: nil, message: "#{controller_name.singularize} already exist"};
       end
 
       def blocked_access_detected(exception)
