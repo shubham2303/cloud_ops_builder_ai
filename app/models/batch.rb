@@ -4,7 +4,7 @@ class Batch < ApplicationRecord
   has_many :batch_details, dependent: :delete_all
   has_many :cards, dependent: :delete_all
 
-  def self.generate(arr)
+  def self.generate(arr, async = true)
     raise Exception.new 'Illegal arguments' unless arr.is_a? Array
 
     total = 0
@@ -18,7 +18,18 @@ class Batch < ApplicationRecord
     end
     batch = Batch.create! net_worth: total, details: arr, count: total_count
 
-    Thread.new do
+    if async
+      Thread.new do
+        generate_internal(arr, batch.id)
+      end
+    else
+      generate_internal(arr, batch.id)
+    end
+  end
+
+  private
+
+  def self.generate_internal(arr, batch_id)
       arr.each do |hsh|
         count = hsh[:count].to_i
         denomination = hsh[:amount].to_i
@@ -27,11 +38,10 @@ class Batch < ApplicationRecord
           x = Digester.hash_luhn_number! n
           y = Digester.generate_secret
           z = Digester.hash_number_with_secret! n, y
-          BatchDetail.create! batch_id: batch.id, n: n, amount: denomination
-          Card.create! batch_id: batch.id, x: x, y: y, z: z, amount: denomination
+          BatchDetail.create! batch_id: batch_id, n: n, amount: denomination
+          Card.create! batch_id: batch_id, x: x, y: y, z: z, amount: denomination
         end
       end
-    end  
   end
 
 end
