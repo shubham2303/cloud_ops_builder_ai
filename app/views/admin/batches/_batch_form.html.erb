@@ -49,6 +49,7 @@
       if ($('.count_text_field:last').val() == ""){
         $('.error_text').remove();
         $('#add').after('<div class="error_text mrgn_lft_28 c_red">Count can"t be blank</div>');
+        return false;
       }
       else
       {
