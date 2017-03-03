@@ -13,6 +13,16 @@ permit_params :phone, :name, :address
 #   permitted
 # end
 
+index do
+	id_column
+	column :phone
+	column :name
+	column :address
+	column :created_at
+	column :uuid
+	actions
+end	
+
 form do |f|
 	f.inputs "Subscription Plan" do
 		f.input :phone

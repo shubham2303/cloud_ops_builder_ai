@@ -12,6 +12,18 @@ permit_params :phone, :name, :address, :birthplace, :state, :lga
 #   permitted
 # end
 
+index do
+  id_column
+  column :name
+  column :phone
+  column :address
+  column :birthplace
+  column :state
+  column :lga
+  column :created_at
+  actions
+end 
+
 form do |f|
   f.inputs "" do
     f.input :phone

@@ -5,4 +5,6 @@ class Agent < ApplicationRecord
 
   validates_inclusion_of :state, :in => JSON.parse(ENV["APP_CONFIG"])['states'], :allow_nil => true
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
+
+  validates_numericality_of :phone
 end
