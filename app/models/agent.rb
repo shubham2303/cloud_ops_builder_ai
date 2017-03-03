@@ -1,6 +1,6 @@
 class Agent < ApplicationRecord
 
-  has_one :token
+  has_one :token, dependent: :destroy
   has_many :collections
 
   validates_inclusion_of :state, :in => JSON.parse(ENV["APP_CONFIG"])['states'], :allow_blank => true
