@@ -43,7 +43,7 @@ module Api
         collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
                                         batch: batch, agent: theAgent, individual: individual, business: @business)
-        render json: {status: 1, data: {individual: individual.as_json(:only=>  [:name, :uuid]), amount: collection.amount }}
+        render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
 
       end
     end
