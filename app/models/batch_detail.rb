@@ -13,15 +13,15 @@ class BatchDetail < ApplicationRecord
   end
 
   def fix_length
-    return if self.number.length == 16
+    return if self.n.length == 16
 
-    card = Card.verify_and_get(self.number)
+    card = Card.verify_and_get(self.n)
     ActiveRecord::Base.transaction do
-      n = '%015i' % number.to_i
-      x = Digester.hash_luhn_number! n
+      _n = '%015i' % self.n.to_i
+      x = Digester.hash_luhn_number! _n
       y = Digester.generate_secret
-      z = Digester.hash_number_with_secret! n, y
-      self.update! n: n
+      z = Digester.hash_number_with_secret! _n, y
+      self.update! n: _n
       card.update! x: x, y: y, z: z
     end
   end
