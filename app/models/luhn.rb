@@ -30,6 +30,9 @@ class Luhn
 
   def self.generate(length = 16)
     number = rand.to_s[2..length]
+    if number.length < 15
+      number = '%015i' % number.to_i
+    end
     number + self.checksum(number).to_s
   end
 

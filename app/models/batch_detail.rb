@@ -12,6 +12,20 @@ class BatchDetail < ApplicationRecord
     @number ||= Card.beautify_number(n)
   end
 
+  def fix_length
+    return if self.n.length == 16
+
+    card = Card.verify_and_get(self.n)
+    ActiveRecord::Base.transaction do
+      _n = '%016i' % self.n.to_i
+      x = Digester.hash_luhn_number! _n
+      y = Digester.generate_secret
+      z = Digester.hash_number_with_secret! _n, y
+      self.update! n: _n
+      card.update! x: x, y: y, z: z
+    end
+  end
+
   def self.csv(batch)
     the_batch = if batch.is_a? Batch
                  batch
@@ -22,7 +36,7 @@ class BatchDetail < ApplicationRecord
     # CSV.open(filename, "wb") do |csv|
     CSV.generate do |csv|  
       csv << ["Sr No", "Card Number", "Denomination"]
-      the_batch.batch_details.each do |bd|
+      the_batch.batch_details.order(id: :asc).each do |bd|
         csv << [bd.id, bd.number, bd.amount]
       end
     end
