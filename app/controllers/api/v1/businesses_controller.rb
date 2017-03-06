@@ -21,7 +21,6 @@ module Api
         try = 0
         begin
           business = individual.businesses.create!(business_params)
-          IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{name}, your business '#{business name}' has been successfully registered with EIRS Connect. Your business's id is #{business.uuid}")
         rescue Exception=> e
           if (e.message.include? ("index_businesses_on_uuid")) && (try< 5)
             try+=1
@@ -30,6 +29,7 @@ module Api
             super
           end
         end
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{name}, your business '#{business name}' has been successfully registered with EIRS Connect. Your business's id is #{business.uuid}")
         render json: {status: 1, data: {individual: individual, business: business}}
       end
 
