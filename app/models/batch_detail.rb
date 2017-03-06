@@ -12,6 +12,20 @@ class BatchDetail < ApplicationRecord
     @number ||= Card.beautify_number(n)
   end
 
+  def fix_length
+    return if self.number.length == 16
+
+    card = Card.verify_and_get(self.number)
+    ActiveRecord::Base.transaction do
+      n = '%015i' % number.to_i
+      x = Digester.hash_luhn_number! n
+      y = Digester.generate_secret
+      z = Digester.hash_number_with_secret! n, y
+      self.update! n: n
+      card.update! x: x, y: y, z: z
+    end
+  end
+
   def self.csv(batch)
     the_batch = if batch.is_a? Batch
                  batch
