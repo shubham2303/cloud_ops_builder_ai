@@ -16,7 +16,6 @@ module Api
         try = 0
         begin
           individual = Individual.create!(individual_params)
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
         rescue Exception=> e
           if (e.message.include?("index_individuals_on_uuid")) && (try< 5)
             try+=1
@@ -25,6 +24,7 @@ module Api
             super
           end
         end
+        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
         render json: {status: 1, data: {individual: individual}}
       end
 

@@ -138,7 +138,8 @@ module ApplicationHelper
     def self.send_sms(receiver, message)
       request_body= {:username=>"ifeanyi@nownow.ng", :password=>"NoWnoW_7$",
                      :receiver=>receiver, :sender=>"eirsconnect", :message=>message}
-      RestClient.post("http://83.138.190.168:8080/pls/vas2nets.inbox_pkg.schedule_sms", request_body)
+      response = RestClient.post("http://83.138.190.168:8080/pls/vas2nets.inbox_pkg.schedule_sms", request_body)
+      return response
     end
   end
 
