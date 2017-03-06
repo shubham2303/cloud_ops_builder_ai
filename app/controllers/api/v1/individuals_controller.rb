@@ -50,7 +50,7 @@ module Api
         begin
           ActiveRecord::Base.transaction do
             individual.update!(individual_params)
-            business = individual.businesses.create!(business_params)
+            @business = individual.businesses.create!(business_params)
           end
         rescue Exception=> e
           if (e.message.include?(("index_individuals_on_uuid")||("index_businesses_on_uuid"))) && (try < 5)
@@ -60,7 +60,7 @@ module Api
             super
           end
         end
-        render json: {status: 1, data: {individual: individual, business: business}}
+        render json: {status: 1, data: {individual: individual, business: @business}}
       end
 
       private
