@@ -17,7 +17,7 @@ class BatchDetail < ApplicationRecord
 
     card = Card.verify_and_get(self.n)
     ActiveRecord::Base.transaction do
-      _n = '%015i' % self.n.to_i
+      _n = '%016i' % self.n.to_i
       x = Digester.hash_luhn_number! _n
       y = Digester.generate_secret
       z = Digester.hash_number_with_secret! _n, y
