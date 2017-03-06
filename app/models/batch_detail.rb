@@ -36,7 +36,7 @@ class BatchDetail < ApplicationRecord
     # CSV.open(filename, "wb") do |csv|
     CSV.generate do |csv|  
       csv << ["Sr No", "Card Number", "Denomination"]
-      the_batch.batch_details.each do |bd|
+      the_batch.batch_details.order(id: :asc).each do |bd|
         csv << [bd.id, bd.number, bd.amount]
       end
     end
