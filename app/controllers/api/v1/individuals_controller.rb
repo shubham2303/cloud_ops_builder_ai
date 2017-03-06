@@ -16,6 +16,7 @@ module Api
         try = 0
         begin
           individual = Individual.create!(individual_params)
+          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
         rescue Exception=> e
           if (e.message.include?("index_individuals_on_uuid")) && (try< 5)
             try+=1
@@ -47,6 +48,7 @@ module Api
       def business
         try = 0
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
+        checknew_record= individual.new_record?
         begin
           ActiveRecord::Base.transaction do
             individual.update!(individual_params)
@@ -60,6 +62,10 @@ module Api
             super
           end
         end
+        if checknew_record
+          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+        end
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.name}, your business '#{@business.name}' has been successfully registered with EIRS Connect. Your business's id is #{@business.uuid}")
         render json: {status: 1, data: {individual: individual, business: @business}}
       end
 

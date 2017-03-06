@@ -10,6 +10,7 @@ module Api
           otp =  Otp.make
           $redis.set(params[:number], otp)
           $redis.expire(params[:number], 60)
+          Message.send_sms(params[:number], "OTP for EIRS Connect Agent login is #{otp}")
           render json: { status: 1, data: {otp: otp} }
         else
           render json: { status: 0, message: "number parameter is missing" }

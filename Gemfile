@@ -46,6 +46,8 @@ gem 'cancancan'
 gem 'redis', '~>3.2'
 gem 'redis-namespace'
 gem 'unicorn'
+gem 'rest-client'
+gem 'sidekiq'
 
 
 group :development, :test, :staging do
