@@ -1,0 +1,49 @@
+<%= form_tag('/admin/agents/bulk_creation') do %>
+  <div class="agent_div">
+    <div class="phone_div" id="phone_0">
+      <%= label_tag :phone, "Phone"%>
+      <%= number_field_tag 'phone',nil,name: "agents[count][]",:max => 9999999999 ,:class => "phone"%>
+      <%= image_submit_tag("plus.png", alt: "Edit Entry", id: "add", class: 'plus_icon_style' ) %>
+      <%= label_tag :add, "Add",class: 'text-color add_label'%>
+    </div>
+  </div>
+  <%= submit_tag "Save"%>
+<% end %>
+
+<script>
+  $(document).ready(function(){
+    initialize_add();
+    initialize_remove();
+  });
+
+  function initialize_add()
+  {
+    $(document).on('click',"#add",function(e){
+      e.preventDefault();
+      var phone_count = $('.phone_div').length;
+      $('.phone_div:last .plus_icon_style').after(
+          '<input alt="Edit Entry" type="image" class="remove_icon remove_icon_style" src="/assets/cross.png"><label class="text-color remove_label" for="remove">Remove</label>'
+
+      );
+      $('.phone_div:last').after(
+          '<div class="phone_div">' + $('.phone_div:last').html() + '</div>'
+      );
+//      $('.agent_div').append($( "div.agent_div" ).html());
+      $('.phone_div:last').attr('id','phone_'+phone_count);
+      $('.phone_div:last .remove_icon').remove();
+      $('.phone_div:last .remove_label').remove();
+
+      $('#phone_'+(phone_count-1)+' .add_label').remove();
+      $(this).remove();
+//      $('.phone_div:nth-child('+(phone_count)+') .phone').prop("readonly", true);
+    });
+  }
+  function initialize_remove()
+  {
+    $(document).on('click', '.remove_icon', function(e) {
+//      var current_count  = parseInt($(this).parent().find('.phone').val());
+      $(this).parent().remove();
+    });
+  }
+
+</script>
