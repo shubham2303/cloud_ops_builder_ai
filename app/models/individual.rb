@@ -22,7 +22,7 @@ class Individual < ApplicationRecord
 
   def self.verify_lga_with_agent_and_param(agent, lga, individual_lga)
     if self.check_lga_with_agent(agent, lga)
-      agent == individual_lga
+      agent.lga == individual_lga
     else
       false
     end
