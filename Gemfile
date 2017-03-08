@@ -48,6 +48,7 @@ gem 'redis-namespace'
 gem 'unicorn'
 gem 'rest-client'
 gem 'sidekiq'
+gem 'axlsx'
 
 
 group :development, :test, :staging do
@@ -69,6 +70,7 @@ group :development do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'rack-mini-profiler'
+  gem "letter_opener"
 end
 
 group :test do

@@ -15,6 +15,9 @@
 // For example, to change the default status-tag color:
 //
 //   .status_tag { background: #6090DB; }
+.bold {
+	font-weight: bold;
+}
 .amount_label, .amount_select_field, .count_label{
 font-weight: bold;
 }
@@ -65,4 +68,7 @@ margin-left: 3%;
 }
 .mrgn_top_2{
 	margin-top: 2%;
+}
+.width_10{
+	width: 10% !important;
 }

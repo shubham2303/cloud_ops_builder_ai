@@ -1,0 +1,24 @@
+<%= label_tag :Daily %>
+<%= radio_button_tag "type", "Daily", true, :onclick => "render_partial_daily();" %>
+<%= label_tag :Monthly %>
+<%= radio_button_tag "type", "Monthly", false, :onclick => "render_partial_monthly();" %>
+<%= label_tag :Yearly %>
+<%= radio_button_tag "type", "Yearly", false, :onclick => "render_partial_yearly();" %>
+
+<script>
+function render_partial_daily() {
+  $('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'daily' %>')
+  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'daily' %>')
+}
+function render_partial_monthly(){
+	$('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'monthly' %>')
+  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'monthly' %>')
+}
+function render_partial_yearly(){
+	$('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'yearly' %>')
+  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'yearly' %>')
+}
+</script>
+
+
+
