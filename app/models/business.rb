@@ -16,4 +16,10 @@ class Business < ApplicationRecord
     self.uuid = ShortUUID.create("B")
   end
 
+  # before_create :update_uuid
+  #
+  # def update_uuid
+  #   self.uuid = ShortUUID.create("B")
+  # end
+
 end

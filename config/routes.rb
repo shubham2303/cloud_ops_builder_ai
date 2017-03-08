@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
       match '/agents/me',           to: 'agents#update_me',    via: :put, format: false, defaults: {format: :json}
       match '/individuals/:uuid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
+      match '/individuals/',           to: 'individuals#get_individuals',    via: :get, format: false, defaults: {format: :json}
 
       resources :otp, only: []  do
         collection do
