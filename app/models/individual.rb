@@ -15,4 +15,16 @@ class Individual < ApplicationRecord
     j = ('9' + "9"*(6-charac.length-1)).to_i
     self.uuid =charac +rand(i..j).to_s
   end
+
+  def self.check_lga_with_agent(agent, lga)
+    agent.lga == lga
+  end
+
+  def self.verify_lga_with_agent_and_param(agent, lga, individual_lga)
+    if self.check_lga_with_agent(agent, lga)
+      agent == individual_lga
+    else
+      false
+    end
+  end
 end

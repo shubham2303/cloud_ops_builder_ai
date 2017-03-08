@@ -30,30 +30,40 @@ module Api
           return
         end
         begin
-          if @data['uuid'].upcase[0] == 'I'
-            individual = Individual.find_by!(uuid: @data['uuid'].upcase)
+          if @data['uuid']
+            individual = Individual.find_by!(uuid: @data['uuid'])
+            individual.amount =+ @data['amount']
+            @str = "payer id"
+          elsif @data['obj_type']== 'Individual'
+            individual = Individual.find(@data['id'])
             individual.amount =+ @data['amount']
             @str = "payer id"
           else
-            @business = Business.find_by!(uuid: @data['uuid'].upcase)
+            @business = Business.find(@data['id'])
             individual = @business.individual
             individual.amount += @data['amount']
             @business.amount += @data['amount']
             @str = "business id"
+            @collectionable_type = "Business"
           end
         rescue
           render json: {status: 0, message: "uuid is not valid"}
+          return
+        end
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, @data['lga'], individual.lga)
+        unless verify_lga || (@business.nil? && (@business.lga == @data['lga']))
+          render json: {status: 0, message: "could not match lga"}
           return
         end
         ActiveRecord::Base.transaction do
 
           collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, business: @business)
+                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, collectionable_type: @collectionable_type, collectionable_id: @business.id)
           @business.save! unless @business.nil?
           individual.save!
         end  
-        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, a collection of #{collection.amount} has been registered against your #{@str} #{@data['uuid'].upcase} using the card #{collection.number}. Collection id is #{collection.id}")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
         render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
       end
     end

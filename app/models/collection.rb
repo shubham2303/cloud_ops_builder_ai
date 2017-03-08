@@ -2,7 +2,7 @@ class Collection < ApplicationRecord
 
   belongs_to :batch
   belongs_to :agent
-  belongs_to :business
+  belongs_to :business, polymorphic: true
   belongs_to :individual
 
   validates :category_type, :subtype, :number, :amount, :lga, presence: true

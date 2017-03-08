@@ -18,6 +18,11 @@ module Api
       # ---
       def create
         individual = Individual.find_by!(uuid: uuid_param)
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual.lga)
+        unless verify_lga
+          render json: {status: 0, message: "could not match lga"}
+          return
+        end
         try = 0
         begin
           business = individual.businesses.create!(business_params)
