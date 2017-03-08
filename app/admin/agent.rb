@@ -36,14 +36,17 @@ end
 
   form do |f|
   f.inputs "" do
-    f.input :phone
+    f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
     f.input :name
     f.input :address
     f.input :birthplace
     f.input :state, collection: JSON.parse(ENV["APP_CONFIG"])['states'], prompt: 'Please select'
     f.input :lga, :label => "LGA", collection: JSON.parse(ENV["APP_CONFIG"])['lga'], prompt: 'Please select'
   end
-  f.actions
+    f.actions do
+      f.action :submit, :wrapper_html => { :class => 'submit_valid'}
+      f.action :cancel, :wrapper_html => { :class => 'cancel'}
+    end
   end
 
 
@@ -54,18 +57,28 @@ end
     end
 
     def bulk_creation
-      phone_arr = params[:agents][:count].reject(&:blank?)
+      phone = params[:phone].split(',')
+      phone_arr = phone.reject(&:blank?)
       phone_arr = phone_arr.uniq
       tmp_arr =[]
       @error_no_array = []
-      phone_arr.each do |phone|
-        agent = Agent.find_by(phone: "234#{phone}")
-        if agent.nil?
-          tmp_arr<< {phone: "234#{phone}"}
+      phone_arr.each do |number|
+        if (number.length > 11) || (number.length == 11 && number[0] != '0') || (number.length < 10) || (number.length == 10 && number[0] == '0')
+          @error_no_array << number
         else
-          @error_no_array << phone
+          last_ten_digit_phone = number.last(10)
+          agent = Agent.find_by(phone: "234#{last_ten_digit_phone}")
+          if agent.nil?
+            new_agent = Agent.new(phone: "234#{last_ten_digit_phone}")
+            if new_agent.valid?
+              tmp_arr<< {phone: "234#{last_ten_digit_phone}"}
+            else
+              @error_no_array << number
+            end
+          else
+            @error_no_array << number
+          end
         end
-
       end
 
       Agent.create!(tmp_arr)
