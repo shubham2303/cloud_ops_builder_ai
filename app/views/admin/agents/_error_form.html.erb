@@ -1,0 +1,8 @@
+<% @error_no_array ||= error_no_array %>
+<div class="flashes">
+<div class="flash flash_error">
+  <%= "#{error_no_array.count} numbers cannot saved"%>
+  <br>
+  <%= "These numbers cannot be saved --  #{error_no_array.join(", ");}"%>
+</div>
+</div>

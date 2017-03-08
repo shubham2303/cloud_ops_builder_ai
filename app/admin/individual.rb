@@ -25,11 +25,14 @@ end
 
 form do |f|
 	f.inputs "Subscription Plan" do
-		f.input :phone
+		f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
 		f.input :name
 		f.input :address
 	end
-	f.actions
+	f.actions do
+		f.action :submit, :wrapper_html => { :class => 'submit_valid'}
+		f.action :cancel, :wrapper_html => { :class => 'cancel'}
+	end
 end
 
 controller do

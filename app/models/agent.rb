@@ -8,4 +8,11 @@ class Agent < ApplicationRecord
 
   validates_numericality_of :phone
   validates :phone, presence: true
+  before_save :update_phone
+
+  def update_phone
+    if self.phone.length <=11
+      self.phone= "234#{phone.last(10)}"
+    end
+  end
 end

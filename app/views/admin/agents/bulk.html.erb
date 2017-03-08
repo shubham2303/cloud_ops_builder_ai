@@ -1,0 +1,6 @@
+<%= form_tag('/admin/agents/bulk_creation') do %>
+  <div class="agent_div">
+    <%= text_area_tag 'phone',nil,placeholder: 'Provide one or more number in comma seperated form', name: "phone",:class => "phone"%>
+  </div>
+  <%= submit_tag "Save"%>
+<% end %>

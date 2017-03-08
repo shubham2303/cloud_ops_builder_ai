@@ -4,7 +4,7 @@ class Individual < ApplicationRecord
   has_many :collections
 
   before_create :update_uuid
-
+  before_save :update_phone
   validates :first_name, :last_name, :phone, :lga, presence: true
   validates_numericality_of :phone
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
@@ -25,6 +25,12 @@ class Individual < ApplicationRecord
       agent.lga == individual_lga
     else
       false
+    end
+  end
+
+  def update_phone
+    if self.phone.length <=11
+      self.phone= "234#{phone.last(10)}"
     end
   end
 end
