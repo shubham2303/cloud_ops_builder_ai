@@ -32,19 +32,27 @@ module Api
         begin
           if @data['uuid'].upcase[0] == 'I'
             individual = Individual.find_by!(uuid: @data['uuid'].upcase)
+            individual.amount =+ @data['amount']
             @str = "payer id"
           else
             @business = Business.find_by!(uuid: @data['uuid'].upcase)
             individual = @business.individual
+            individual.amount += @data['amount']
+            @business.amount += @data['amount']
             @str = "business id"
           end
         rescue
           render json: {status: 0, message: "uuid is not valid"}
           return
         end
-        collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
+        ActiveRecord::Base.transaction do
+
+          collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
                                         lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, business: @business)
+          @business.save! unless @business.nil?
+          individual.save!
+        end  
         IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{@data['uuid'].upcase} using the card #{collection.number}. Collection id is #{collection.id}")
         render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
 
