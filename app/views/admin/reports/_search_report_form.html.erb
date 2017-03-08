@@ -1,8 +1,8 @@
-<%= label_tag :Daily %>
+<%= label_tag 'Today' %>
 <%= radio_button_tag "type", "Today", true, :onclick => "render_partial_daily();" %>
-<%= label_tag :Monthly %>
+<%= label_tag 'This Month' %>
 <%= radio_button_tag "type", "This Month", false, :onclick => "render_partial_monthly();" %>
-<%= label_tag :Yearly %>
+<%= label_tag 'This Year' %>
 <%= radio_button_tag "type", "This Year", false, :onclick => "render_partial_yearly();" %>
 
 <script>

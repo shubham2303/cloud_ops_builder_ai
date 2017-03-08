@@ -12,6 +12,10 @@ permit_params :phone, :name, :address, :birthplace, :state, :lga
 #   permitted
 # end
 
+filter :name
+filter :phone
+filter :state
+
 index do
   id_column
   column :name

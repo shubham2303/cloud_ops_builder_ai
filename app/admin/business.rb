@@ -5,6 +5,9 @@ ActiveAdmin.register Business do
 #
 permit_params :address, :turnover, :year, :lga, :individual_id, :name
 
+filter :name
+filter :lga
+
 index do
   id_column
   column :name
