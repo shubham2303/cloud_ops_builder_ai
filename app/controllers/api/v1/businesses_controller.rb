@@ -29,7 +29,7 @@ module Api
             super
           end
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.name}, your business '#{business.name}' has been successfully registered with EIRS Connect. Your business's id is #{business.uuid}")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your business '#{business.name}' has been successfully registered with EIRS Connect")
         render json: {status: 1, data: {individual: individual, business: business}}
       end
 

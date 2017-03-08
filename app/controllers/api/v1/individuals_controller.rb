@@ -24,7 +24,7 @@ module Api
             super
           end
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
         render json: {status: 1, data: {individual: individual}}
       end
 
@@ -63,16 +63,25 @@ module Api
           end
         end
         if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.name}, your business '#{@business.name}' has been successfully registered with EIRS Connect. Your business's id is #{@business.uuid}")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your business '#{@business.name}' has been successfully registered with EIRS Connect.")
         render json: {status: 1, data: {individual: individual, business: @business}}
+      end
+
+      def get_individuals
+        if params[:q].to_i == 0
+          individual = Individual.find_by!(uuid: params[:q])
+        else
+          individual = Individual.find_by!(phone: params[:q])
+        end
+        render json: {status: 1, data: {individual: individual.as_json(:include=> [:businesses])}}
       end
 
       private
 
       def individual_params
-        params.require(:individual).permit(:phone, :name, :address)
+        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga)
       end
 
       def business_params
