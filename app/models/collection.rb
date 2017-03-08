@@ -5,5 +5,6 @@ class Collection < ApplicationRecord
   belongs_to :business
   belongs_to :individual
 
-  validates :category_type, :subtype, :number, :amount, presence: true
+  validates :category_type, :subtype, :number, :amount, :lga, presence: true
+  validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
 end
