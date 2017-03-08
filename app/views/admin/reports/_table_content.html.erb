@@ -1,0 +1,38 @@
+<table border="0" cellspacing="0" cellpadding="0" id="index_table_agents" class="index_table index" paginator="true">
+	<thead>
+		<tr>
+			<th class="col">Date</th>
+			<th class="col">Individual</th>
+			<th class="col">Business</th>
+		</tr>
+	</thead>
+	<tbody id='show_reports_tb1'>
+	  <%= render 'admin/reports/tb1_stat', stat: 'daily' %>
+	</tbody>
+</table>
+
+<table border="0" cellspacing="0" cellpadding="0" id="index_table_agents" class="index_table index" paginator="true">
+	<thead>
+		<tr>
+			<th class="col">LGA</th>
+			<th class="col">Transaction Count</th>
+			<th class="col">Amount</th>
+		</tr>
+	</thead>
+	<tbody id='show_reports_tb2'>
+		<%= render 'admin/reports/tb2_stat', stat: 'daily' %>
+	</tbody>
+</table>
+
+<div id="date_range_error" class="c_red mrgn_btm_1">
+</div>
+<div id="date_range_info" class="c_green mrgn_btm_1">
+</div>
+
+<%= form_tag admin_reports_path, remote: true do %>
+  <%= label_tag 'Start Date', nil, class: 'bold' %>
+  <%= date_field_tag 'start_date', (Date.today - 1), class: 'width_10' %>
+  <%= label_tag 'End Date', nil, class: 'bold' %>
+  <%= date_field_tag 'end_date', Date.today, class: 'width_10' %>
+  <%= submit_tag 'Export', class: 'bold' %>
+<% end %>

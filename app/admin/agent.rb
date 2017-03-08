@@ -12,6 +12,11 @@ permit_params :phone, :name, :address, :birthplace, :state, :lga
 #   permitted << :other if params[:action] == 'create' && current_user.admin?
 #   permitted
 # end
+
+filter :name
+filter :phone
+filter :state
+
 index do
   if params[:error_no_array]
     div do

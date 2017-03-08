@@ -1,0 +1,16 @@
+<% if stat == 'daily' %>
+	<% @individuals = Individual.today_created %>
+	<% @businesses = Business.today_created %>
+<% elsif (stat == 'monthly') %>
+	<% @individuals = Individual.this_month_created %>
+	<% @businesses = Business.this_month_created %>
+<% elsif (stat == 'yearly') %>	
+	<% @individuals = Individual.this_year_created %>
+	<% @businesses = Business.this_year_created %>
+<% end %>
+
+<tr>
+	<td class="col"><%= Date.today %></td>
+	<td class="col"><%= @individuals.count %></td>
+	<td class="col"><%= @businesses.count %></td>
+</tr>
