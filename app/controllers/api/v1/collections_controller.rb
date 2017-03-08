@@ -44,7 +44,7 @@ module Api
         end
         collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                        batch: batch, agent: theAgent, individual: individual, business: @business)
+                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, business: @business)
         IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{@data['uuid'].upcase} using the card #{collection.number}. Collection id is #{collection.id}")
         render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
 
