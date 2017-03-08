@@ -26,7 +26,7 @@ module Api
             try+=1
             retry
           else
-            super
+            raise e
           end
         end
         IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.name}, your business '#{business.name}' has been successfully registered with EIRS Connect. Your business's id is #{business.uuid}")

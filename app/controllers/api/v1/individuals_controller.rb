@@ -21,7 +21,7 @@ module Api
             try+=1
             retry
           else
-            super
+            raise e 
           end
         end
         IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
@@ -59,7 +59,7 @@ module Api
             try+=1
             retry
           else
-            super
+            raise e 
           end
         end
         if checknew_record
