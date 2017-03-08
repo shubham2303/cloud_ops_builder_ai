@@ -71,7 +71,7 @@ end
           if agent.nil?
             new_agent = Agent.new(phone: "234#{last_ten_digit_phone}")
             if new_agent.valid?
-              tmp_arr<< {phone: "234#{last_ten_digit_phone}"}
+              tmp_arr<< {phone: number}
             else
               @error_no_array << number
             end
