@@ -56,16 +56,15 @@ module Api
         begin
           collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'],
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                      lga: @data['lga'], batch_id: batch_id, agent: theAgent, individual: individual, business: @business)
+                                      lga: @data['lga'], batch_id: batch_id, agent: theAgent, individual: individual, collectionable: @business)
 
           ActiveRecord::Base.transaction do
             collection.save!
             @business.save! unless @business.nil?
             individual.save!
           end
-
           IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{@data['uuid'].upcase} using the card #{collection.number}. Collection id is #{collection.id}")
-          render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
+          render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
 
         rescue
           render json: {status: 0, message: "Unable to record revenue collection at the moment, please try again later" }
