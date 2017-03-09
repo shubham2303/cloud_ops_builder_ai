@@ -1,1 +1,1 @@
-$('#reload_me_partial_batch').html("<%= j(render '/admin/batches/reload_form') %>")
+$("#reload_me_partial_batch_<%= @batch.id %>").html("<%= j(render '/admin/batches/reload_form') %>")

@@ -1,4 +1,5 @@
-<% @batch ||= batch %>
+<% batch ||= batch %>
+<% @batch = batch unless batch.nil? %>
 <% r_count = @batch.batch_details_count %>
 <% if @batch.count == r_count %>
 <%= link_to "Download CSV", admin_batch_path(@batch)  %>

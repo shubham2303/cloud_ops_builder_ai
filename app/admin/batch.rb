@@ -9,8 +9,8 @@ ActiveAdmin.register Batch do
 		column :net_worth
 		column :created_at
 		actions defaults: false do |batch|
-			div id: 'reload_me_partial_batch' do
-				render 'reload_form', { batch: batch } 
+			div id: "reload_me_partial_batch_#{batch.id}" do
+				render 'reload_form', { batch: batch }
 			end
 		end
 	end
@@ -33,7 +33,7 @@ ActiveAdmin.register Batch do
 			@batch = Batch.find(params[:id])
 			unless request.xhr?
 				send_data BatchDetail.csv(@batch) , type: 'text/csv; charset=windows-1251; header=present', 
-				disposition: "attachment; filename=batch_#{DateTime.now.to_s}.csv"
+				disposition: "attachment; filename=batch_#{@batch.created_at}.csv"
 			end
 		end
 
