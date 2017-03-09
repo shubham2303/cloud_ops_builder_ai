@@ -5,44 +5,47 @@
 	<% total_amt ||= 0 %>
 	<tr>
 		<td class="col">All</td>
-		<td class="col"><%= collections.count %></td>
+		<td class="col"><%= collections.size %></td>
 		<td class="col"><%= total_amt %></td>
 	</tr>
 
+	<% @ind_for_daily = Individual.joins(:businesses).where("Date(individuals.created_at) = ?",  Date.today) %>
+	<% @businesses_for_daily = Business.today_created %>
 	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
-	<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) = ? and businesses.lga = ?",  Date.today, lga).to_a %>
-	<% businesses = Business.today_created %>
-	<% bus = 	businesses.where(lga: lga) %>
-	<% coll = Collection.today_created.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
-	<% per_amt = coll.map(&:amount).reduce(:+) %>
-	<% per_amt ||= 0 %>
-	<tr>
-		<td class="col"><%= lga %></td>
-		<td class="col"><%= coll.count %></td>
-		<td class="col"><%= per_amt %></td>
-	</tr>
-	<% end %>
-
-<% elsif stat == 'monthly' %>
-
-  <% collections = Collection.this_month_created %>
-	<% total_amt = collections.map(&:amount).reduce(&:+) %>
-	<% total_amt ||= 0 %>
-	<tr>
-		<td class="col">All</td>
-		<td class="col"><%= collections.count %></td>
-		<td class="col"><%= total_amt %></td>
-	</tr>
-	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
-		<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ? and businesses.lga = ?",  Date.today.at_beginning_of_month, Date.today, lga).to_a %>
-		<% businesses = Business.this_month_created %>
-		<% bus = 	businesses.where(lga: lga) %>
-		<% coll = Collection.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% ind  =  @ind_for_daily.where("businesses.lga = ?", lga).to_a %>
+		<% bus  =  @businesses_for_daily.where(lga: lga) %>
+		<% coll =  Collection.today_created.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
 			<td class="col"><%= lga %></td>
 			<td class="col"><%= coll.count %></td>
+			<td class="col"><%= per_amt %></td>
+		</tr>
+	<% end %>
+
+<% elsif stat == 'monthly' %>
+
+	<% collections = Collection.this_month_created %>
+	<% total_amt = collections.map(&:amount).reduce(&:+) %>
+	<% total_amt ||= 0 %>
+	<tr>
+		<td class="col">All</td>
+		<td class="col"><%= collections.size %></td>
+		<td class="col"><%= total_amt %></td>
+	</tr>
+
+	<% @ind_for_month = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ?",  Date.today.at_beginning_of_month, Date.today) %>
+	<% @businesses_for_month = Business.this_month_created %>
+	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
+		<% ind =  @ind_for_month.where("businesses.lga = ?", lga).to_a %>
+		<% bus  =  @businesses_for_month.where(lga: lga) %>
+		<% coll = collections.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% per_amt = coll.map(&:amount).reduce(:+) %>
+		<% per_amt ||= 0 %>
+		<tr>
+			<td class="col"><%= lga %></td>
+			<td class="col"><%= coll.size %></td>
 			<td class="col"><%= per_amt %></td>
 		</tr>
 	<% end %>
@@ -53,20 +56,22 @@
 	<% total_amt ||= 0 %>
 	<tr>
 		<td class="col">All</td>
-		<td class="col"><%= collections.count %></td>
+		<td class="col"><%= collections.size %></td>
 		<td class="col"><%= total_amt %></td>
 	</tr>
 
+	<% @ind_for_year = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ?",  Date.today.at_beginning_of_year, Date.today) %>
+	<% @businesses_for_year = Business.this_year_created %>
+
 	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
-		<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ? and businesses.lga = ?",  Date.today.at_beginning_of_year, Date.today, lga).to_a %>
-		<% businesses = Business.this_year_created %>
-		<% bus = 	businesses.where(lga: lga) %>
-		<% coll = Collection.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% ind =  @ind_for_year.where("businesses.lga = ?", lga).to_a %>
+		<% bus = 	@businesses_for_year.where(lga: lga) %>
+		<% coll = collections.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
 			<td class="col"><%= lga %></td>
-			<td class="col"><%= coll.count %></td>
+			<td class="col"><%= coll.size %></td>
 			<td class="col"><%= per_amt %></td>
 		</tr>
 	<% end %>
