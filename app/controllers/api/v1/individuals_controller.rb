@@ -87,7 +87,8 @@ module Api
         if params[:q].to_i == 0
           individual = Individual.find_by!(uuid: params[:q])
         else
-          individual = Individual.find_by!(phone: params[:q])
+          number = Individual.get_accurate_number(params[:q])
+          individual = Individual.find_by!(phone: number)
         end
         render json: {status: 1, data: {individual: individual.as_json(:include=> [:businesses])}}
       end
