@@ -17,7 +17,7 @@ class Individual < ApplicationRecord
     charac = first_name[0..2]
     i = ('1' + "0"*(6-charac.length-1)).to_i
     j = ('9' + "9"*(6-charac.length-1)).to_i
-    self.uuid =charac +rand(i..j).to_s
+    self.uuid =(charac +rand(i..j).to_s).upcase
   end
 
   def self.check_lga_with_agent(agent, lga)
@@ -34,7 +34,7 @@ class Individual < ApplicationRecord
 
   def update_phone
     if self.phone.length <=11
-      self.phone= "234#{phone.last(10)}"
+      self.phone= ("234#{phone.last(10)}")
     end
   end
 

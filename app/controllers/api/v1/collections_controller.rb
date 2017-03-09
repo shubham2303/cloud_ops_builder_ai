@@ -22,13 +22,6 @@ module Api
           # nothing to do
         end
         begin
-          card = Card.verify_and_use(@data['number'], @data['amount'])
-          batch_id = card.batch_id
-        rescue Exception => msg
-          render json: {status: 0, message: msg}
-          return
-        end
-        begin
           if @data['uuid']
             individual = Individual.find_by!(uuid: @data['uuid'])
             individual.amount =+ @data['amount']
@@ -59,6 +52,9 @@ module Api
                                       lga: @data['lga'], batch_id: batch_id, agent: theAgent, individual: individual, collectionable: @business)
 
           ActiveRecord::Base.transaction do
+            Card.verify_and_use(@data['number'], @data['amount'])
+            batch_id = card.batch_id
+            collection.batch_id = batch_id
             collection.save!
             @business.save! unless @business.nil?
             individual.save!
