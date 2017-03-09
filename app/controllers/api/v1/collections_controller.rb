@@ -50,7 +50,7 @@ module Api
           return
         end
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, @data['lga'], individual.lga)
-        unless verify_lga || (@business.nil? && (@business.lga == @data['lga']))
+        unless verify_lga || (!@business.nil? && (@business.lga == @data['lga']))
           render json: {status: 0, message: "could not match lga"}
           return
         end

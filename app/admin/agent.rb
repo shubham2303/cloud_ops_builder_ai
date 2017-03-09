@@ -2,7 +2,7 @@ ActiveAdmin.register Agent do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-actions :bulk, :index, :new, :create
+actions :bulk, :index, :new, :create, :edit, :show, :destroy, :update
 permit_params :phone, :first_name, :last_name, :address, :birthplace, :state, :lga
 #
 # or
@@ -43,7 +43,8 @@ end
 
   form do |f|
   f.inputs "" do
-    f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
+    phone = f.object.new_record? ? '' : f.object.phone.last(10)
+    f.input :phone, :input_html => { :class => 'phone_valid', :type => "number", value: phone }
     f.input :first_name
     f.input :last_name
     f.input :address
