@@ -15,4 +15,8 @@ class Agent < ApplicationRecord
       self.phone= "234#{phone.last(10)}"
     end
   end
+
+  def name
+    (first_name.nil? ? '' : first_name) + ' ' + (last_name.nil? ? '' : last_name)
+  end  
 end
