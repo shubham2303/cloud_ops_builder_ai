@@ -3,9 +3,10 @@ ActiveAdmin.register Individual do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-permit_params :phone, :name, :address
+permit_params :phone, :first_name, :last_name, :address
 
-filter :name
+filter :first_name
+filter :last_name
 filter :lga
 filter :uuid
 
@@ -13,7 +14,8 @@ filter :uuid
 index do
 	id_column
 	column :phone
-	column :name
+	column :first_name
+	column :last_name
 	column :address
 	column :created_at
 	column :uuid
@@ -23,7 +25,8 @@ end
 form do |f|
 	f.inputs "Subscription Plan" do
 		f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
-		f.input :name
+		f.input :first_name
+		f.input :last_name
 		f.input :address
 	end
 	f.actions do
