@@ -14,7 +14,9 @@
 	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
 		<% ind  =  @ind_for_daily.where("businesses.lga = ?", lga).to_a %>
 		<% bus  =  @businesses_for_daily.where(lga: lga) %>
-		<% coll =  Collection.today_created.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% colls = Collection.today_created %>
+		<% coll =  colls.where(individual_id: ind.map(&:id)).or(colls.where(collectionable_id: bus.map(&:id)))
+		# where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
@@ -40,7 +42,8 @@
 	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
 		<% ind =  @ind_for_month.where("businesses.lga = ?", lga).to_a %>
 		<% bus  =  @businesses_for_month.where(lga: lga) %>
-		<% coll = collections.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% coll = collections.where(individual_id: ind.map(&:id)).or(collections.where(collectionable_id: bus.map(&:id)))
+		# where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
@@ -66,7 +69,8 @@
 	<% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
 		<% ind =  @ind_for_year.where("businesses.lga = ?", lga).to_a %>
 		<% bus = 	@businesses_for_year.where(lga: lga) %>
-		<% coll = collections.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% coll = collections.where(individual_id: ind.map(&:id)).or(collections.where(collectionable_id: bus.map(&:id)))
+		# where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
