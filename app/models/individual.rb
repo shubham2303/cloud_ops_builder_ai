@@ -40,6 +40,10 @@ class Individual < ApplicationRecord
 
   def name
     first_name + ' ' + last_name
-   end  
+  end
+
+  def self.get_accurate_number(n)
+   "234"+n.last(10)
+  end
 
 end
