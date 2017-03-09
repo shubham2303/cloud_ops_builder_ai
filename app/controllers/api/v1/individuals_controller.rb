@@ -22,6 +22,7 @@ module Api
         begin
           individual = Individual.create!(individual_params)
         rescue Exception=> e
+          Rails.logger.debug "exception --------#{e}----------"
           if (e.message.include?("index_individuals_on_uuid")) && (try< 5)
             try+=1
             retry
@@ -69,6 +70,7 @@ module Api
             @business = individual.businesses.create!(business_params)
           end
         rescue Exception=> e
+          Rails.logger.debug "exception --------#{e}----------"
           if (e.message.include?(("index_individuals_on_uuid")||("index_businesses_on_uuid"))) && (try < 5)
             try+=1
             retry

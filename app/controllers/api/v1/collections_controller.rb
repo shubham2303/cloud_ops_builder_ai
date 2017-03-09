@@ -62,6 +62,7 @@ module Api
           IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
           render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
         rescue AmountExceededError, InvalidCardError => msg
+          Rails.logger.debug "exception --------#{msg}----------"
           render json: {status: 0, message: msg }
           return
         rescue
