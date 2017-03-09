@@ -97,8 +97,10 @@ end
             end
         end
       end
-      values = q.first(-1)
-      ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values + " ON CONFLICT DO NOTHING;"
+      unless q.empty?
+        values = q.first(-1)
+        ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
+      end
       redirect_to admin_agents_path("error_no_array"=> @error_no_array)
     end
 
