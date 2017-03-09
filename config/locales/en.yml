@@ -25,3 +25,4 @@ en:
   outdated_config:  "You are using an outdated config."
   outdated_token: 'Token Invalid'
   token_expiration: 'Token was Expired'
+  agent_not_found: 'Agent not found'

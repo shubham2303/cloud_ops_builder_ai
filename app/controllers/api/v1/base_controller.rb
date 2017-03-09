@@ -15,6 +15,7 @@ module Api
       rescue_from ::VersionBlocked, :with => :blocked_version_detected
       rescue_from ::ConfigBlocked, :with => :blocked_config_detected
       rescue_from TokenExpired, :with => :token_expiration_detected
+      rescue_from AgentNotFound, :with => :agent_not_found
 
       ################### start exception handlers ##################
 
@@ -23,13 +24,12 @@ module Api
       end
 
       def ar_obj_not_found(exception)
-        render json: {status: 1004, data: nil, message: exception.message}
+        render json: {status: 404, data: nil, message: exception.message}
       end
 
       def ar_validation_failed(exception)
         render json: {status: 422, data: nil, message: exception.message}
       end
-
       def ar_not_unique(exception)
         render json: {status: 422, data: nil, message: "#{controller_name.singularize} already exist"};
       end
@@ -50,13 +50,23 @@ module Api
       def token_expiration_detected(exception)
         theToken.save
         render json: {status: 1002, data: {token: theToken.token}, message: exception.message}
-      end  
+      end
+
+      def agent_not_found(exception)
+        render json: {status: 1004, data: nil, message: exception.message}
+      end
       ################### END exception handlers ##################
 
       def theAgent
         unless @theAgent
           return nil unless request.headers["HTTP_UID"]
+          begin
           @theAgent = Agent.find( request.headers["HTTP_UID"] )
+          rescue
+            raise AgentNotFound.new
+          end
+
+
         end
         @theAgent
 
