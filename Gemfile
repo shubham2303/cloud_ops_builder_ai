@@ -49,7 +49,6 @@ gem 'unicorn'
 gem 'rest-client'
 gem 'sidekiq'
 gem 'axlsx'
-gem 'activerecord-import'
 
 
 group :development, :test, :staging do
