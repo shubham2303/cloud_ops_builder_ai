@@ -2,7 +2,7 @@ ActiveAdmin.register Agent do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-actions :bulk, :index, :new, :create, :edit, :show, :destroy, :update
+actions :bulk, :index, :new, :create, :edit, :destroy, :update, :show
 permit_params :phone, :first_name, :last_name, :address, :birthplace, :state, :lga
 #
 # or
@@ -37,7 +37,7 @@ index do
 end
 
 action_item only: :index, method: :post do
-  link_to 'Create agents', admin_agents_bulk_path
+  link_to 'Create agents', admin_bulk_path
 end
 
 
@@ -66,31 +66,40 @@ end
     end
 
     def bulk_creation
-      phone = params[:phone].split(',')
-      phone_arr = phone.reject(&:blank?)
-      phone_arr = phone_arr.uniq
+      arr = []
+      phone_lga = params[:phone_lga].split(/[\r\n]+/)
+      phone_lga.each do |a|
+        arr<< a.split(", ")
+      end
+      valid_csv_array = []
+      arr.each do |a|
+        unless a.size == 2
+          @error_csv_invalidate = "csv invalidate"
+          redirect_to admin_agents_path("error_csv_invalidate"=> @error_csv_invalidate)
+          return
+        else
+          valid_csv_array << a
+        end
+      end
       tmp_arr =[]
       @error_no_array = []
-      phone_arr.each do |number|
-        if (number.length > 11) || (number.length == 11 && number[0] != '0') || (number.length < 10) || (number.length == 10 && number[0] == '0')
-          @error_no_array << number
+      valid_csv_array.each do |a|
+        if (a[0].length > 11) || (a[0].length == 11 && a[0][0] != '0') || (a[0].length < 10) || (a[0].length == 10 && a[0][0] == '0')
+          @error_no_array << a[0]
         else
-          last_ten_digit_phone = number.last(10)
-          agent = Agent.find_by(phone: "234#{last_ten_digit_phone}")
-          if agent.nil?
-            new_agent = Agent.new(phone: "234#{last_ten_digit_phone}")
+          last_ten_digit_phone = a[0].last(10)
+            new_agent = Agent.new(phone: "234#{last_ten_digit_phone}", lga: a[1])
             if new_agent.valid?
-              tmp_arr<< {phone: number}
+              tmp_arr<< new_agent
             else
-              @error_no_array << number
+              @error_no_array << a[0]
             end
-          else
-            @error_no_array << number
-          end
         end
       end
 
-      Agent.create!(tmp_arr)
+      ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga) values #{values}"
+
+      Agent.import(tmp_arr, validate:false)
       redirect_to admin_agents_path("error_no_array"=> @error_no_array)
     end
 

@@ -85,7 +85,7 @@ module Api
 
       def get_individuals
         if params[:q].to_i == 0
-          individual = Individual.find_by!(uuid: params[:q])
+          individual = Individual.find_by!(uuid: params[:q].upcase)
         else
           number = Individual.get_accurate_number(params[:q])
           individual = Individual.find_by!(phone: number)
