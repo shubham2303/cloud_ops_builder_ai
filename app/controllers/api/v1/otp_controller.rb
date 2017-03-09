@@ -43,6 +43,7 @@ module Api
           begin
             agent = Agent.find_by!(phone: phone_params)
           rescue Exception => e
+            Rails.logger.debug "exception --------#{e}----------"
             unless Rails.env.production?
               agent = Agent.create!(phone: phone_params,lga: 'Egor')
             else

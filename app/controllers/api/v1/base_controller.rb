@@ -20,39 +20,48 @@ module Api
       ################### start exception handlers ##################
 
       def ar_required_params(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 400, data: nil, message: exception.message}
       end
 
       def ar_obj_not_found(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 404, data: nil, message: exception.message}
       end
 
       def ar_validation_failed(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 422, data: nil, message: exception.message}
       end
       def ar_not_unique(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 422, data: nil, message: "#{controller_name.singularize} already exist"};
       end
 
       def blocked_access_detected(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         theToken.update_columns(expiry: Time.now)
         render json: {status: 1004, data: nil, message: exception.message}
       end
 
       def blocked_version_detected(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 1003, data: nil, message: exception.message}
       end  
 
       def blocked_config_detected(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 1001, data: {config: AppConfig.json}, message: exception.message}
       end  
 
       def token_expiration_detected(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         theToken.save
         render json: {status: 1002, data: {token: theToken.token}, message: exception.message}
       end
 
       def agent_not_found(exception)
+        Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 1004, data: nil, message: exception.message}
       end
       ################### END exception handlers ##################
