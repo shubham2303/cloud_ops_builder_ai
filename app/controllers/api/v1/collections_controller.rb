@@ -22,9 +22,8 @@ module Api
           # nothing to do
         end
         begin
-          Card.verify_and_use(@data['number'], @data['amount'])
-          batch_detail = BatchDetail.find_by!(n: @data['number'])
-          batch = batch_detail.batch
+          card = Card.verify_and_use(@data['number'], @data['amount'])
+          batch_id = card.batch_id
         rescue Exception => msg
           render json: {status: 0, message: msg}
           return
@@ -54,16 +53,24 @@ module Api
           render json: {status: 0, message: "could not match lga"}
           return
         end
-        ActiveRecord::Base.transaction do
+        begin
+          collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'],
+                                      number: @data['number'], amount: @data['amount'], period: @data['period'],
+                                      lga: @data['lga'], batch_id: batch_id, agent: theAgent, individual: individual, business: @business)
 
-          @collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
-                                        number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, collectionable: @business)
-          @business.save! unless @business.nil?
-          individual.save!
-        end  
-        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
-        render json: {status: 1, data: {collection: @collection.as_json(:include=>  [:collectionable, :individual])}}
+          ActiveRecord::Base.transaction do
+            collection.save!
+            @business.save! unless @business.nil?
+            individual.save!
+          end
+
+          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{@data['uuid'].upcase} using the card #{collection.number}. Collection id is #{collection.id}")
+          render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
+
+        rescue
+          render json: {status: 0, message: "Unable to record revenue collection at the moment, please try again later" }
+        end
+
       end
     end
   end

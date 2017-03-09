@@ -20,6 +20,7 @@ class Card < ApplicationRecord
       card.save!
     end
 
+    card
   end
 
   def self.beautify_number(number)
