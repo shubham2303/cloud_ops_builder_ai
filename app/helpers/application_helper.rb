@@ -2,6 +2,18 @@ module ApplicationHelper
 
   class AppConfig
 
+    def self.categories
+      hsh_categories = {}
+      hsh_sub_categories = {}
+      json["categories"].each do |cat|
+        hsh_categories[cat["id"]] = cat["name"]
+        cat["subcategories"].each do |sub_cat|
+          hsh_sub_categories[sub_cat["id"]] = sub_cat["name"]
+        end  
+      end  
+      {categories: hsh_categories, sub_categories: hsh_sub_categories}
+    end 
+
     def self.json
       JSON.parse ENV['APP_CONFIG']
     end
