@@ -92,7 +92,7 @@ end
           last_ten_digit_phone = a[0].last(10)
             new_agent = Agent.new(phone: "234#{last_ten_digit_phone}", lga: a[1])
             if new_agent.valid?
-              q +="('#{a[0]}','#{a[1]}',now(), null),"
+              q +="('#{a[0]}','#{a[1]}',now(), now()),"
               tmp_arr<< ()
             else
               @error_no_array << a[0]
