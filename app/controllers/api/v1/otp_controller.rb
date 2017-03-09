@@ -40,11 +40,15 @@ module Api
           return
         end
         ActiveRecord::Base.transaction do
-          agent = if Rails.env.production?
-                    Agent.find_by!(phone: phone_params)
-                  else
-                    Agent.find_or_initialize_by!(phone: phone_params).update(lga: 'Egor')
-                  end
+          begin
+            agent = Agent.find_by!(phone: phone_params)
+          rescue Exception => e
+            unless Rails.env.production?
+              agent = Agent.create!(phone: phone_params,lga: 'Egor')
+            else
+              raise AgentNotFound.new "Agent with phone number #{phone_params} does not exist"
+            end
+          end
           agent.token.delete unless agent.token.nil?
           token = Token.find_by(device_id: params.require(:device_id))
           token.delete unless token.nil?
@@ -52,6 +56,7 @@ module Api
           render json: { status: 1, data: {agent: agent, token: agent.token.token} }
         end
       end
+
 
       private
 
