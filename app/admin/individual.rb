@@ -25,7 +25,8 @@ end
 
 form do |f|
 	f.inputs "Subscription Plan" do
-		f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
+		phone = f.object.new_record? ? '' : f.object.phone.last(10)
+		f.input :phone, :input_html => { :class => 'phone_valid', :type => "number", value: phone}
 		f.input :first_name
 		f.input :last_name
 		f.input :address
