@@ -7,7 +7,7 @@ class Agent < ApplicationRecord
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_blank => true
 
   validates_numericality_of :phone
-  validates :phone, presence: true
+  validates :phone, :lga, presence: true
   before_save :update_phone
 
   def update_phone

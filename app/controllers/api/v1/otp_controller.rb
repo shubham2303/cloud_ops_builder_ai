@@ -43,7 +43,7 @@ module Api
           agent = if Rails.env.production?
                     Agent.find_by!(phone: phone_params)
                   else
-                    Agent.find_or_create_by!(phone: phone_params)
+                    Agent.find_or_create_by!(phone: phone_params, lga: 'Egor')
                   end
           agent.token.delete unless agent.token.nil?
           token = Token.find_by(device_id: params.require(:device_id))

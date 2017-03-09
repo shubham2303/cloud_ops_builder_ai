@@ -3,7 +3,7 @@ ActiveAdmin.register Individual do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-permit_params :phone, :first_name, :last_name, :address
+permit_params :phone, :first_name, :last_name, :address, :lga
 
 filter :first_name
 filter :last_name
@@ -17,6 +17,7 @@ index do
 	column :first_name
 	column :last_name
 	column :address
+	column :lga
 	column :created_at
 	column :uuid
 	actions
@@ -28,9 +29,10 @@ form do |f|
 		f.input :first_name
 		f.input :last_name
 		f.input :address
+		f.input :lga, :label => "LGA", collection: JSON.parse(ENV["APP_CONFIG"])['lga'], prompt: 'Please select'
 	end
 	f.actions do
-		f.action :submit, :wrapper_html => { :class => 'submit_valid'}
+		f.action :submit#, :wrapper_html => { :class => 'submit_valid'}
 		f.action :cancel, :wrapper_html => { :class => 'cancel'}
 	end
 end
