@@ -3,7 +3,7 @@ ActiveAdmin.register Agent do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
 actions :bulk, :index, :new, :create
-permit_params :phone, :name, :address, :birthplace, :state, :lga
+permit_params :phone, :first_name, :last_name, :address, :birthplace, :state, :lga
 #
 # or
 #
@@ -13,7 +13,8 @@ permit_params :phone, :name, :address, :birthplace, :state, :lga
 #   permitted
 # end
 
-filter :name
+filter :first_name
+filter :last_name
 filter :phone
 filter :state
 
@@ -24,7 +25,8 @@ index do
     end
   end
   id_column
-  column :name
+  column :first_name
+  column :last_name
   column :phone
   column :address
   column :birthplace
@@ -42,7 +44,8 @@ end
   form do |f|
   f.inputs "" do
     f.input :phone, :input_html => { :class => 'phone_valid', :type => "number"  }
-    f.input :name
+    f.input :first_name
+    f.input :last_name
     f.input :address
     f.input :birthplace
     f.input :state, collection: JSON.parse(ENV["APP_CONFIG"])['states'], prompt: 'Please select'
