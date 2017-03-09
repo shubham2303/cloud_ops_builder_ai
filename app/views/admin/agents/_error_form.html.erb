@@ -1,3 +1,10 @@
+<% if @error_csv_invalidate %>
+    <div class="flashes">
+      <div class="flash flash_error">
+        <%= @error_csv_invalidate %>
+      </div>
+    </div>
+<% else %>
 <% @error_no_array ||= error_no_array %>
 <div class="flashes">
 <div class="flash flash_error">
@@ -6,3 +13,4 @@
   <%= "These numbers cannot be saved --  #{error_no_array.join(", ");}"%>
 </div>
 </div>
+<% end %>
