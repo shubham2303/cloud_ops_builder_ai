@@ -44,7 +44,6 @@ module Api
             individual.amount += @data['amount']
             @business.amount += @data['amount']
             @str = "business id"
-            @collectionable_type = "Business"
           end
         rescue
           render json: {status: 0, message: "uuid is not valid"}
@@ -57,14 +56,14 @@ module Api
         end
         ActiveRecord::Base.transaction do
 
-          collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
+          @collection = Collection.create!(category_type: @data['type'], subtype: @data['subtype'],
                                         number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, collectionable_type: @collectionable_type, collectionable_id: @business.id)
+                                        lga: @data['lga'], batch: batch, agent: theAgent, individual: individual, collectionable: @business)
           @business.save! unless @business.nil?
           individual.save!
         end  
         IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
-        render json: {status: 1, data: {collection: collection.as_json(:include=>  [:business, :individual])}}
+        render json: {status: 1, data: {collection: @collection.as_json(:include=>  [:collectionable, :individual])}}
       end
     end
   end

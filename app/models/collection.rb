@@ -2,7 +2,7 @@ class Collection < ApplicationRecord
 
   belongs_to :batch
   belongs_to :agent
-  belongs_to :business, polymorphic: true
+  belongs_to :collectionable, polymorphic: true
   belongs_to :individual
 
   scope :today_created, ->{ where("Date(created_at) = ?", Date.today) }
