@@ -81,7 +81,6 @@ end
           valid_csv_array << a
         end
       end
-      tmp_arr =[]
       @error_no_array = []
       q=""
       valid_csv_array.each do |a|
@@ -93,7 +92,6 @@ end
             new_agent = Agent.new(phone: "234#{last_ten_digit_phone}", lga: a[1])
             if new_agent.valid?
               q +="('#{a[0]}','#{a[1]}',now(), now()),"
-              tmp_arr<< ()
             else
               @error_no_array << a[0]
             end
