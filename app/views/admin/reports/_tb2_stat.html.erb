@@ -13,7 +13,7 @@
 	<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) = ? and businesses.lga = ?",  Date.today, lga).to_a %>
 	<% businesses = Business.today_created %>
 	<% bus = 	businesses.where(lga: lga) %>
-	<% coll = Collection.today_created.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+	<% coll = Collection.today_created.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 	<% per_amt = coll.map(&:amount).reduce(:+) %>
 	<% per_amt ||= 0 %>
 	<tr>
@@ -37,7 +37,7 @@
 		<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ? and businesses.lga = ?",  Date.today.at_beginning_of_month, Date.today, lga).to_a %>
 		<% businesses = Business.this_month_created %>
 		<% bus = 	businesses.where(lga: lga) %>
-		<% coll = Collection.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% coll = Collection.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
@@ -61,7 +61,7 @@
 		<% ind = Individual.joins(:businesses).where("Date(individuals.created_at) >= ? and Date(individuals.created_at) <= ? and businesses.lga = ?",  Date.today.at_beginning_of_year, Date.today, lga).to_a %>
 		<% businesses = Business.this_year_created %>
 		<% bus = 	businesses.where(lga: lga) %>
-		<% coll = Collection.where("individual_id = ? OR business_id = ?", ind.map(&:id),  bus.map(&:id)) %>
+		<% coll = Collection.where("individual_id = ? OR collectionable_id = ?", ind.map(&:id),  bus.map(&:id)) %>
 		<% per_amt = coll.map(&:amount).reduce(:+) %>
 		<% per_amt ||= 0 %>
 		<tr>
