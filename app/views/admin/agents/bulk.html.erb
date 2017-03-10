@@ -1,6 +1,13 @@
+<% if @error_csv_invalidate %>
+    <div class="flashes">
+      <div class="flash flash_error">
+        <%= @error_csv_invalidate %>
+      </div>
+    </div>
+<% end %>
 <%= form_tag('/admin/agents/bulk_creation') do %>
   <div class="agent_div">
-    <%= text_area_tag 'phone',nil,placeholder: 'Provide one or more number and lga in csv format',rows: 10, cols: 25, name: "phone_lga",:class => "phone"%>
+    <%= text_area_tag 'phone',params[:phone_lga],placeholder: 'Provide one or more number and lga in csv format',rows: 10, cols: 25, name: "phone_lga",:class => "phone"%>
   </div>
   <%= submit_tag "Save"%>
 <% end %>

@@ -62,7 +62,7 @@ end
   controller do
 
     def bulk
-
+      @error_csv_invalidate = nil
     end
 
     def bulk_creation
@@ -75,7 +75,8 @@ end
       arr.each do |a|
         unless a.size == 2
           @error_csv_invalidate = "csv invalidate"
-          redirect_to admin_agents_path("error_csv_invalidate"=> @error_csv_invalidate)
+          render "admin/agents/bulk", locals: {:error_csv => "csv invalidate"}
+          # render 'bulk', :locals => { :@error_csv_invalidate => "csv invalidate" }
           return
         else
           valid_csv_array << a
@@ -91,7 +92,7 @@ end
           last_ten_digit_phone = a[0].last(10)
             new_agent = Agent.new(phone: "234#{last_ten_digit_phone}", lga: a[1])
             if new_agent.valid?
-              q +="('#{a[0]}','#{a[1]}',now(), now()),"
+              q +="('234#{a[0]}','#{a[1]}',now(), now()),"
             else
               @error_no_array << a[0]
             end
