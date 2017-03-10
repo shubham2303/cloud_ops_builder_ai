@@ -84,6 +84,6 @@ class Stat
 									end
 									xlsx_package.use_shared_strings = true
 									sample_file = xlsx_package.serialize('sample.xlsx')
-									ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user).deliver
+                  ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user, "#{start_date.to_s} - #{end_date.to_s}").deliver
 								end
 							end
