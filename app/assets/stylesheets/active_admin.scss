@@ -72,6 +72,15 @@ margin-left: 3%;
 .mrgn_top_2{
 	margin-top: 2%;
 }
+.csv_area{
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.csv_area:focus{
+  border: 0;
+  box-shadow: 0 0;
+}
 .phone{
   margin-bottom: 14px;
 }

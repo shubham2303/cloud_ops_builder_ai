@@ -1,16 +1,19 @@
 <%= form_tag('/admin/agents/bulk_creation') do %>
   <div class="agent_div">
-    <%= text_area_tag 'phone', params[:phone_lga],
+    <%= text_area_tag 'csv_area', params[:phone_lga],
                       placeholder: "Provide one or more number and lga in csv format. Example:" +
                           "\n09765432108, Egor" +
                           "\n09834753895, Egor" +
                           "\n09948574392, Igueben" +
                           "\n08948567437, Igueben" +
                           "\n09348578458, Oredo",
-                      rows: 10, cols: 25, name: "phone_lga", :class => "phone"%>
+                      rows: 10, cols: 25, name: "phone_lga", :class => "csv_area"%>
   </div>
   <%= submit_tag "Save"%>
 <% end %>
+<script>
+$('#csv_area').linedtextarea()
+</script>
 <br/>
 <div>
   Note: Both number and LGA are mandatory for each agent
