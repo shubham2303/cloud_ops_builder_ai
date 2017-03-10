@@ -19,11 +19,6 @@ filter :phone
 filter :state
 
 index do
-  if session[:error_params].present?
-    div do
-      render 'error_form', { error_no_array: session[:error_params] }
-    end
-  end
   id_column
   column :first_name
   column :last_name
@@ -74,8 +69,8 @@ end
       valid_csv_array = []
       arr.each do |a|
         unless a.size == 2
-          @error_csv_invalidate = "csv invalidate"
-          render "admin/agents/bulk", locals: {:error_csv => "csv invalidate"}
+          flash[:error] = "csv invalidate"
+          render "admin/agents/bulk"
           return
         else
           valid_csv_array << a
