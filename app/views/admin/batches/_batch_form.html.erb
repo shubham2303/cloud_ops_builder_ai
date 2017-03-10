@@ -6,7 +6,7 @@
     <%= label_tag :count, "Count", class: 'mrgn_lft_3 count_label' %>
     <%= number_field_tag 'count1',nil, :class => "count_text_field mrgn_lft_3", name: "batch[count][]" %>
     <%= image_submit_tag("plus.png", alt: "Edit Entry", id: "add", class: 'plus_icon_style' ) %>
-    <%= label_tag :add, "Add", class: 'text-color add_label' %>
+    <%= label_tag :add, "Add", class: 'text-color add_label', id: 'add_label_batch' %>
   </div>
 
   
@@ -48,7 +48,7 @@
     $(document).on('click',"#add",function(){
       if ($('.count_text_field:last').val() == ""){
         $('.error_text').remove();
-        $('#add').after('<div class="error_text mrgn_lft_28 c_red">Count can"t be blank</div>');
+        $('#add_label_batch').after('<div class="error_text mrgn_lft_28 c_red">Count can"t be blank</div>');
         return false;
       }
       else
