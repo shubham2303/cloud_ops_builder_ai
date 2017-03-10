@@ -69,7 +69,7 @@ end
       valid_csv_array = []
       arr.each do |a|
         unless a.size == 2
-          flash[:error] = "csv invalidate"
+          flash.now[:error] = "csv invalidate"
           render "admin/agents/bulk"
           return
         else
