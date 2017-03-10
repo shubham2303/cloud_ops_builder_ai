@@ -76,7 +76,6 @@ end
         unless a.size == 2
           @error_csv_invalidate = "csv invalidate"
           render "admin/agents/bulk", locals: {:error_csv => "csv invalidate"}
-          # render 'bulk', :locals => { :@error_csv_invalidate => "csv invalidate" }
           return
         else
           valid_csv_array << a
