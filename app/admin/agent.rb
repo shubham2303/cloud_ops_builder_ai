@@ -31,7 +31,7 @@ index do
   actions
 end
 
-action_item(:index, method: :post) do
+action_item(:bulk, method: :post, only: :index) do
   link_to 'Bulk Create', admin_bulk_path
 end
 
