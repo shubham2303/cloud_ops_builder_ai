@@ -102,7 +102,7 @@ end
         # ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values
         ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
       end
-      session[:error_params] = @error_no_array
+      flash[:error] = "#{@error_no_array.count} numbers cannot saved.\n\nThese numbers cannot be saved --  #{@error_no_array.join(', ')}"
       redirect_to admin_agents_path
     end
 

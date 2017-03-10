@@ -18,5 +18,5 @@ $(document).ready(function(){
 
     });
 
-    $(".flashes" ).fadeOut(5000);
+    // $(".flashes" ).fadeOut(5000);
 });
