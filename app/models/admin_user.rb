@@ -4,7 +4,10 @@ class AdminUser < ApplicationRecord
   devise :database_authenticatable, 
   :recoverable, :rememberable, :trackable, :validatable
 
-  USER_ROLE = ['admin', 'super_admin']
+  ADMIN = 'admin'
+  SUPER = 'super_admin'
+  USER_ROLE = [SUPER, ADMIN]
+  USER_ROLE_HUMANIZED = {'Super Administrator' => SUPER, 'Administrator' => ADMIN}
 
   validates_inclusion_of :role, :in => USER_ROLE
 

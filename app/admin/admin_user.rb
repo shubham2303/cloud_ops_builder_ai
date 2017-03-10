@@ -19,7 +19,7 @@ ActiveAdmin.register AdminUser do
   form do |f|
     f.inputs "Admin Details" do
       f.input :email
-      f.input :role, collection: AdminUser::USER_ROLE, prompt: 'Please select'
+      f.input :role, collection: AdminUser::USER_ROLE_HUMANIZED, prompt: 'Please select'
       f.input :password
       f.input :password_confirmation
     end
