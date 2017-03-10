@@ -38,13 +38,13 @@
    function onRemove(current_count, current_amount){
     var total_count = parseInt($('#total_batch_count').text()) - check_NaN(current_count)
     var total_amount = parseInt($('#total_batch_amt').text()) - check_NaN(current_count) * check_NaN(current_amount);
-     $('#total_batch_amt').text(total_amount);
-     $('#total_batch_count').text(total_count);
-   }
+    $('#total_batch_amt').text(total_amount);
+    $('#total_batch_count').text(total_count);
+  }
 
 
-   function initialize_add()
-   {
+  function initialize_add()
+  {
     $(document).on('click',"#add",function(){
       if ($('.count_text_field:last').val() == ""){
         $('.error_text').remove();
