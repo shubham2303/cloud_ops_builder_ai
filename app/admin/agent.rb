@@ -32,7 +32,7 @@ index do
 end
 
 action_item(:index, method: :post) do
-  link_to 'Create agents', admin_bulk_path
+  link_to 'Bulk Agents', admin_bulk_path
 end
 
 
@@ -97,7 +97,7 @@ end
         # ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values
         ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
       end
-      flash[:error] = "#{@error_no_array.count} numbers cannot saved.\n\nThese numbers cannot be saved --  #{@error_no_array.join(', ')}"
+      flash[:error] = "#{@error_no_array.count} #{ (@error_no_array.count > 1) ? "numbers" : "number"} cannot saved.\n\nThese numbers cannot be saved --  #{@error_no_array.join(', ')}"
       redirect_to admin_agents_path
     end
 

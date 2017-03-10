@@ -9,6 +9,7 @@ filter :first_name
 filter :last_name
 filter :lga
 filter :uuid
+filter :phone
 
 
 index do
