@@ -32,7 +32,7 @@ index do
 end
 
 action_item(:index, method: :post) do
-  link_to 'Bulk Agents', admin_bulk_path
+  link_to 'Bulk Create', admin_bulk_path
 end
 
 collection_action :bulk, :title => "Create Bulk Agents" do
