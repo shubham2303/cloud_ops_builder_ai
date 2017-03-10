@@ -100,7 +100,7 @@ end
       unless q.empty?
         values = q.first(-1)
         # ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values
-        ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
+        ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
       end
       session[:error_params] = @error_no_array
       redirect_to admin_agents_path
