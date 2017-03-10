@@ -29,7 +29,7 @@ module Api
       private
 
       def agent_params
-        params.require(:agent).permit(:phone, :first_name, :last_name, :address, :birthplace, :state, :dob)
+        params.require(:agent).permit(:first_name, :last_name, :address, :birthplace, :state, :dob)
       end
 
     end
