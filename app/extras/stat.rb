@@ -38,7 +38,7 @@ class Stat
 								agent = coll.agent
 								reg_date = business.try(:created_at) ? business.created_at.strftime("%d-%m-%Y") : ''
 								sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), business.try(:individual).try(:first_name), 
-									business.try(:individual).try(:first_name), business.try(:individual).try(:phone), 
+									business.try(:individual).try(:last_name), business.try(:individual).try(:phone), 
 									ind_or_buss.name, coll.try(:individual).id, coll.id, reg_date, business.try(:address), 
 									business.try(:lga), AppConfig.categories[:categories][coll.category_type], 
 									AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
@@ -75,15 +75,15 @@ class Stat
 										@collections.each do |coll|
 
 											sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), coll.try(:lga), 
-											AppConfig.categories[:categories][coll.category_type], 
-											AppConfig.categories[:sub_categories][coll.subtype], coll.amount],
-											style: [center_align]*5
+												AppConfig.categories[:categories][coll.category_type], 
+												AppConfig.categories[:sub_categories][coll.subtype], coll.amount],
+												style: [center_align]*5
 											end
 										end
 
 									end
 									xlsx_package.use_shared_strings = true
 									sample_file = xlsx_package.serialize('sample.xlsx')
-                  ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user, "#{start_date.to_s} - #{end_date.to_s}").deliver
+									ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user, "#{start_date.to_s} - #{end_date.to_s}").deliver
 								end
 							end
