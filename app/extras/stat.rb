@@ -19,10 +19,11 @@ class Stat
 					@collections.each do |coll|
 						agent = coll.agent
 						ind_or_buss = coll.collectionable || coll.individual
-						sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), coll.agent_id, agent.first_name, 
-							agent.last_name, ind_or_buss.name, 
-							coll.try(:lga), coll.try(:individual).id, coll.id, agent.address, agent.phone, 
-							agent.created_at.strftime('%d-%m-%Y'), coll.amount], style: [center_align]*12
+						agent_created_dt = agent.try(:created_at) ? agent.created_at.strftime('%d-%m-%Y') : ''
+						sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name), 
+							agent.try(:last_name), ind_or_buss.try(:name), 
+							coll.try(:lga), coll.individual.try(:id), coll.id, agent.try(:address), agent.try(:phone), 
+							agent_created_dt, coll.amount], style: [center_align]*12
 						end
 					end
 
@@ -39,10 +40,10 @@ class Stat
 								reg_date = business.try(:created_at) ? business.created_at.strftime("%d-%m-%Y") : ''
 								sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), business.try(:individual).try(:first_name), 
 									business.try(:individual).try(:last_name), business.try(:individual).try(:phone), 
-									ind_or_buss.name, coll.try(:individual).id, coll.id, reg_date, business.try(:address), 
+									ind_or_buss.try(:name), coll.try(:individual).try(:id), coll.id, reg_date, business.try(:address), 
 									business.try(:lga), AppConfig.categories[:categories][coll.category_type], 
 									AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
-									coll.amount, agent.name, agent.id, ind_or_buss.try(:amount)], 
+									coll.amount, agent.try(:name), agent.try(:id), ind_or_buss.try(:amount)], 
 									style: [center_align]*17
 								end
 							end
@@ -60,11 +61,11 @@ class Stat
 										reg_date = individual.try(:created_at) ? individual.created_at.strftime("%d-%m-%Y") : ''
 										sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), individual.try(:first_name), 
 											individual.try(:last_name), individual.try(:phone),
-											ind_or_buss.name, coll.try(:individual).id, coll.id, 
+											ind_or_buss.try(:name), coll.try(:individual).try(:id), coll.id, 
 											reg_date, individual.try(:address),  coll.try(:lga), 
 											AppConfig.categories[:categories][coll.category_type],
 											AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
-											coll.amount, agent.name, agent.id, ind_or_buss.try(:amount)], 
+											coll.amount, agent.try(:name), agent.try(:id), ind_or_buss.try(:amount)], 
 											style: [center_align]*17
 										end
 									end
