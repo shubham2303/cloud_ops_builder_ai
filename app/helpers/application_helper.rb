@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def naira(number)
+    number_to_currency(number, :unit => "₦")
+  end
+
   class AppConfig
 
     def self.categories

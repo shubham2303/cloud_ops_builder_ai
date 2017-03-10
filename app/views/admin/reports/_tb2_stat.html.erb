@@ -14,8 +14,8 @@
 
 <tr>
 	<td class="col">All</td>
-	<td class="col"><%= collections.size %></td>
-	<td class="col"><%= total_amt %></td>
+	<td class="col"><%= number_with_delimiter(collections.size) %></td>
+	<td class="col"><%= naira(total_amt) %></td>
 </tr>
 <% ApplicationHelper::AppConfig.json['lga'].each do |lga| %>
 	<% coll =  collections.where(lga: lga) %>
@@ -23,8 +23,8 @@
 	<% per_amt ||= 0 %>
 	<tr>
 		<td class="col"><%= lga %></td>
-		<td class="col"><%= coll.size %></td>
-		<td class="col"><%= per_amt %></td>
+		<td class="col"><%= number_with_delimiter(coll.size) %></td>
+		<td class="col"><%= naira(per_amt) %></td>
 	</tr>
 <% end %>
 

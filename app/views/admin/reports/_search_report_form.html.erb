@@ -1,9 +1,9 @@
-<%= label_tag 'Today' %>
-<%= radio_button_tag "type", "Today", true, :onclick => "render_partial_daily();" %>
-<%= label_tag 'This Month' %>
-<%= radio_button_tag "type", "This Month", false, :onclick => "render_partial_monthly();" %>
-<%= label_tag 'This Year' %>
-<%= radio_button_tag "type", "This Year", false, :onclick => "render_partial_yearly();" %>
+<%= radio_button_tag "type", "today", true, :onclick => "render_partial_daily();" %>
+<%= label_tag 'type_today', 'Today' %>
+<%= radio_button_tag "type", "this_month", false, :onclick => "render_partial_monthly();" %>
+<%= label_tag 'type_this_month', 'This Month' %>
+<%= radio_button_tag "type", "this_year", false, :onclick => "render_partial_yearly();" %>
+<%= label_tag 'type_this_year', 'This Year' %>
 
 <script>
 function render_partial_daily() {
