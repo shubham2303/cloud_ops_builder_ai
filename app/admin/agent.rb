@@ -19,9 +19,9 @@ filter :phone
 filter :state
 
 index do
-  if params[:error_no_array]
+  if session[:error_params].present?
     div do
-      render 'error_form', { error_no_array: params[:error_no_array] }
+      render 'error_form', { error_no_array: session[:error_params] }
     end
   end
   id_column
@@ -36,7 +36,7 @@ index do
   actions
 end
 
-action_item only: :index, method: :post do
+action_item(:index, method: :post) do
   link_to 'Create agents', admin_bulk_path
 end
 
@@ -101,7 +101,8 @@ end
         values = q.first(-1)
         ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
       end
-      redirect_to admin_agents_path("error_no_array"=> @error_no_array)
+      session[:error_params] = @error_no_array
+      redirect_to admin_agents_path
     end
 
     def active_admin_collection
