@@ -6,7 +6,7 @@ class AdminUser < ApplicationRecord
 
   USER_ROLE = ['admin', 'super_admin']
 
-  validates_inclusion_of :role, :in => USER_ROLE, :allow_nil => false
+  validates_inclusion_of :role, :in => USER_ROLE
 
   validates :role, presence: true
 
