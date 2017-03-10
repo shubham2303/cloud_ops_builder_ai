@@ -4,7 +4,7 @@
     selected: 'Please select', disabled: 'Please select'),
     class: 'amount_select_field mrgn_lft_3', name: "batch[amount][]" %>
     <%= label_tag :count, "Count", class: 'mrgn_lft_3 count_label' %>
-    <%= number_field_tag 'count1',"", :class => "count_text_field mrgn_lft_3", name: "batch[count][]" %>
+    <%= number_field_tag 'count1',nil, :class => "count_text_field mrgn_lft_3", name: "batch[count][]" %>
     <%= image_submit_tag("plus.png", alt: "Edit Entry", id: "add", class: 'plus_icon_style' ) %>
     <%= label_tag :add, "Add", class: 'text-color add_label' %>
   </div>

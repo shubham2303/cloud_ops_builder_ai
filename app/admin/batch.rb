@@ -25,6 +25,12 @@ ActiveAdmin.register Batch do
 	controller do
 
 		def create
+			if p_amount.blank? || p_count.select{|x| x != ""}.blank?
+				error_msg = p_amount.blank? ? 'Amount field can not be blank.' : 'Count field can not be blank.'
+				flash[:error] = error_msg
+				redirect_to new_admin_batch_path
+				return
+			end	
 			Batch.generate(p_batch)
 			redirect_to :admin_batches
 		end	
@@ -39,11 +45,19 @@ ActiveAdmin.register Batch do
 
 		private
 
+		def p_amount
+			params.require(:batch)[:amount]
+		end	
+
+		def p_count
+			params.require(:batch)[:count]
+		end	
+
 		def p_batch
-			amt_arr = params.require(:batch)[:amount]
-			count_arr = params.require(:batch)[:count]
+			# amt_arr = params.require(:batch)[:amount]
+			# count_arr = params.require(:batch)[:count]
 			dirty_arr = []
-			amt_arr.zip(count_arr).each do |x| 
+			p_amount.zip(p_count).each do |x| 
 				hsh = {}
 				hsh[:amount] = x[0] 
 				hsh[:count] = x[1] 
