@@ -6,13 +6,7 @@ module Api
       # ---
       def generate_otp
         if params[:number]
-          if Rails.env.production?
-            begin
-              Agent.find_by!(phone: params[:number])
-            rescue ActiveRecord::RecordNotFound => e
-              raise AgentNotFound.new I18n.t(:agent_X_not_found, phone: params[:number])
-            end
-          end
+          Agent.find_by!(phone: params[:number]) if Rails.env.production?
           otp =  Otp.make
           $redis.set(params[:number], otp)
           $redis.expire(params[:number], 60)

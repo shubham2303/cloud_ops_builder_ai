@@ -26,7 +26,11 @@ module Api
 
       def ar_obj_not_found(exception)
         Rails.logger.debug "exception --------#{exception.message}----------"
-        render json: {status: 404, data: nil, message: exception.message}
+        if Agent.to_s == exception.try(:model)
+          render json: {status: 404, data: nil, message: I18n.t(:agent_not_found)}
+        else
+          render json: {status: 404, data: nil, message: exception.message}
+        end
       end
 
       def ar_validation_failed(exception)
