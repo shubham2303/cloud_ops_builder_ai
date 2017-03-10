@@ -43,7 +43,7 @@ module Api
         end
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, @data['lga'], individual.lga)
         unless verify_lga || (!@business.nil? && (@business.lga == @data['lga']))
-          render json: {status: 0, message: "could not match lga"}
+          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         begin
@@ -61,9 +61,9 @@ module Api
           end
           IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
           render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
-        rescue AmountExceededError, InvalidCardError => msg
-          Rails.logger.debug "exception --------#{msg}----------"
-          render json: {status: 0, message: msg }
+        rescue AmountExceededError, InvalidCardError => ex
+          Rails.logger.debug "exception --------#{ex}----------"
+          render json: {status: 0, message: ex.message }
           return
         rescue
           render json: {status: 0, message: "Unable to record revenue collection at the moment, please try again later" }

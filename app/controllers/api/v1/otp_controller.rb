@@ -16,13 +16,13 @@ module Api
               render json: { status: 1, data: {otp: otp} }
             else
               Rails.logger.debug "response from sms provider --------#{response}----------"
-              render json: { status: 0, message: "cannot send otp" }
+              render json: { status: 0, message: I18n.t(:unable_to_send_otp) }
             end
           else
             render json: { status: 1, data: {otp: otp} }
           end
         else
-          render json: { status: 0, message: "number parameter is missing" }
+          render json: { status: 0, message: I18n.t(:invalid_phone_param) }
         end  
       end
 
@@ -36,7 +36,7 @@ module Api
       def verify
         otp = $redis.get(phone_params)
         if otp.nil? || otp != params.require(:otp)
-          render json: { status: 0, message: 'Otp expired or wrong otp, try again'}
+          render json: { status: 0, message: I18n.t(:otp_expired)}
           return
         end
         ActiveRecord::Base.transaction do
@@ -47,7 +47,7 @@ module Api
             unless Rails.env.production?
               agent = Agent.create!(phone: phone_params,lga: 'Egor')
             else
-              raise AgentNotFound.new "Agent with phone number #{phone_params} does not exist"
+              raise AgentNotFound.new I18n.t(:agent_X_not_found, phone: phone_params)
             end
           end
           agent.token.delete unless agent.token.nil?

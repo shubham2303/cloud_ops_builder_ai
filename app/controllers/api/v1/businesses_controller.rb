@@ -20,7 +20,7 @@ module Api
         individual = Individual.find_by!(uuid: uuid_param)
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual.lga)
         unless verify_lga
-          render json: {status: 0, message: "could not match lga"}
+          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         try = 0

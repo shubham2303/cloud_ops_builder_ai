@@ -23,6 +23,11 @@ en:
   hello: "Hello world"
   outdated_version: "You are using an outdated version of the app. Please update and try again"
   outdated_config:  "You are using an outdated config."
-  outdated_token: 'Token Invalid'
+  outdated_token: 'Token Invalid, please login again'
   token_expiration: 'Token was Expired'
-  agent_not_found: 'Agent not found'
+  agent_not_found: 'Agent does not exist in our records'
+  agent_X_not_found: "Agent with phone number '%{phone}' does not exist in our records"
+  lga_access_not_allowed: "You are not authorized to operate for this LGA"
+  unable_to_send_otp: "Unable to send OTP at the moment"
+  invalid_phone_param: "Please provide a valid phone number"
+  otp_expired: "OTP expired or wrong OTP, please try again"

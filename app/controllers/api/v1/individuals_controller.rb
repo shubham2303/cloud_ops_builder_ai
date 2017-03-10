@@ -15,7 +15,7 @@ module Api
       def create
         verify_lga = Individual.check_lga_with_agent(theAgent,individual_params[:lga])
         unless verify_lga
-          render json: {status: 0, message: "could not match lga"}
+          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         try = 0
@@ -61,7 +61,7 @@ module Api
           verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual.lga)
         end
         unless verify_lga
-          render json: {status: 0, message: "could not match lga"}
+          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         begin
