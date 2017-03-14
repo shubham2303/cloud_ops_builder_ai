@@ -32,7 +32,7 @@ ActiveAdmin.register Agent do
   end
 
   action_item(:bulk, method: :post, only: :index) do
-    link_to 'Bulk Create', admin_bulk_path
+    link_to 'Bulk Create', admin_bulk_path if can?(:bulk, Agent)
   end
 
   collection_action :bulk, :title => "Create Bulk Agents" do
@@ -58,7 +58,6 @@ ActiveAdmin.register Agent do
 
 
   controller do
-
     def bulk
       @error_csv_invalidate = nil
     end
@@ -99,7 +98,6 @@ ActiveAdmin.register Agent do
     def active_admin_collection
       super.accessible_by current_ability
     end
-    # include ActiveAdminCanCan
   end
 
 end

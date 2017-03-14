@@ -9,13 +9,21 @@ class Ability
       can :manage, Agent
       can :manage, Individual
       can :manage, Business
+      can :read, user
     when 'super_admin'
       can :manage, Agent
       can :manage, AdminUser
-      cannot :destroy, AdminUser, id: user.id
+      cannot :destroy, user
       can :manage, Individual
       can :manage, Business
       can :manage, Batch
+    when 'guest'
+      can :read, Agent
+      cannot [:bulk, :bulk_creation], Agent
+      can :read, Individual
+      can :read, Business
+      can :read, Batch
+      can :read, user
     end
     # Define abilities for the passed in user here. For example:
     #
