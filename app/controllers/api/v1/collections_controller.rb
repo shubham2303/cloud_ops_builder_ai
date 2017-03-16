@@ -74,6 +74,33 @@ module Api
           render json: {status: 0, message: "Unable to record revenue collection at the moment, please try again later" }
         end
       end
+
+      def index
+        begin
+          if params[:uuid]
+            individual = Individual.find_by!(uuid: params[:uuid].upcase)
+            collections = individual.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
+          elsif params[:phone_number]
+            number = Individual.get_accurate_number(params[:phone_number])
+            individual = Individual.find_by!(phone: number)
+            collections = individual.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
+          elsif params[:vehicle_number]
+            vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number])
+            collections = vehicle.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
+          else
+            collections = theAgent.collections.order("created_at desc").paginate(:page => params[:page], :per_page => 10)
+          end
+        rescue
+          render json: {status: 0, message: "No Result Found" }
+          return
+        end
+        if params[:date]
+          final_coll = collections.where('"created_at" >= ?', params[:date])
+        else
+          final_coll = collections
+        end
+        render json: {status: 1, data: {collections: final_coll.includes(:individual, :collectionable).as_json(:include=>  [:collectionable, :individual])}}
+      end
     end
   end
 end
