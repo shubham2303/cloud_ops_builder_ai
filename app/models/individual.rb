@@ -1,6 +1,7 @@
 class Individual < ApplicationRecord
 
   has_many :businesses, dependent: :delete_all
+  has_many :vehicles, dependent: :delete_all
   has_many :collections
 
   before_create :update_uuid

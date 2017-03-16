@@ -30,33 +30,38 @@ module Api
             individual = Individual.find(@data['id'])
             individual.amount =+ @data['amount']
             @str = "payer id"
-          else
-            @business = Business.find(@data['id'])
-            individual = @business.individual
+          elsif @data['obj_type']== 'Business'
+            @obj = Business.find(@data['id'])
+            individual = @obj.individual
             individual.amount += @data['amount']
-            @business.amount += @data['amount']
+            @obj.amount += @data['amount']
             @str = "business id"
+          else
+            @obj = Vehicle.find(@data['id'])
+            individual = @obj.individual
+            individual.amount += @data['amount']
+            @str = "vehicle id"
           end
         rescue
           render json: {status: 0, message: "uuid is not valid"}
           return
         end
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, @data['lga'], individual.lga)
-        unless verify_lga || (!@business.nil? && (@business.lga == @data['lga']))
+        unless verify_lga || (!@obj.nil? && (@obj.lga == @data['lga']))
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         begin
           collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'],
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
-                                      lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @business)
+                                      lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @obj)
 
           ActiveRecord::Base.transaction do
             card = Card.verify_and_use(@data['number'], @data['amount'])
             batch_id = card.batch_id
             collection.batch_id = batch_id
             collection.save!
-            @business.save! unless @business.nil?
+            @obj.save! if (@obj.instance_of? Business) && !@obj.nil?
             individual.save!
           end
           IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
