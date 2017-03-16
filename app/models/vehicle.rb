@@ -3,7 +3,7 @@ class Vehicle < ApplicationRecord
   belongs_to :individual
   has_many :collections, :as => :collectionable
 
-  # validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
-
+  validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
+  validates :vehicle_number, :lga, :individual, presence: true
 
 end

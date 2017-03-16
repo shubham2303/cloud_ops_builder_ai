@@ -4,7 +4,7 @@ class Business < ApplicationRecord
   has_many :collections, :as => :collectionable
 
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
-  validates :name, :address, :lga, :year, presence: true
+  validates :name, :address, :lga, :year, :individual, presence: true
 
   scope :today_created, ->{ where("Date(created_at) = ?", Date.today) }
   scope :this_month_created, ->{ where("Date(created_at) >= ? AND Date(created_at) <= ?",Date.today.at_beginning_of_month, Date.today) }

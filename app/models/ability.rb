@@ -9,6 +9,7 @@ class Ability
       can :manage, Agent
       can :manage, Individual
       can :manage, Business
+      can :manage, Vehicle
       can :read, user
     when 'super_admin'
       can :manage, Agent
@@ -16,12 +17,14 @@ class Ability
       cannot :destroy, user
       can :manage, Individual
       can :manage, Business
+      can :manage, Vehicle
       can :manage, Batch
     when 'guest'
       can :read, Agent
       cannot [:bulk, :bulk_creation], Agent
       can :read, Individual
       can :read, Business
+      can :read, Vehicle
       can :read, Batch
       can :read, user
     end
