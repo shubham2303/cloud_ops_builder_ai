@@ -1,7 +1,8 @@
 module Api
   module V1
     class CollectionsController < BaseController
-      before_action :check_headers, :get_data_using_decryption
+      before_action :check_headers
+      before_action :get_data_using_decryption, except: :index
 
       def test_decryption
         render json: {status: 1, data: @data}
@@ -75,31 +76,18 @@ module Api
         end
       end
 
+      # GET /api/v1/collections/?page=4&date=Fri, 17 Mar 2017
       def index
         begin
-          if params[:uuid]
-            individual = Individual.find_by!(uuid: params[:uuid].upcase)
-            collections = individual.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
-          elsif params[:phone_number]
-            number = Individual.get_accurate_number(params[:phone_number])
-            individual = Individual.find_by!(phone: number)
-            collections = individual.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
-          elsif params[:vehicle_number]
-            vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number])
-            collections = vehicle.collections.where(agent: theAgent).order("created_at desc").paginate(:page => params[:page], :per_page => 10)
-          else
-            collections = theAgent.collections.order("created_at desc").paginate(:page => params[:page], :per_page => 10)
-          end
+          collections = Collection.get_collections(params, theAgent)
         rescue
           render json: {status: 0, message: "No Result Found" }
           return
         end
         if params[:date]
-          final_coll = collections.where('"created_at" >= ?', params[:date])
-        else
-          final_coll = collections
+          collections = collections.where('Date(created_at) <= ?', params[:date])
         end
-        render json: {status: 1, data: {collections: final_coll.includes(:individual, :collectionable).as_json(:include=>  [:collectionable, :individual])}}
+        render json: {status: 1, data: {collections: collections.includes(:individual, :collectionable).as_json(:include=>  [:collectionable, :individual])}}
       end
     end
   end
