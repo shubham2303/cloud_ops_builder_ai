@@ -94,7 +94,7 @@ module Api
         end
         if individual.nil?
           begin
-            vehicle = Vehicle.find_by!(vehicle_number: params[:q])
+            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
             individual = vehicle.individual
           rescue
             render json: {status: 0, message: "Couldn't find Individual"}
