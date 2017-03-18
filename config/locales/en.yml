@@ -33,3 +33,4 @@ en:
   otp_expired: "OTP expired or wrong OTP, please try again"
   sms_individual_registered: "Hello #{name}, you have been successfully registered with EIRS Connect. Your payer id is #{payer_id}"
   sms_object_registered: "Hello #{name}, your #{obj_type} '#{obj_id}' has been successfully registered with EIRS Connect"
+  sms_collection_created: "Hello #{name}, a collection of #{amount} has been registered for your #{target} using the card #{card_number}. Collection id is #{collection_id}"

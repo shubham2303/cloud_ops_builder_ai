@@ -25,22 +25,22 @@ module Api
           if @data['uuid']
             individual = Individual.find_by!(uuid: @data['uuid'])
             individual.amount =+ @data['amount']
-            @str = "payer id"
+            @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Individual'
             individual = Individual.find(@data['id'])
             individual.amount =+ @data['amount']
-            @str = "payer id"
+            @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Business'
             @obj = Business.find(@data['id'])
             individual = @obj.individual
             individual.amount += @data['amount']
             @obj.amount += @data['amount']
-            @str = "business id"
+            @target = "Business: '#{@obj.name}'"
           else
             @obj = Vehicle.find(@data['id'])
             individual = @obj.individual
             individual.amount += @data['amount']
-            @str = "vehicle id"
+            @target = "Vehicle: '#{@obj.vehicle_number}'"
           end
         rescue
           render json: {status: 0, message: "uuid is not valid"}
@@ -64,7 +64,13 @@ module Api
             @obj.save! if (@obj.instance_of? Business) && !@obj.nil?
             individual.save!
           end
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.name}, a collection of #{collection.amount} has been registered against your #{@str} #{individual.uuid} using the card #{collection.number}. Collection id is #{collection.id}")
+          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                I18n.t(:sms_collection_created,
+                                                       name: individual.name,
+                                                       amount: collection.amount,
+                                                       target: @target,
+                                                       card_number: collection.number,
+                                                       collection_id: collection.id))
           render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
         rescue AmountExceededError, InvalidCardError => ex
           Rails.logger.debug "exception --------#{ex}----------"
