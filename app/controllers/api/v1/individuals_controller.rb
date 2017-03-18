@@ -55,11 +55,7 @@ module Api
         try = 0
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
         checknew_record= individual.new_record?
-        if checknew_record
-          verify_lga =Individual.check_lga_with_agent(theAgent,individual_params[:lga])
-        else
-          verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual.lga)
-        end
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
