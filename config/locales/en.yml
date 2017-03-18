@@ -31,3 +31,5 @@ en:
   unable_to_send_otp: "Unable to send OTP at the moment"
   invalid_phone_param: "Please provide a valid phone number"
   otp_expired: "OTP expired or wrong OTP, please try again"
+  sms_individual_registered: "Hello #{name}, you have been successfully registered with EIRS Connect. Your payer id is #{payer_id}"
+  sms_object_registered: "Hello #{name}, your #{obj_type} '#{obj_id}' has been successfully registered with EIRS Connect"

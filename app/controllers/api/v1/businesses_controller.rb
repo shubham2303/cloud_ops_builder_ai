@@ -35,7 +35,11 @@ module Api
             raise e
           end
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your business '#{business.name}' has been successfully registered with EIRS Connect")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'business',
+                                                     obj_id: business.name))
         render json: {status: 1, data: {individual: individual, business: business}}
       end
 

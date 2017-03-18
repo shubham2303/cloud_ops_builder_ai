@@ -21,7 +21,11 @@ module Api
           return
         end
         vehicle = individual.vehicles.create!(vehicle_params)
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your vehicle '#{vehicle.vehicle_number}' has been successfully registered with EIRS Connect.")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'vehicle',
+                                                     obj_id: vehicle.vehicle_number))
         render json: {status: 1, data: {individual: individual, vehicle: vehicle}}
       end
 
@@ -52,9 +56,16 @@ module Api
           @vehicle = individual.vehicles.create!(vehicle_params)
         end
         if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                I18n.t(:sms_individual_registered,
+                                                       name: individual.first_name,
+                                                       payer_id: individual.uuid))
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your vehicle '#{@vehicle.vehicle_number}' has been successfully registered with EIRS Connect.")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'vehicle',
+                                                     obj_id: @vehicle.vehicle_number))
         render json: {status: 1, data: {individual: individual, vehicle: @vehicle}}
       end
 
