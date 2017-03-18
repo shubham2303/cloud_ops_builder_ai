@@ -22,7 +22,6 @@ class Ability
       cannot [:bulk, :bulk_creation], Agent
       can :read, Individual
       can :read, Business
-      can :read, Batch
       can :read, user
     end
     # Define abilities for the passed in user here. For example:
