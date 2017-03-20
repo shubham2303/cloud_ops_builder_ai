@@ -28,43 +28,43 @@ class Stat
 					end
 
 					wb.add_worksheet(name: "Businesses") do |sheet|
-						sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Business/Individual Name', 
-							'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Business', 
-							'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id', 
+            collections = @collections.where(collectionable_type: "Business")
+						sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Business/Individual Name',
+							'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Business',
+							'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id',
 							'Total Revenue Paid'], style: [bold_wid_background]*17
 
-							@collections.each do |coll|
-								business = coll.collectionable if coll.collectionable_type == "Business"
-								ind_or_buss = business || coll.individual
+            collections.each do |coll|
+								business = coll.collectionable
 								agent = coll.agent
 								reg_date = business.try(:created_at) ? business.created_at.strftime("%d-%m-%Y") : ''
-								sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), business.try(:individual).try(:first_name), 
-									business.try(:individual).try(:last_name), business.try(:individual).try(:phone), 
-									ind_or_buss.try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, business.try(:address),
-									business.try(:lga), AppConfig.categories[:categories][coll.category_type], 
-									AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
-									coll.amount, agent.try(:name), agent.try(:id), ind_or_buss.try(:amount)], 
+								sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), business.try(:individual).try(:first_name),
+									business.try(:individual).try(:last_name), business.try(:individual).try(:phone),
+                  business.try(:name) || business.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, business.try(:address),
+									business.try(:lga), AppConfig.categories[:categories][coll.category_type],
+									AppConfig.categories[:sub_categories][coll.subtype], coll.period,
+									coll.amount, agent.try(:name), agent.try(:id), business.try(:amount)],
 									style: [center_align]*17
 								end
 							end
 
 					wb.add_worksheet(name: "Vehicles") do |sheet|
+            collections = @collections.where(collectionable_type: "Vehicle")
 						sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Vehicle Number/Individual Name',
 													 'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Vehicle',
 													 'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id',
 													 'Total Revenue Paid'], style: [bold_wid_background]*17
 
-						@collections.each do |coll|
-							vehicle = coll.collectionable if coll.collectionable_type == "Vehicle"
-							ind_or_veh = vehicle || coll.individual
+            collections.each do |coll|
+							vehicle = coll.collectionable
 							agent = coll.agent
 							reg_date = vehicle.try(:created_at) ? vehicle.created_at.strftime("%d-%m-%Y") : ''
 							sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), vehicle.try(:individual).try(:first_name),
                              vehicle.try(:individual).try(:last_name), vehicle.try(:individual).try(:phone),
-                             ind_or_veh.try(:vehicle_number) || ind_or_veh.try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, vehicle.try(:individual).try(:address),
+                             vehicle.try(:vehicle_number) || vehicle.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, vehicle.try(:individual).try(:address),
                              vehicle.try(:lga), AppConfig.categories[:categories][coll.category_type],
 														 AppConfig.categories[:sub_categories][coll.subtype], coll.period,
-														 coll.amount, agent.try(:name), agent.try(:id), ind_or_veh.try(:amount)],
+														 coll.amount, agent.try(:name), agent.try(:id), vehicle.try(:amount)],
 														style: [center_align]*17
 						end
           end
