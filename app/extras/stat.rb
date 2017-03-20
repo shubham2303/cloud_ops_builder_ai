@@ -12,17 +12,17 @@ class Stat
 
 			wb.add_worksheet(name: "Agents") do |sheet|
 				sheet.add_row ['Date Of Collection', 'Agent Id','First Name','Last Name', 
-					'Business/Individual Name', 'LGA Of Collection', 'Payer Id',
+					'Business/Individual Name/Vehicle Number', 'LGA Of Collection', 'Payer Id',
 					'Transaction id', 'Address', 'Mobile Number', 'Registration Date', 
 					'Revenue Collected'], style: [bold_wid_background]*12
 					
 					@collections.each do |coll|
 						agent = coll.agent
-						ind_or_buss = coll.collectionable || coll.individual
+						ind_or_buss_or_veh = coll.collectionable || coll.individual
 						agent_created_dt = agent.try(:created_at) ? agent.created_at.strftime('%d-%m-%Y') : ''
 						sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name), 
-							agent.try(:last_name), ind_or_buss.try(:name), 
-							coll.try(:lga), coll.individual.try(:id), coll.id, agent.try(:address), agent.try(:phone), 
+							agent.try(:last_name), ind_or_buss_or_veh.try(:vehicle_number)||ind_or_buss_or_veh.try(:name),
+							coll.try(:lga), coll.individual.try(:uuid), coll.id, agent.try(:address), agent.try(:phone),
 							agent_created_dt, coll.amount], style: [center_align]*12
 						end
 					end
@@ -34,13 +34,13 @@ class Stat
 							'Total Revenue Paid'], style: [bold_wid_background]*17
 
 							@collections.each do |coll|
-								business = coll.collectionable
+								business = coll.collectionable if coll.collectionable_type == "Business"
 								ind_or_buss = business || coll.individual
 								agent = coll.agent
 								reg_date = business.try(:created_at) ? business.created_at.strftime("%d-%m-%Y") : ''
 								sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), business.try(:individual).try(:first_name), 
 									business.try(:individual).try(:last_name), business.try(:individual).try(:phone), 
-									ind_or_buss.try(:name), coll.try(:individual).try(:id), coll.id, reg_date, business.try(:address), 
+									ind_or_buss.try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, business.try(:address),
 									business.try(:lga), AppConfig.categories[:categories][coll.category_type], 
 									AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
 									coll.amount, agent.try(:name), agent.try(:id), ind_or_buss.try(:amount)], 
@@ -48,24 +48,45 @@ class Stat
 								end
 							end
 
+					wb.add_worksheet(name: "Vehicles") do |sheet|
+						sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Vehicle Number/Individual Name',
+													 'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Vehicle',
+													 'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id',
+													 'Total Revenue Paid'], style: [bold_wid_background]*17
+
+						@collections.each do |coll|
+							vehicle = coll.collectionable if coll.collectionable_type == "Vehicle"
+							ind_or_veh = vehicle || coll.individual
+							agent = coll.agent
+							reg_date = vehicle.try(:created_at) ? vehicle.created_at.strftime("%d-%m-%Y") : ''
+							sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), vehicle.try(:individual).try(:first_name),
+                             vehicle.try(:individual).try(:last_name), vehicle.try(:individual).try(:phone),
+                             ind_or_veh.try(:vehicle_number) || ind_or_veh.try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, vehicle.try(:individual).try(:address),
+                             vehicle.try(:lga), AppConfig.categories[:categories][coll.category_type],
+														 AppConfig.categories[:sub_categories][coll.subtype], coll.period,
+														 coll.amount, agent.try(:name), agent.try(:id), ind_or_veh.try(:amount)],
+														style: [center_align]*17
+						end
+          end
+
 							wb.add_worksheet(name: "Individuals") do |sheet|
-								sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Business/Individual Name', 
+								sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Business/Individual Name/Vehicle Number',
 									'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Business', 
 									'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id', 
 									'Total Revenue Paid'], style: [bold_wid_background]*17
 
 									@collections.each do |coll|
 										individual = coll.individual
-										ind_or_buss = coll.collectionable || coll.individual
+										ind_or_buss_or_veh = coll.collectionable || coll.individual
 										agent = coll.agent
 										reg_date = individual.try(:created_at) ? individual.created_at.strftime("%d-%m-%Y") : ''
 										sheet.add_row [coll.created_at.strftime('%d-%m-%Y'), individual.try(:first_name), 
 											individual.try(:last_name), individual.try(:phone),
-											ind_or_buss.try(:name), coll.try(:individual).try(:id), coll.id, 
+                                   ind_or_buss_or_veh.try(:vehicle_number) || ind_or_buss_or_veh.try(:name), coll.try(:individual).try(:id), coll.id,
 											reg_date, individual.try(:address),  coll.try(:lga), 
 											AppConfig.categories[:categories][coll.category_type],
 											AppConfig.categories[:sub_categories][coll.subtype], coll.period, 
-											coll.amount, agent.try(:name), agent.try(:id), ind_or_buss.try(:amount)], 
+											coll.amount, agent.try(:name), agent.try(:id), ind_or_buss_or_veh.try(:amount)],
 											style: [center_align]*17
 										end
 									end
