@@ -30,7 +30,10 @@ module Api
             raise e 
           end
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_individual_registered,
+                                                     name: individual.first_name,
+                                                     payer_id: individual.uuid))
         render json: {status: 1, data: {individual: individual}}
       end
 
@@ -55,11 +58,7 @@ module Api
         try = 0
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
         checknew_record= individual.new_record?
-        if checknew_record
-          verify_lga =Individual.check_lga_with_agent(theAgent,individual_params[:lga])
-        else
-          verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual.lga)
-        end
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
@@ -79,9 +78,16 @@ module Api
           end
         end
         if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                I18n.t(:sms_individual_registered,
+                                                       name: individual.first_name,
+                                                       payer_id: individual.uuid))
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your business '#{@business.name}' has been successfully registered with EIRS Connect.")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'business',
+                                                     obj_id: @business.name))
         render json: {status: 1, data: {individual: individual, business: @business}}
       end
 
@@ -94,7 +100,7 @@ module Api
         end
         if individual.nil?
           begin
-            vehicle = Vehicle.find_by!(vehicle_number: params[:q])
+            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
             individual = vehicle.individual
           rescue
             render json: {status: 0, message: "Couldn't find Individual"}

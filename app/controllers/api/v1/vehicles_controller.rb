@@ -21,7 +21,11 @@ module Api
           return
         end
         vehicle = individual.vehicles.create!(vehicle_params)
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your vehicle '#{vehicle.vehicle_number}' has been successfully registered with EIRS Connect.")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'vehicle',
+                                                     obj_id: vehicle.vehicle_number))
         render json: {status: 1, data: {individual: individual, vehicle: vehicle}}
       end
 
@@ -42,11 +46,7 @@ module Api
       def vehicle
         individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
         checknew_record= individual.new_record?
-        if checknew_record
-          verify_lga =Individual.check_lga_with_agent(theAgent,individual_params[:lga])
-        else
-          verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, vehicle_params[:lga], individual.lga)
-        end
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, vehicle_params[:lga], individual_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
@@ -56,9 +56,16 @@ module Api
           @vehicle = individual.vehicles.create!(vehicle_params)
         end
         if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone, "Hello #{individual.first_name}, you have been successfully registered with EIRS Connect. Your payer id is #{individual.uuid}")
+          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                I18n.t(:sms_individual_registered,
+                                                       name: individual.first_name,
+                                                       payer_id: individual.uuid))
         end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,"Hello #{individual.first_name}, your vehicle '#{@vehicle.vehicle_number}' has been successfully registered with EIRS Connect.")
+        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                              I18n.t(:sms_object_registered,
+                                                     name: individual.first_name,
+                                                     obj_type: 'vehicle',
+                                                     obj_id: @vehicle.vehicle_number))
         render json: {status: 1, data: {individual: individual, vehicle: @vehicle}}
       end
 
