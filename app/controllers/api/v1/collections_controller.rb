@@ -41,6 +41,7 @@ module Api
             @obj = Vehicle.find(@data['id'])
             individual = @obj.individual
             individual.amount += @data['amount']
+            @obj.amount += @data['amount']
             @target = "Vehicle: '#{@obj.vehicle_number}'"
           end
         rescue
@@ -62,7 +63,7 @@ module Api
             batch_id = card.batch_id
             collection.batch_id = batch_id
             collection.save!
-            @obj.save! if (@obj.instance_of? Business) && !@obj.nil?
+            @obj.save! unless @obj.nil?
             individual.save!
           end
           IndiBusiCollecSmsWorker.perform_async(individual.phone,
