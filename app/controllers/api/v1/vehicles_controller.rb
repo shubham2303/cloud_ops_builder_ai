@@ -15,7 +15,7 @@ module Api
       # ---
       def create
         individual = Individual.find_by!(uuid: uuid_param)
-        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, vehicle_params[:lga], individual.lga)
+        verify_lga = Individual.check_lga_with_agent(theAgent, vehicle_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
@@ -52,7 +52,7 @@ module Api
           return
         end
         ActiveRecord::Base.transaction do
-          individual.update!(individual_params)
+          individual.update!(individual_params) if checknew_record
           @vehicle = individual.vehicles.create!(vehicle_params)
         end
         if checknew_record

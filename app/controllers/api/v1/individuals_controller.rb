@@ -65,7 +65,7 @@ module Api
         end
         begin
           ActiveRecord::Base.transaction do
-            individual.update!(individual_params)
+            individual.update!(individual_params) if checknew_record
             @business = individual.businesses.create!(business_params)
           end
         rescue Exception=> e
