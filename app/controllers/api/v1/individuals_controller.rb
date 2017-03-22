@@ -94,20 +94,23 @@ module Api
       def get_individuals
         if params[:q].to_i == 0
           individual = Individual.find_by(uuid: params[:q].upcase)
+          @matched = "payer_id"
         else
           number = Individual.get_accurate_number(params[:q])
           individual = Individual.find_by(phone: number)
+          @matched = "none"
         end
         if individual.nil?
           begin
             vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
             individual = vehicle.individual
+            @matched = "vehicle_number"
           rescue
             render json: {status: 0, message: "Couldn't find Individual"}
             return
           end
         end
-        render json: {status: 1, data: {individual: individual.as_json(:include=> [:businesses, :vehicles])}}
+        render json: {status: 1, data: {matched: @matched, individual: individual.as_json(:include=> [:businesses, :vehicles])}}
       end
 
 
