@@ -30,6 +30,6 @@ class Collection < ApplicationRecord
   end
 
   def self.with_pagination_and_order(collections, page)
-    collections.order("created_at desc").paginate(:page => page, :per_page => 1)
+    collections.order("created_at desc").paginate(:page => page, :per_page => 10)
   end
 end
