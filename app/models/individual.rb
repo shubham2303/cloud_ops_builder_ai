@@ -5,9 +5,10 @@ class Individual < ApplicationRecord
   has_many :collections
 
   before_create :update_uuid
-  before_save :update_phone
+  before_validation :update_phone
   validates :first_name, :last_name, :phone, :lga, presence: true
   validates_numericality_of :phone
+  validates :phone, uniqueness: true
   validates_inclusion_of :lga, :in => JSON.parse(ENV["APP_CONFIG"])['lga'], :allow_nil => true
 
   scope :today_created, ->{ where("Date(created_at) = ?", Date.today) }
