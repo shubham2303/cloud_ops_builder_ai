@@ -56,8 +56,11 @@ module Api
       # }
       def business
         try = 0
-        individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
-        checknew_record= individual.new_record?
+        individual = Individual.find_by(phone: individual_params[:phone])
+        unless individual.nil?
+          render json: {status: 0, message: I18n.t(:individual_found_error, target: 'business')}
+          return
+        end
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], individual_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
@@ -65,8 +68,8 @@ module Api
         end
         begin
           ActiveRecord::Base.transaction do
-            individual.update!(individual_params) if checknew_record
-            @business = individual.businesses.create!(business_params)
+            @individual = Individual.create!(individual_params)
+            @business = @individual.businesses.create!(business_params)
           end
         rescue Exception=> e
           Rails.logger.debug "exception --------#{e}----------"
@@ -77,18 +80,17 @@ module Api
             raise e 
           end
         end
-        if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+        IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                                 I18n.t(:sms_individual_registered,
-                                                       name: individual.first_name,
-                                                       payer_id: individual.uuid))
-        end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                       name: @individual.first_name,
+                                                       payer_id: @individual.uuid))
+
+        IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                               I18n.t(:sms_object_registered,
-                                                     name: individual.first_name,
+                                                     name: @individual.first_name,
                                                      obj_type: 'business',
                                                      obj_id: @business.name))
-        render json: {status: 1, data: {individual: individual, business: @business}}
+        render json: {status: 1, data: {individual: @individual, business: @business}}
       end
 
       def get_individuals

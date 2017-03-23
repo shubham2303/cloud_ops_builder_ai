@@ -34,6 +34,10 @@ class Individual < ApplicationRecord
     end
   end
 
+  def self.verify_object_lga(param_lga, obj_lga)
+    param_lga == obj_lga
+  end
+
   def update_phone
     if self.phone.length <=11
       self.phone= ("234#{phone.last(10)}")

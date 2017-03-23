@@ -44,26 +44,27 @@ module Api
       #         }
       # }
       def vehicle
-        individual = Individual.find_or_initialize_by(phone: individual_params[:phone])
-        checknew_record= individual.new_record?
-        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, vehicle_params[:lga], individual_params[:lga])
+        individual = Individual.find_by(phone: individual_params[:phone])
+        unless individual.nil?
+          render json: {status: 0, message: I18n.t(:individual_found_error, target: 'vehicle')}
+          return
+        end
+        verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], vehicle_params[:lga])
         unless verify_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
         ActiveRecord::Base.transaction do
-          individual.update!(individual_params) if checknew_record
-          @vehicle = individual.vehicles.create!(vehicle_params)
+          @individual= Individual.create!(individual_params)
+          @vehicle = @individual.vehicles.create!(vehicle_params)
         end
-        if checknew_record
-          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+          IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                                 I18n.t(:sms_individual_registered,
-                                                       name: individual.first_name,
-                                                       payer_id: individual.uuid))
-        end
-        IndiBusiCollecSmsWorker.perform_async(individual.phone,
+                                                       name: @individual.first_name,
+                                                       payer_id: @individual.uuid))
+        IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                               I18n.t(:sms_object_registered,
-                                                     name: individual.first_name,
+                                                     name: @individual.first_name,
                                                      obj_type: 'vehicle',
                                                      obj_id: @vehicle.vehicle_number))
         render json: {status: 1, data: {individual: individual, vehicle: @vehicle}}
