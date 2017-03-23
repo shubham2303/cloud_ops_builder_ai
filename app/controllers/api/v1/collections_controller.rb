@@ -51,7 +51,7 @@ module Api
         verify_lga = Individual.check_lga_with_agent(theAgent, @data['lga'])
         obj_lga = @obj.nil? ? individual.lga: @obj.lga
         ver_obj_lga = Individual.verify_object_lga(@data['lga'], obj_lga)
-        unless verify_lga || ver_obj_lga
+        unless verify_lga && ver_obj_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
           return
         end
