@@ -48,11 +48,13 @@ module Api
         end
         vehicle = Vehicle.new(vehicle_params)
         if vehicle.save
-          IndiBusiCollecSmsWorker.perform_async(vehicle.phone,
-                                              I18n.t(:sms_object_registered,
-                                                     name: vehicle.phone,
-                                                     obj_type: 'vehicle',
-                                                     obj_id: vehicle.vehicle_number)) if vehicle.phone?
+          unless vehicle.phone.blank?
+            IndiBusiCollecSmsWorker.perform_async(vehicle.phone,
+                                                  I18n.t(:sms_object_registered,
+                                                         name: '',
+                                                         obj_type: 'vehicle',
+                                                         obj_id: vehicle.vehicle_number))
+          end
           vehicle_hsh = vehicle.as_json
           vehicle_hsh.delete("individual_id")
           render json: {status: 1, data: {vehicle: vehicle_hsh} }

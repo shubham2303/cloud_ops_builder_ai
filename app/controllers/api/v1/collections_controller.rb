@@ -70,7 +70,7 @@ module Api
           end
           IndiBusiCollecSmsWorker.perform_async(individual.try(:phone) || @obj.try(:phone),
                                                 I18n.t(:sms_collection_created,
-                                                       name: individual.try(:name),
+                                                       name: individual.try(:name).to_s,
                                                        amount: collection.amount,
                                                        target: @target,
                                                        card_number: collection.number,
