@@ -96,7 +96,7 @@ module Api
       # GET /api/v2/individuals?q=SDSDS for vehicle association null for individual
       # GET /api/v1/individuals?q=SDSDS for otherwise
       def get_individuals
-        is_v1 = request.env['REQUEST_PATH'].include? '/v1/'
+        is_v1 = request.path.include?('/v1/')
 
         if params[:q].to_i == 0
           individual = Individual.find_by(uuid: params[:q].upcase)
