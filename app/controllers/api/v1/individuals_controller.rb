@@ -122,8 +122,8 @@ module Api
           end
 
           if is_v1
-            @individual = vehicle.individual
-            if @individual.nil?
+            individual = vehicle.individual
+            if individual.nil?
               render json: {status: 0, message: "No matches found"}
               return
             end
