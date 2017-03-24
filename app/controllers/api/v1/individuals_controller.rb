@@ -96,6 +96,8 @@ module Api
       # GET /api/v2/individuals?q=SDSDS for vehicle association null for individual
       # GET /api/v1/individuals?q=SDSDS for otherwise
       def get_individuals
+        is_v1 = request.env['REQUEST_PATH'].include? '/v1/'
+
         if params[:q].to_i == 0
           individual = Individual.find_by(uuid: params[:q].upcase)
           @matched = "payer_id"
@@ -104,30 +106,33 @@ module Api
           individual = Individual.find_by(phone: number)
           @matched = "none"
         end
-        @hsh = { individual: individual.as_json(:include=> [:businesses]) }
+        @hsh = if is_v1
+                 { individual: individual.as_json(:include => [:businesses, :vehicles]) }
+               else
+                 { individual: individual.as_json(:include => [:businesses]) }
+               end
 
         if individual.nil?
-          if request.env['REQUEST_PATH'].include? 'v2'
-            begin
-              vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
-              @matched = "vehicle_number"
-            rescue
-              render json: {status: 0, message: "Couldn't find you are looking for"}
-              return
-            end    
-            @hsh = { vehicle: vehicle }
-          else
-            begin
-              vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
-              @individual = vehicle.individual
-              @matched = "vehicle_number"
-            rescue
-              render json: {status: 0, message: "Couldn't find Individual"}
+          begin
+            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
+            @matched = "vehicle_number"
+          rescue
+            render json: {status: 0, message: "No matches found"}
+            return
+          end
+
+          if is_v1
+            @individual = vehicle.individual
+            if @individual.nil?
+              render json: {status: 0, message: "No matches found"}
               return
             end
-            @hsh = { individual: individual.as_json(:include=> [:businesses, :vehicles]) }
+
+            @hsh = { individual: individual.as_json(:include => [:businesses, :vehicles]) }
+          else
+            @hsh = { vehicle: vehicle }
           end
-        end  
+        end
         render json: {status: 1, data: {matched: @matched}.merge(@hsh)}
       end
 
