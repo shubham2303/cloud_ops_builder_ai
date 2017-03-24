@@ -8,11 +8,13 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :api, format: false, defaults: {format: :json} do
+    match 'v2/individuals/',           to: 'v1/individuals#get_individuals',    via: :get, format: false, defaults: {format: :json}
     namespace :v1 do
 
       match '/agents/me',           to: 'agents#update_me',    via: :put, format: false, defaults: {format: :json}
       match '/individuals/:uuid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
       match '/individuals/:uuid/vehicles', to: 'vehicles#create', via: :post, format: false, defaults: {format: :json}
+      match '/vehicles', to: 'vehicles#create_alone', via: :post, format: false, defaults: {format: :json}
       match '/individuals/vehicle', to: 'vehicles#vehicle', via: :post, format: false, defaults: {format: :json}
       match '/individuals/',           to: 'individuals#get_individuals',    via: :get, format: false, defaults: {format: :json}
 

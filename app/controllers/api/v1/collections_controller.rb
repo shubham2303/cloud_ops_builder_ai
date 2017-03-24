@@ -39,8 +39,8 @@ module Api
             @target = "Business: '#{@obj.name}'"
           else
             @obj = Vehicle.find(@data['id'])
-            individual = @obj.individual
-            individual.amount += @data['amount']
+            # individual = @obj.individual
+            # individual.amount += @data['amount']
             @obj.amount += @data['amount']
             @target = "Vehicle: '#{@obj.vehicle_number}'"
           end
@@ -49,7 +49,7 @@ module Api
           return
         end
         verify_lga = Individual.check_lga_with_agent(theAgent, @data['lga'])
-        obj_lga = @obj.nil? ? individual.lga: @obj.lga
+        obj_lga = @obj.nil? ? individual.lga : @obj.lga
         ver_obj_lga = Individual.verify_object_lga(@data['lga'], obj_lga)
         unless verify_lga && ver_obj_lga
           render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
@@ -66,11 +66,11 @@ module Api
             collection.batch_id = batch_id
             collection.save!
             @obj.save! unless @obj.nil?
-            individual.save!
+            individual.save! unless individual.nil?
           end
-          IndiBusiCollecSmsWorker.perform_async(individual.phone,
+          IndiBusiCollecSmsWorker.perform_async(individual.try(:phone) || @obj.try(:phone),
                                                 I18n.t(:sms_collection_created,
-                                                       name: individual.name,
+                                                       name: individual.try(:name),
                                                        amount: collection.amount,
                                                        target: @target,
                                                        card_number: collection.number,

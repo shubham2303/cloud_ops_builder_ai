@@ -31,9 +31,9 @@ module Api
           end
         end
         IndiBusiCollecSmsWorker.perform_async(individual.phone,
-                                              I18n.t(:sms_individual_registered,
-                                                     name: individual.first_name,
-                                                     payer_id: individual.uuid))
+          I18n.t(:sms_individual_registered,
+           name: individual.first_name,
+           payer_id: individual.uuid))
         render json: {status: 1, data: {individual: individual}}
       end
 
@@ -81,18 +81,20 @@ module Api
           end
         end
         IndiBusiCollecSmsWorker.perform_async(@individual.phone,
-                                                I18n.t(:sms_individual_registered,
-                                                       name: @individual.first_name,
-                                                       payer_id: @individual.uuid))
+          I18n.t(:sms_individual_registered,
+           name: @individual.first_name,
+           payer_id: @individual.uuid))
 
         IndiBusiCollecSmsWorker.perform_async(@individual.phone,
-                                              I18n.t(:sms_object_registered,
-                                                     name: @individual.first_name,
-                                                     obj_type: 'business',
-                                                     obj_id: @business.name))
+          I18n.t(:sms_object_registered,
+           name: @individual.first_name,
+           obj_type: 'business',
+           obj_id: @business.name))
         render json: {status: 1, data: {individual: @individual, business: @business}}
       end
 
+      # GET /api/v2/individuals?q=SDSDS for vehicle association null for individual
+      # GET /api/v1/individuals?q=SDSDS for otherwise
       def get_individuals
         if params[:q].to_i == 0
           individual = Individual.find_by(uuid: params[:q].upcase)
@@ -102,17 +104,31 @@ module Api
           individual = Individual.find_by(phone: number)
           @matched = "none"
         end
+        @hsh = { individual: individual.as_json(:include=> [:businesses]) }
+
         if individual.nil?
-          begin
-            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
-            individual = vehicle.individual
-            @matched = "vehicle_number"
-          rescue
-            render json: {status: 0, message: "Couldn't find Individual"}
-            return
+          if request.env['REQUEST_PATH'].include? 'v2'
+            begin
+              vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
+              @matched = "vehicle_number"
+            rescue
+              render json: {status: 0, message: "Couldn't find you are looking for"}
+              return
+            end    
+            @hsh = { vehicle: vehicle }
+          else
+            begin
+              vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
+              @individual = vehicle.individual
+              @matched = "vehicle_number"
+            rescue
+              render json: {status: 0, message: "Couldn't find Individual"}
+              return
+            end
+            @hsh = { individual: individual.as_json(:include=> [:businesses, :vehicles]) }
           end
-        end
-        render json: {status: 1, data: {matched: @matched, individual: individual.as_json(:include=> [:businesses, :vehicles])}}
+        end  
+        render json: {status: 1, data: {matched: @matched}.merge(@hsh)}
       end
 
 
