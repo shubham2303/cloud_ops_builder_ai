@@ -7,7 +7,9 @@ ActiveAdmin.register Batch do
 	index do
 		id_column
 		column :net_worth
-		column :created_at
+		column :created_at do |obj|
+			ApplicationHelper.local_time(obj.created_at)
+		end
 		actions defaults: false do |batch|
 			div id: "reload_me_partial_batch_#{batch.id}" do
 				render 'reload_form', { batch: batch }

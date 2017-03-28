@@ -19,7 +19,9 @@ index do
 	column :last_name
 	column :address
 	column :lga
-	column :created_at
+	column :created_at do |obj|
+		ApplicationHelper.local_time(obj.created_at)
+	end
 	column :uuid
 	actions
 end	
