@@ -4,8 +4,8 @@ module ApplicationHelper
     number_to_currency(number, :unit => "₦")
   end
 
-  def self.local_time(time)
-    time.localtime
+  def self.local_time(time, format)
+    time.getlocal(format)
   end
 
   class AppConfig

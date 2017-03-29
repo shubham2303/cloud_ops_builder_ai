@@ -18,5 +18,18 @@ $(document).ready(function(){
 
     });
 
+    $(".time").each(function(index){
+        // alert($(this).val());
+        if (index >0) {
+            var text = $(this).text()
+            var date = new Date(text + ' UTC');
+
+            $(this).text(date.toLocaleDateString() +' '+date.toLocaleTimeString());
+        }
+    });
+        var offset = new Date().getTimezoneOffset();
+        $('.time_format').val(offset);
+
+
     // $(".flashes" ).fadeOut(5000);
 });

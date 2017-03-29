@@ -18,7 +18,7 @@ ActiveAdmin.register_page "Dashboard" do
       if(params[:start_date] > params[:end_date])
         render 'admin/reports/date_range_error.js.erb'
       else  
-        StatGenerationWorker.perform_async(params[:start_date], params[:end_date], current_admin_user.id)
+        StatGenerationWorker.perform_async(params[:start_date], params[:end_date], current_admin_user.id, params[:time_format])
       end
     end
   end  

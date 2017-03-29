@@ -27,9 +27,7 @@ ActiveAdmin.register Agent do
     column :birthplace
     column :state
     column :lga
-    column :created_at do |obj|
-      ApplicationHelper.local_time(obj.created_at)
-    end
+    column :created_at, :class => 'col-created_at time'
     actions
   end
 

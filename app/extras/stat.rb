@@ -1,7 +1,7 @@
 class Stat
 	include ApplicationHelper
 
-	def self.to_xlsx(start_date, end_date, admin_user)
+	def self.to_xlsx(start_date, end_date, admin_user, time_format)
 		xlsx_package = Axlsx::Package.new
 		wb = xlsx_package.workbook
 		@collections = Collection.where("Date(created_at) >= ? AND Date(created_at) <= ?", start_date, end_date)
@@ -19,8 +19,8 @@ class Stat
 					@collections.each do |coll|
 						agent = coll.agent
 						ind_or_buss_or_veh = coll.collectionable || coll.individual
-						agent_created_dt = agent.try(:created_at) ? ApplicationHelper.local_time(agent.created_at).strftime('%d-%m-%Y') : ''
-						sheet.add_row [ApplicationHelper.local_time(coll.created_at).strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name),
+						agent_created_dt = agent.try(:created_at) ? ApplicationHelper.local_time(agent.created_at, time_format).strftime('%d-%m-%Y') : ''
+						sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name),
 							agent.try(:last_name), ind_or_buss_or_veh.try(:vehicle_number)||ind_or_buss_or_veh.try(:name),
 							coll.try(:lga), coll.individual.try(:uuid), coll.id, agent.try(:address), agent.try(:phone),
 							agent_created_dt, coll.amount], style: [center_align]*12
@@ -37,8 +37,8 @@ class Stat
 							collections.each do |coll|
 								business = coll.collectionable
 								agent = coll.agent
-								reg_date = business.try(:created_at) ? ApplicationHelper.local_time(business.created_at).strftime("%d-%m-%Y") : ''
-								sheet.add_row [ApplicationHelper.local_time(coll.created_at).strftime('%d-%m-%Y'), business.try(:individual).try(:first_name),
+								reg_date = business.try(:created_at) ? ApplicationHelper.local_time(business.created_at, time_format).strftime("%d-%m-%Y") : ''
+								sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), business.try(:individual).try(:first_name),
 									business.try(:individual).try(:last_name), business.try(:individual).try(:phone),
 									business.try(:name) || business.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, business.try(:address),
 									business.try(:lga), AppConfig.categories[:categories][coll.category_type],
@@ -58,8 +58,8 @@ class Stat
 									collections.each do |coll|
 										vehicle = coll.collectionable
 										agent = coll.agent
-										reg_date = vehicle.try(:created_at) ? ApplicationHelper.local_time(vehicle.created_at).strftime("%d-%m-%Y") : ''
-										sheet.add_row [ApplicationHelper.local_time(coll.created_at).strftime('%d-%m-%Y'), vehicle.try(:phone),
+										reg_date = vehicle.try(:created_at) ? ApplicationHelper.local_time(vehicle.created_at, time_format).strftime("%d-%m-%Y") : ''
+										sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), vehicle.try(:phone),
 											vehicle.try(:vehicle_number), coll.try(:individual).try(:uuid), coll.id, reg_date,
 											vehicle.try(:lga), AppConfig.categories[:categories][coll.category_type],
 											AppConfig.categories[:sub_categories][coll.subtype], coll.period,
@@ -78,8 +78,8 @@ class Stat
 												individual = coll.individual
 												ind_or_buss_or_veh = coll.collectionable || coll.individual
 												agent = coll.agent
-												reg_date = individual.try(:created_at) ? ApplicationHelper.local_time(individual.created_at).strftime("%d-%m-%Y") : ''
-												sheet.add_row [ApplicationHelper.local_time(coll.created_at).strftime('%d-%m-%Y'), individual.try(:first_name),
+												reg_date = individual.try(:created_at) ? ApplicationHelper.local_time(individual.created_at, time_format).strftime("%d-%m-%Y") : ''
+												sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), individual.try(:first_name),
 													individual.try(:last_name), individual.try(:phone),
 													ind_or_buss_or_veh.try(:vehicle_number) || ind_or_buss_or_veh.try(:name), coll.try(:individual).try(:id), coll.id,
 													reg_date, individual.try(:address),  coll.try(:lga), 
@@ -95,7 +95,7 @@ class Stat
 												style: [bold_wid_background]*5
 												@collections.each do |coll|
 
-													sheet.add_row [ApplicationHelper.local_time(coll.created_at).strftime('%d-%m-%Y'), coll.try(:lga),
+													sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.try(:lga),
 														AppConfig.categories[:categories][coll.category_type], 
 														AppConfig.categories[:sub_categories][coll.subtype], coll.amount],
 														style: [center_align]*5

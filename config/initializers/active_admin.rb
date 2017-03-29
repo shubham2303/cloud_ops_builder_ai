@@ -196,6 +196,8 @@ ActiveAdmin.setup do |config|
     config.register_javascript 'jquery-linedtextarea.js'
     config.register_stylesheet 'jquery-linedtextarea.css'
 
+
+
   # == CSV options
   #
   # Set the CSV builder separator

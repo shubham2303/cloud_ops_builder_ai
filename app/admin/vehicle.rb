@@ -23,9 +23,7 @@ ActiveAdmin.register Vehicle do
     column :vehicle_number
     column :lga
     column :phone
-    column :created_at do |obj|
-      ApplicationHelper.local_time(obj.created_at)
-    end
+    column :created_at , :class => 'col-created_at time'
     actions
   end
 
