@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def self.local_time(time, format)
-    time.getlocal(format)
+    time - -format.minutes
   end
 
   class AppConfig
