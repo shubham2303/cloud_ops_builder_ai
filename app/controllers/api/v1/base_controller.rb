@@ -117,8 +117,7 @@ module Api
           decrypted_data =AESCrypt.decrypt(params.require(:data), decrypted_secret_key)
           @data = JSON.parse(decrypted_data)
         rescue
-          theToken.update_columns(expiry: Time.now) unless theAgent.nil?
-          raise TokenExpired.new
+          raise AccessBlocked.new
         end
       end
     end
