@@ -4,7 +4,7 @@ class Stat
 	def self.to_xlsx(start_date, end_date, admin_user, time_format)
 		xlsx_package = Axlsx::Package.new
 		wb = xlsx_package.workbook
-		@collections = Collection.where("Date(created_at) >= ? AND Date(created_at) <= ?", start_date, end_date)
+		collections_in_range = Collection.where("Date(created_at) >= ? AND Date(created_at) <= ?", start_date, end_date)
 
 		wb.styles do |style|
 			bold_wid_background = style.add_style(bg_color: "EFC376", b: true, :alignment=>{:horizontal => :center})
@@ -16,7 +16,7 @@ class Stat
 									 'Transaction id', 'Address', 'Mobile Number', 'Registration Date', 
 									 'Revenue Collected'], style: [bold_wid_background]*12
 
-				@collections.each do |coll|
+				collections_in_range.each do |coll|
 					agent = coll.agent
 					ind_or_buss_or_veh = coll.collectionable || coll.individual
 					agent_created_dt = agent.try(:created_at) ? ApplicationHelper.local_time(agent.created_at, time_format).strftime('%d-%m-%Y') : ''
@@ -28,7 +28,7 @@ class Stat
 			end
 
 			wb.add_worksheet(name: "Businesses") do |sheet|
-				collections = @collections.where(collectionable_type: "Business")
+				collections = collections_in_range.where(collectionable_type: "Business")
 				sheet.add_row ['Date Of Collection','First Name','Last Name','Phone No', 'Business/Individual Name',
 									 'Payer Id', 'Transaction id', 'Date of Registration', 'Address', 'LGA of Business',
 									 'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id',
@@ -49,7 +49,7 @@ class Stat
 			end
 
 			wb.add_worksheet(name: "Vehicles") do |sheet|
-				collections = @collections.where(collectionable_type: "Vehicle")
+				collections = collections_in_range.where(collectionable_type: "Vehicle")
 				sheet.add_row ['Date Of Collection','Phone No', 'Vehicle Number',
 									 'Payer Id', 'Transaction id', 'Date of Registration', 'LGA of Vehicle',
 									 'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id',
@@ -74,7 +74,7 @@ class Stat
 									 'Category', 'Sub Category','Period', 'Revenue Amount', 'Agent Name','Agent Id', 
 									 'Total Revenue Paid'], style: [bold_wid_background]*17
 
-				@collections.each do |coll|
+				collections_in_range.each do |coll|
 					individual = coll.individual
 					ind_or_buss_or_veh = coll.collectionable || coll.individual
 					agent = coll.agent
@@ -93,8 +93,8 @@ class Stat
 			wb.add_worksheet(name: "Collection Report - Summary") do |sheet|
 				sheet.add_row ['Date Of Collection','LGA','Category', 'Sub Category', 'Revenue Amount'], 
 					style: [bold_wid_background]*5
-				@collections.each do |coll|
 
+				collections_in_range.each do |coll|
 					sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.try(:lga),
 										AppConfig.categories[:categories][coll.category_type], 
 										AppConfig.categories[:sub_categories][coll.subtype], coll.amount],
