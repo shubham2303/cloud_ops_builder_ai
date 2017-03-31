@@ -68,13 +68,16 @@ module Api
             @obj.save! unless @obj.nil?
             individual.save! unless individual.nil?
           end
-          IndiBusiCollecSmsWorker.perform_async(individual.try(:phone) || @obj.try(:phone),
-                                                I18n.t(:sms_collection_created,
-                                                       name: individual.try(:name).to_s,
-                                                       amount: collection.amount,
-                                                       target: @target,
-                                                       card_number: collection.number,
-                                                       collection_id: collection.id))
+          phone = individual.try(:phone) || @obj.try(:phone)
+          unless phone.blank?
+            IndiBusiCollecSmsWorker.perform_async(phone,
+                                                  I18n.t(:sms_collection_created,
+                                                         name: individual.try(:name).to_s,
+                                                         amount: collection.amount,
+                                                         target: @target,
+                                                         card_number: collection.number,
+                                                         collection_id: collection.id))
+          end
           render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
         rescue AmountExceededError, InvalidCardError => ex
           Rails.logger.debug "exception --------#{ex}----------"
