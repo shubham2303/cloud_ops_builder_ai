@@ -9,7 +9,7 @@ module Api
           Agent.find_by!(phone: params[:number]) if Rails.env.production?
           otp =  Otp.make
           $redis.set(params[:number], otp)
-          $redis.expire(params[:number], 60)
+          $redis.expire(params[:number], 600)
           if Rails.env.production?
             response = Message.send_sms(params[:number], "OTP for EIRS Connect Agent login is #{otp}")
             if response.include? "OK"
@@ -35,9 +35,11 @@ module Api
       # ---
       def verify
         otp = $redis.get(phone_params)
-        if otp.nil? || otp != params.require(:otp)
-          render json: { status: 0, message: I18n.t(:otp_expired)}
-          return
+        unless ApplicationHelper::AppConfig.master_otp_bypass?(params.require(:otp))
+          if otp.nil? || otp != params.require(:otp)
+            render json: { status: 0, message: I18n.t(:otp_expired)}
+            return
+          end
         end
         ActiveRecord::Base.transaction do
           begin
