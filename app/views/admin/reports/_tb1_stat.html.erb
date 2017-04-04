@@ -2,17 +2,17 @@
   <% @leaderboard = Date.today.to_s(:long) %>
 	<% @individuals = Individual.today_created %>
 	<% @businesses = Business.today_created %>
-  <% @vehicles = Business.today_created %>
+  <% @vehicles = Vehicle.today_created %>
 <% elsif (stat == 'monthly') %>
   <% @leaderboard = Date.today.to_s(:month_and_year) %>
 	<% @individuals = Individual.this_month_created %>
 	<% @businesses = Business.this_month_created %>
-  <% @vehicles = Business.this_month_created %>
+  <% @vehicles = Vehicle.this_month_created %>
 <% elsif (stat == 'yearly') %>
   <% @leaderboard = Date.today.year %>
 	<% @individuals = Individual.this_year_created %>
 	<% @businesses = Business.this_year_created %>
-  <% @vehicles = Business.this_year_created %>
+  <% @vehicles = Vehicle.this_year_created %>
 <% end %>
 
 <tr>
