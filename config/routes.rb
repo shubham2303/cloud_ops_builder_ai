@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       match '/vehicles', to: 'vehicles#create_alone', via: :post, format: false, defaults: {format: :json}
       match '/individuals/vehicle', to: 'vehicles#vehicle', via: :post, format: false, defaults: {format: :json}
       match '/individuals/',           to: 'individuals#get_individuals',    via: :get, format: false, defaults: {format: :json}
-
+      match '/vas2nets',             to: 'vas2nets#vas2net', via: :get, format: false, defaults: {format: :json}
       resources :otp, only: []  do
         collection do
           get :generate_otp
