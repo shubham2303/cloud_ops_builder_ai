@@ -25,7 +25,11 @@ module Api
         end
         try = 0
         begin
-          business = individual.businesses.create!(business_params)
+          unless business_params[:uuid]
+            business = individual.businesses.create!(business_params.merge(uuid: ShortUUID.unique))
+          else
+            business = individual.businesses.create!(business_params)
+          end
         rescue Exception=> e
           Rails.logger.debug "exception --------#{e}----------"
           if (e.message.include? ("index_businesses_on_uuid")) && (try< 5)
@@ -50,7 +54,7 @@ module Api
       end  
 
       def business_params
-        params.require(:business).permit(:name, :address, :turnover, :year, :lga)
+        params.require(:business).permit(:name, :address, :turnover, :year, :lga, :uuid)
       end
     end
   end

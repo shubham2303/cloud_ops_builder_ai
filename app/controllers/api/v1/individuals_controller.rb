@@ -69,7 +69,11 @@ module Api
         begin
           ActiveRecord::Base.transaction do
             @individual = Individual.create!(individual_params)
-            @business = @individual.businesses.create!(business_params)
+            unless business_params[:uuid]
+              @business = @individual.businesses.create!(business_params.merge(uuid: ShortUUID.unique))
+            else
+              @business = @individual.businesses.create!(business_params)
+            end
           end
         rescue Exception=> e
           Rails.logger.debug "exception --------#{e}----------"
@@ -145,7 +149,7 @@ module Api
       end
 
       def business_params
-        params.require(:business).permit(:name, :address, :turnover, :year, :lga)
+        params.require(:business).permit(:name, :address, :turnover, :year, :lga, :uuid)
       end
     end
   end

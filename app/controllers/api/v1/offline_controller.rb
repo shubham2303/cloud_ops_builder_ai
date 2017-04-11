@@ -15,9 +15,9 @@ module Api
           individuals = Individual.all
           batch_details = BatchDetail.all
         end
-        render json: {status: 1, vehicles: vehicles.as_json(only: [:id, :vehicle_number]),
-                      businesses: businesses.as_json(only: [:id, :uuid, :name]),
-                      individuals: individuals.as_json(only: [:id, :uuid, :first_name, :last_name]),
+        render json: {status: 1, vehicles: vehicles.as_json(only: [:id, :vehicle_number, :lga]),
+                      businesses: businesses.as_json(only: [:id, :uuid, :name, :lga]),
+                      individuals: individuals.as_json(only: [:id, :uuid, :first_name, :last_name, :lga, :phone]),
                       cards: batch_details.as_json(only: [:n, :amount]), timestamp: Time.now.utc }
       end
 
