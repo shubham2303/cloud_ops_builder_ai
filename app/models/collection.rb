@@ -21,7 +21,7 @@ class Collection < ApplicationRecord
       individual = Individual.find_by!(phone: number)
       collections = individual.collections.where(agent: theAgent)
     elsif params[:vehicle_number]
-      vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number].split.join.upcase)
+      vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number].upcase)
       collections = vehicle.collections.where(agent: theAgent)
     else
       collections = theAgent.collections

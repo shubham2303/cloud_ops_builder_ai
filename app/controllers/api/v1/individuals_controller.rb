@@ -128,7 +128,7 @@ module Api
 
         if individual.nil?
           begin
-            vehicle = Vehicle.find_by!(vehicle_number: params[:q].split.join.upcase)
+            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
             @matched = "vehicle_number"
           rescue
             render json: {status: 0, message: "No matches found"}
