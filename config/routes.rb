@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       match '/individuals/vehicle', to: 'vehicles#vehicle', via: :post, format: false, defaults: {format: :json}
       match '/individuals/',           to: 'individuals#get_individuals',    via: :get, format: false, defaults: {format: :json}
       match '/offline/down_sync',             to: 'offline#down_sync', via: :get, format: false, defaults: {format: :json}
+      match '/offline/dump',             to: 'offline#dump', via: :get, format: false, defaults: {format: :json}
       resources :otp, only: []  do
         collection do
           get :generate_otp

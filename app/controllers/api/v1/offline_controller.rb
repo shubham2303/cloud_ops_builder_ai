@@ -1,14 +1,24 @@
 module Api
   module V1
     class OfflineController < BaseController
-      before_action :check_headers
+      http_basic_authenticate_with name: "Kamille Watsica", password: "J8O4Js5fQp", only: :dump
+      before_action :check_headers , except: :dump
+
 
       def down_sync
+        get_offline_data
+      end
+
+      def dump
+        get_offline_data
+      end
+
+      def get_offline_data
         if params[:timestamp]
-         vehicles = Vehicle.where("updated_at >= ?", params[:timestamp])
-         businesses = Business.where("updated_at >= ?", params[:timestamp])
-         individuals = Individual.where("updated_at >= ?", params[:timestamp])
-         batch_details = BatchDetail.where("updated_at >= ?", params[:timestamp])
+          vehicles = Vehicle.where("updated_at >= ?", params[:timestamp])
+          businesses = Business.where("updated_at >= ?", params[:timestamp])
+          individuals = Individual.where("updated_at >= ?", params[:timestamp])
+          batch_details = BatchDetail.where("updated_at >= ?", params[:timestamp])
         else
           vehicles = Vehicle.all
           businesses = Business.all

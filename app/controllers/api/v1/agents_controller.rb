@@ -26,6 +26,10 @@ module Api
         render json: {status: 1, data: {agent: theAgent, token: theToken.token}}
       end
 
+      def show
+        render json: {status: 1, data: {agent: theAgent}}
+      end
+
       private
 
       def agent_params
