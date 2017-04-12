@@ -4,7 +4,6 @@ class Individual < ApplicationRecord
   has_many :vehicles, dependent: :delete_all
   has_many :collections
 
-  before_create :update_uuid
   before_validation :update_phone
   validates :first_name, :last_name, :phone, :lga, presence: true
   validates_numericality_of :phone
@@ -20,6 +19,12 @@ class Individual < ApplicationRecord
     i = ('1' + "0"*(6-charac.length-1)).to_i
     j = ('9' + "9"*(6-charac.length-1)).to_i
     self.uuid =(charac +rand(i..j).to_s).upcase
+  end
+
+  def self.generate_payer_id(first_name, last_name, id)
+    time=  Time.now.utc
+    year = time.strftime("%Y")[2..4]
+    (first_name+last_name)[0..2].upcase+year+time.strftime("%m%d%H%M%S")+id.to_s
   end
 
   def self.check_lga_with_agent(agent, lga)

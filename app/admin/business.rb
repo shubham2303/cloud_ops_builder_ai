@@ -14,7 +14,6 @@ index do
   column :address
   column :turnover
   column :year
-  column :uuid
   column :lga
   column :created_at, :class => 'col-created_at time'
   actions

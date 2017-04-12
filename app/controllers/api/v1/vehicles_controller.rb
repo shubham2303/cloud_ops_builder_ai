@@ -89,7 +89,12 @@ module Api
           return
         end
         ActiveRecord::Base.transaction do
-          @individual= Individual.create!(individual_params)
+          unless individual_params[:uuid]
+            payer_id = Individual.generate_payer_id(individual_params[:first_name],individual_params[:last_name], theAgent.id)
+            @individual = Individual.create!(individual_params.merge(uuid: payer_id))
+          else
+            @individual = Individual.create!(individual_params)
+          end
           @vehicle = @individual.vehicles.create!(vehicle_params)
         end
           IndiBusiCollecSmsWorker.perform_async(@individual.phone,
@@ -111,7 +116,7 @@ module Api
       end
 
       def individual_params
-        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga)
+        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga, :uuid)
       end
 
       def vehicle_params

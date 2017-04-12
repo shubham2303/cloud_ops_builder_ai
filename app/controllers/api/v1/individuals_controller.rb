@@ -20,7 +20,12 @@ module Api
         end
         try = 0
         begin
-          individual = Individual.create!(individual_params)
+          unless individual_params[:uuid]
+            payer_id = Individual.generate_payer_id(individual_params[:first_name],individual_params[:last_name], theAgent.id)
+            individual = Individual.create!(individual_params.merge(uuid: payer_id))
+          else
+            individual = Individual.create!(individual_params)
+          end
         rescue Exception=> e
           Rails.logger.debug "exception --------#{e}----------"
           if (e.message.include?("index_individuals_on_uuid")) && (try< 5)
@@ -68,7 +73,12 @@ module Api
         end
         begin
           ActiveRecord::Base.transaction do
-            @individual = Individual.create!(individual_params)
+            unless individual_params[:uuid]
+              payer_id = Individual.generate_payer_id(individual_params[:first_name],individual_params[:last_name], theAgent.id)
+              @individual = Individual.create!(individual_params.merge(uuid: payer_id))
+            else
+              @individual = Individual.create!(individual_params)
+            end
             unless business_params[:uuid]
               @business = @individual.businesses.create!(business_params.merge(uuid: ShortUUID.unique))
             else
@@ -118,7 +128,7 @@ module Api
 
         if individual.nil?
           begin
-            vehicle = Vehicle.find_by!(vehicle_number: params[:q].upcase)
+            vehicle = Vehicle.find_by!(vehicle_number: params[:q].split.join.upcase)
             @matched = "vehicle_number"
           rescue
             render json: {status: 0, message: "No matches found"}
@@ -145,7 +155,7 @@ module Api
       private
 
       def individual_params
-        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga)
+        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga, :uuid)
       end
 
       def business_params

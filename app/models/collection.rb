@@ -21,7 +21,7 @@ class Collection < ApplicationRecord
       individual = Individual.find_by!(phone: number)
       collections = individual.collections.where(agent: theAgent)
     elsif params[:vehicle_number]
-      vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number])
+      vehicle = Vehicle.find_by!(vehicle_number: params[:vehicle_number].split.join.upcase)
       collections = vehicle.collections.where(agent: theAgent)
     else
       collections = theAgent.collections
@@ -31,5 +31,11 @@ class Collection < ApplicationRecord
 
   def self.with_pagination_and_order(collections, page)
     collections.order("created_at desc").page(page).per(10)
+  end
+
+  def self.generate_uuid(agent_id, created_at=nil)
+    time=  created_at || Time.now.utc
+    year = time.strftime("%Y")[2..4]
+    year+time.strftime("%m%d%H%M%S")+agent_id.to_s
   end
 end

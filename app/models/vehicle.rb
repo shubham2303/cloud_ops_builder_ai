@@ -14,7 +14,7 @@ class Vehicle < ApplicationRecord
   scope :this_year_created, ->{ where("Date(created_at) >= ? AND Date(created_at) <= ?",Date.today.at_beginning_of_year, Date.today) }
 
   def upcase_vehicle_number
-    self.vehicle_number = vehicle_number.upcase
+    self.vehicle_number = vehicle_number.split.join.upcase
   end
 
   def update_phone

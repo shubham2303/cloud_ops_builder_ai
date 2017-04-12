@@ -22,7 +22,7 @@ class Stat
 					agent_created_dt = agent.try(:created_at) ? ApplicationHelper.local_time(agent.created_at, time_format).strftime('%d-%m-%Y') : ''
 					sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name),
 										agent.try(:last_name), ind_or_buss_or_veh.try(:vehicle_number)||ind_or_buss_or_veh.try(:name),
-										coll.try(:lga), coll.individual.try(:uuid), coll.id, agent.try(:address), agent.try(:phone),
+										coll.try(:lga), coll.individual.try(:uuid), coll.uuid, agent.try(:address), agent.try(:phone),
 										agent_created_dt, coll.amount], style: [center_align]*12
 				end
 			end
@@ -40,7 +40,7 @@ class Stat
 					reg_date = business.try(:created_at) ? ApplicationHelper.local_time(business.created_at, time_format).strftime("%d-%m-%Y") : ''
 					sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), business.try(:individual).try(:first_name),
 										business.try(:individual).try(:last_name), business.try(:individual).try(:phone),
-										business.try(:name) || business.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.id, reg_date, business.try(:address),
+										business.try(:name) || business.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.uuid, reg_date, business.try(:address),
 										business.try(:lga), AppConfig.categories[:categories][coll.category_type],
 										AppConfig.categories[:sub_categories][coll.subtype], coll.period,
 										coll.amount, agent.try(:name), agent.try(:id), business.try(:amount)],
@@ -60,7 +60,7 @@ class Stat
 					agent = coll.agent
 					reg_date = vehicle.try(:created_at) ? ApplicationHelper.local_time(vehicle.created_at, time_format).strftime("%d-%m-%Y") : ''
 					sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), vehicle.try(:phone),
-										vehicle.try(:vehicle_number), coll.try(:individual).try(:uuid), coll.id, reg_date,
+										vehicle.try(:vehicle_number), coll.try(:individual).try(:uuid), coll.uuid, reg_date,
 										vehicle.try(:lga), AppConfig.categories[:categories][coll.category_type],
 										AppConfig.categories[:sub_categories][coll.subtype], coll.period,
 										coll.amount, agent.try(:name), agent.try(:id), vehicle.try(:amount)],
@@ -81,7 +81,7 @@ class Stat
 					reg_date = individual.try(:created_at) ? ApplicationHelper.local_time(individual.created_at, time_format).strftime("%d-%m-%Y") : ''
 					sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), individual.try(:first_name),
 										individual.try(:last_name), individual.try(:phone),
-										ind_or_buss_or_veh.try(:vehicle_number) || ind_or_buss_or_veh.try(:name), coll.try(:individual).try(:id), coll.id,
+										ind_or_buss_or_veh.try(:vehicle_number) || ind_or_buss_or_veh.try(:name), coll.try(:individual).try(:id), coll.uuid,
 										reg_date, individual.try(:address),  coll.try(:lga), 
 										AppConfig.categories[:categories][coll.category_type],
 										AppConfig.categories[:sub_categories][coll.subtype], coll.period, 

@@ -28,17 +28,17 @@ module Api
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Individual'
-            individual = Individual.find(@data['id'])
+            individual = Individual.find_by(uuid: @data['id']) || Individual.find(@data['id'])
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Business'
-            @obj = Business.find(@data['id'])
+            @obj = Business.find_by(uuid: @data['id']) || Business.find(@data['id'])
             individual = @obj.individual
             individual.amount += @data['amount']
             @obj.amount += @data['amount']
             @target = "Business: '#{@obj.name}'"
           else
-            @obj = Vehicle.find(@data['id'])
+            @obj = Vehicle.find_by(vehicle_number: @data['id']) || Vehicle.find(@data['id'])
             # individual = @obj.individual
             # individual.amount += @data['amount']
             @obj.amount += @data['amount']
@@ -56,7 +56,8 @@ module Api
           return
         end
         begin
-          collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'],
+          uuid = @data['uuid']|| Collection.generate_uuid(theAgent.id)
+          collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'], uuid: uuid,
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
                                       lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @obj)
 
