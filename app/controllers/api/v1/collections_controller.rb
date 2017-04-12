@@ -56,7 +56,7 @@ module Api
           return
         end
         begin
-          uuid = @data['uuid']|| Collection.generate_uuid(theAgent.id)
+          uuid = @data['coll_uuid']|| Collection.generate_uuid(theAgent.id)
           collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'], uuid: uuid,
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
                                       lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @obj)
