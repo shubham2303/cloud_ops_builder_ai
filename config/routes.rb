@@ -25,7 +25,7 @@ Rails.application.routes.draw do
           post :verify
         end  
       end
-
+      resources :agents
       resources :individuals do
         collection do
           post :business

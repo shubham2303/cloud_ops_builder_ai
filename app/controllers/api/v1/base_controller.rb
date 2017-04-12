@@ -100,7 +100,10 @@ module Api
       end  
 
       def check_headers
-        if theAgent.token.token != request.headers["HTTP_TOKEN"]
+        token = theAgent.token.token
+        Rails.logger.debug "token received --------#{request.headers["HTTP_TOKEN"]}----------"
+        Rails.logger.debug "actual token --------#{token}----------"
+        if token != request.headers["HTTP_TOKEN"]
           raise AccessBlocked.new
         elsif theAgent.token.expired?
           raise TokenExpired.new
