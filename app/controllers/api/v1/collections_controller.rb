@@ -11,13 +11,19 @@ module Api
       def create
         type= AppConfig.type_exist?(@data['type'])
         if type.nil?
-          render json: {status: 0, message: "type is not valid"}
+          message = "type is not valid"
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         elsif !AppConfig.type_enabled? type
-          render json: {status: 0, message: "type is not enabled"}
+          message = "type is not enabled"
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         elsif !AppConfig.subtype_exist?(type, @data['subtype'])
-          render json: {status: 0, message: "subtype is not valid"}
+          message = "subtype is not valid"
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         else
           # nothing to do
@@ -28,7 +34,11 @@ module Api
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Individual'
-            individual = Individual.find_by(uuid: @data['id']) || Individual.find(@data['id'])
+            if @data['id'].to_i == 0
+              individual = Individual.find_by!(uuid: @data['id'])
+            else
+              individual = Individual.find_by(phone: @data['id'])||Individual.find(@data['id'])
+            end
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Business'
@@ -38,14 +48,18 @@ module Api
             @obj.amount += @data['amount']
             @target = "Business: '#{@obj.name}'"
           else
-            @obj = Vehicle.find_by(vehicle_number: @data['id'].upcase) || Vehicle.find(@data['id'])
-            # individual = @obj.individual
-            # individual.amount += @data['amount']
+            if @data['id'].to_i == 0
+              @obj = Vehicle.find_by!(vehicle_number: @data['id'].upcase)
+            else
+              @obj = Vehicle.find!(@data['id'])
+            end
             @obj.amount += @data['amount']
             @target = "Vehicle: '#{@obj.vehicle_number}'"
           end
         rescue
-          render json: {status: 0, message: "uuid is not valid"}
+          message = "#{@data['obj_type']|| "payer"} not found"
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         end
         verify_lga = Individual.check_lga_with_agent(theAgent, @data['lga'])
@@ -81,11 +95,14 @@ module Api
           end
           render json: {status: 1, data: {collection: collection.as_json(:include=>  [:collectionable, :individual])}}
         rescue AmountExceededError, InvalidCardError => ex
+          create_fraud(ex.message, @obj||individual)
           Rails.logger.debug "exception --------#{ex}----------"
           render json: {status: 0, message: ex.message }
           return
-        rescue
-          render json: {status: 0, message: "Unable to record revenue collection at the moment, please try again later" }
+        rescue Exception => ex
+          message = "Unable to record revenue collection at the moment, please try again later"
+          create_errors(message)
+          render json: {status: 0, message: message }
         end
       end
 

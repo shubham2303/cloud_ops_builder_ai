@@ -43,7 +43,9 @@ module Api
       def create_alone
         verify_lga = Individual.check_lga_with_agent(theAgent, vehicle_params[:lga])
         unless verify_lga
-          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
+          message = I18n.t(:lga_access_not_allowed)
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         end
         vehicle = Vehicle.new(vehicle_params)
@@ -80,7 +82,9 @@ module Api
       def vehicle
         individual = Individual.find_by(phone: individual_params[:phone])
         unless individual.nil?
-          render json: {status: 0, message: I18n.t(:individual_found_error, target: 'vehicle')}
+          message = I18n.t(:individual_found_error, target: 'vehicle')
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         end
         verify_lga = Individual.verify_lga_with_agent_and_param(theAgent, business_params[:lga], vehicle_params[:lga])

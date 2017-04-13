@@ -15,7 +15,9 @@ module Api
       def create
         verify_lga = Individual.check_lga_with_agent(theAgent,individual_params[:lga])
         unless verify_lga
-          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
+          message = I18n.t(:lga_access_not_allowed)
+          create_errors(message)
+          render json: {status: 0, message: message}
           return
         end
         try = 0
