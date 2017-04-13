@@ -2,7 +2,7 @@ module Api
   module V1
     class OfflineController < BaseController
       http_basic_authenticate_with name: "Kamille Watsica", password: "J8O4Js5fQp", only: :dump
-      skip_before_action :authenticate_headers, only: :dump
+      before_action :authenticate_headers, except: :dump
       before_action :check_headers , except: :dump
 
 
