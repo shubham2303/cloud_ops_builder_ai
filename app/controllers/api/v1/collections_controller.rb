@@ -38,7 +38,7 @@ module Api
             @obj.amount += @data['amount']
             @target = "Business: '#{@obj.name}'"
           else
-            @obj = Vehicle.find_by(vehicle_number: @data['id']) || Vehicle.find(@data['id'])
+            @obj = Vehicle.find_by(vehicle_number: @data['id'].upcase) || Vehicle.find(@data['id'])
             # individual = @obj.individual
             # individual.amount += @data['amount']
             @obj.amount += @data['amount']
