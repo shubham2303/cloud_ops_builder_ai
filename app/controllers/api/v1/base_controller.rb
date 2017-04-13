@@ -18,9 +18,9 @@ module Api
       rescue_from AgentNotFound, :with => :agent_not_found
 
       ################### start exception handlers ##################
-      def create_errors(message)
+      def create_errors(message, code)
         if request.headers["HTTP_UPSYNC"] == "1"
-          UpsyncError.create(agent_id: theAgent.id, message: message, error: {params: params})
+          UpsyncError.create(agent_id: theAgent.id, message: message, error: {params: params}, code: code)
         end
       end
 
@@ -31,7 +31,7 @@ module Api
       end
 
       def ar_required_params(exception)
-        create_errors(exception.message)
+        create_errors(exception.message, 400)
         Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 400, data: nil, message: exception.message}
       end
@@ -40,21 +40,21 @@ module Api
         Rails.logger.debug "exception --------#{exception.message}----------"
         if Agent.to_s == exception.try(:model)
           message = I18n.t(:agent_not_found)
-          create_errors(message)
+          create_errors(message, 404)
           render json: {status: 404, data: nil, message: message}
         else
-          create_errors(exception.message)
+          create_errors(exception.message, 404)
           render json: {status: 404, data: nil, message: exception.message}
         end
       end
 
       def ar_validation_failed(exception)
-        create_errors(exception.message)
+        create_errors(exception.message, 422)
         Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 422, data: nil, message: exception.message}
       end
       def ar_not_unique(exception)
-        create_errors(exception.message)
+        create_errors(exception.message, 422)
         Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 422, data: nil, message: "#{controller_name.singularize} already exist"};
       end
@@ -136,6 +136,8 @@ module Api
           # @data = JSON.parse(decrypted_data)
           decrypted_data =AESCrypt.decrypt(params.require(:data), decrypted_secret_key)
           @data = JSON.parse(decrypted_data)
+          Rails.logger.debug "decrypted data --------#{@data}----------"
+          @data
         rescue
           raise AccessBlocked.new
         end

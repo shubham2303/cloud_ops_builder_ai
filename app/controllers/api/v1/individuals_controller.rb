@@ -16,7 +16,7 @@ module Api
         verify_lga = Individual.check_lga_with_agent(theAgent,individual_params[:lga])
         unless verify_lga
           message = I18n.t(:lga_access_not_allowed)
-          create_errors(message)
+          create_errors(message, 2001)
           render json: {status: 0, message: message}
           return
         end
@@ -157,7 +157,7 @@ module Api
       private
 
       def individual_params
-        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga, :uuid)
+        params.require(:individual).permit(:phone, :first_name, :last_name, :address, :lga, :uuid, :created_at)
       end
 
       def business_params

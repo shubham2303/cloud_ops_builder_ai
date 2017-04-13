@@ -12,17 +12,17 @@ module Api
         type= AppConfig.type_exist?(@data['type'])
         if type.nil?
           message = "type is not valid"
-          create_errors(message)
+          create_errors(message, 2002)
           render json: {status: 0, message: message}
           return
         elsif !AppConfig.type_enabled? type
           message = "type is not enabled"
-          create_errors(message)
+          create_errors(message, 2003)
           render json: {status: 0, message: message}
           return
         elsif !AppConfig.subtype_exist?(type, @data['subtype'])
           message = "subtype is not valid"
-          create_errors(message)
+          create_errors(message, 2004)
           render json: {status: 0, message: message}
           return
         else
@@ -51,14 +51,15 @@ module Api
             if @data['id'].to_i == 0
               @obj = Vehicle.find_by!(vehicle_number: @data['id'].upcase)
             else
-              @obj = Vehicle.find!(@data['id'])
+              @obj = Vehicle.find(@data['id'])
             end
             @obj.amount += @data['amount']
             @target = "Vehicle: '#{@obj.vehicle_number}'"
           end
-        rescue
-          message = "#{@data['obj_type']|| "payer"} not found"
-          create_errors(message)
+        rescue Exception => e
+          message = "#{@data['obj_type']|| "Payer"} not found"
+          Rails.logger.debug "exception --------#{e.message}----------"
+          create_errors(message, 2005)
           render json: {status: 0, message: message}
           return
         end
@@ -66,12 +67,14 @@ module Api
         obj_lga = @obj.nil? ? individual.lga : @obj.lga
         ver_obj_lga = Individual.verify_object_lga(@data['lga'], obj_lga)
         unless verify_lga && ver_obj_lga
-          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
+          message = I18n.t(:lga_access_not_allowed)
+          create_errors(message, 2001)
+          render json: {status: 0, message: message}
           return
         end
         begin
           uuid = @data['coll_uuid']|| Collection.generate_uuid(theAgent.id)
-          collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'], uuid: uuid,
+          collection = Collection.new(category_type: @data['type'], subtype: @data['subtype'], uuid: uuid, created_at: @data['created_at'],
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
                                       lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @obj)
 
@@ -101,7 +104,7 @@ module Api
           return
         rescue Exception => ex
           message = "Unable to record revenue collection at the moment, please try again later"
-          create_errors(message)
+          create_errors(message, 2006)
           render json: {status: 0, message: message }
         end
       end
