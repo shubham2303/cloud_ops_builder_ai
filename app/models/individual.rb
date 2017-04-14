@@ -27,6 +27,12 @@ class Individual < ApplicationRecord
     (first_name+last_name)[0..2].upcase+year+time.strftime("%m%d%H%M%S")+id.to_s
   end
 
+  def self.generate_payer_id_v2(id)
+    time=  Time.now.utc
+    year = time.strftime("%Y")[2..4]
+    ShortUUID.encode((year+time.strftime("%m%d%H%M%S")+id.to_s).to_i)
+  end
+
   def self.check_lga_with_agent(agent, lga)
     agent.lga == lga
   end

@@ -91,7 +91,7 @@ module Api
         end
         ActiveRecord::Base.transaction do
           unless individual_params[:uuid]
-            payer_id = Individual.generate_payer_id(individual_params[:first_name],individual_params[:last_name], theAgent.id)
+            payer_id = Individual.generate_payer_id_v2(theAgent.id)
             @individual = Individual.create!(individual_params.merge(uuid: payer_id))
           else
             @individual = Individual.create!(individual_params)
