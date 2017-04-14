@@ -3,7 +3,7 @@ class AddUuidToBusiness < ActiveRecord::Migration[5.0]
     add_column :businesses, :uuid, :string
     add_index :businesses, :uuid, :unique => true
     Business.all.each do |b|
-      b.uuid = ShortUUID.unique
+      b.uuid = SecureRandom.uuid
       b.save!
     end
   end

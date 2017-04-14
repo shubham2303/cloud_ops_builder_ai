@@ -75,16 +75,16 @@ module Api
         end
         begin
           ActiveRecord::Base.transaction do
-            unless individual_params[:uuid]
-              payer_id = Individual.generate_payer_id(individual_params[:first_name],individual_params[:last_name], theAgent.id)
-              @individual = Individual.create!(individual_params.merge(uuid: payer_id))
-            else
+            if individual_params[:uuid]
               @individual = Individual.create!(individual_params)
-            end
-            unless business_params[:uuid]
-              @business = @individual.businesses.create!(business_params.merge(uuid: ShortUUID.unique))
             else
+              payer_id = Individual.generate_payer_id(individual_params[:first_name], individual_params[:last_name], theAgent.id)
+              @individual = Individual.create!(individual_params.merge(uuid: payer_id))
+            end
+            if business_params[:uuid]
               @business = @individual.businesses.create!(business_params)
+            else
+              @business = @individual.businesses.create!(business_params.merge(uuid: SecureRandom.uuid))
             end
           end
         rescue Exception=> e
