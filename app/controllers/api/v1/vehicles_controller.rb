@@ -101,7 +101,7 @@ module Api
           IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                                 I18n.t(:sms_individual_registered,
                                                        name: @individual.first_name,
-                                                       payer_id: @individual.uuid))
+                                                       payer_id: @individual.uuid.downcase))
         IndiBusiCollecSmsWorker.perform_async(@individual.phone,
                                               I18n.t(:sms_object_registered,
                                                      name: @individual.first_name,
