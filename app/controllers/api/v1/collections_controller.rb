@@ -34,10 +34,10 @@ module Api
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
           elsif @data['obj_type']== 'Individual'
-            if @data['id'].to_i == 0
-              individual = Individual.find_by!(uuid: @data['id'])
-            else
+            if @data['id'].to_s.numeric?
               individual = Individual.find_by(phone: @data['id'])||Individual.find(@data['id'])
+            else
+              individual = Individual.find_by!(uuid: @data['id'])
             end
             individual.amount =+ @data['amount']
             @target = "Payer Id: #{individual.uuid}"
@@ -48,10 +48,10 @@ module Api
             @obj.amount += @data['amount']
             @target = "Business: '#{@obj.name}'"
           else
-            if @data['id'].to_i == 0
-              @obj = Vehicle.find_by!(vehicle_number: @data['id'].upcase)
-            else
+            if @data['id'].to_s.numeric?
               @obj = Vehicle.find(@data['id'])
+            else
+              @obj = Vehicle.find_by!(vehicle_number: @data['id'].upcase)
             end
             @obj.amount += @data['amount']
             @target = "Vehicle: '#{@obj.vehicle_number}'"

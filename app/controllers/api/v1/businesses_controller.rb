@@ -58,14 +58,14 @@ module Api
 
       def get_individual
         id = params.require(:individual_id)
-        if id.to_i == 0
-          return Individual.find_by!(uuid: id)
-        else
+        if id.to_s.numeric?
           begin
-            return Individual.find(id.to_i)
+            return Individual.find_by!(phone: id)
           rescue
-            return Individual.find_by!(phone: uuid_param)
+            return Individual.find(id)
           end
+        else
+          return Individual.find_by!(uuid: id)
         end
       end
 

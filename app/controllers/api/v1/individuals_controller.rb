@@ -114,13 +114,13 @@ module Api
       def get_individuals
         is_v1 = request.path.include?('/v1/')
 
-        if params[:q].to_i == 0
-          individual = Individual.find_by(uuid: params[:q].upcase)
-          @matched = "payer_id"
-        else
+        if params[:q].to_s.numeric?
           number = Individual.get_accurate_number(params[:q])
           individual = Individual.find_by(phone: number)
           @matched = "none"
+        else
+          individual = Individual.find_by(uuid: params[:q].upcase)
+          @matched = "payer_id"
         end
         @hsh = if is_v1
                  { individual: individual.as_json(:include => [:businesses, :vehicles]) }
