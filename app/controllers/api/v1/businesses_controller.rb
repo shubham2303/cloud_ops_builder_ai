@@ -17,10 +17,40 @@ module Api
       # }
       # ---
       def create
-        individual = Individual.find_by!(uuid: uuid_param)
+          business
+      end
+
+      # POST   /api/v1/individuals/create_business
+      #
+      # {
+      # "business":
+      #     {
+      #         "address": "9999999999",
+      #         "category": "Abia",
+      #         "lga": "Egor",
+      #         "year": "2017",
+      #         "turnover": 2000
+      #     },
+      #   "uuid": "32r34"
+      # }
+      # ---
+      def create_business
+        business
+      end
+
+      private
+
+      def business
+        if uuid_param.to_i == 0
+          individual = Individual.find_by!(uuid: uuid_param)
+        else
+          individual = Individual.find_by!(phone: uuid_param)
+        end
         verify_lga = Individual.check_lga_with_agent(theAgent, business_params[:lga])
         unless verify_lga
-          render json: {status: 0, message: I18n.t(:lga_access_not_allowed)}
+          message = I18n.t(:lga_access_not_allowed)
+          create_errors(message, 2001)
+          render json: {status: 0, message: message}
           return
         end
         try = 0
@@ -46,8 +76,6 @@ module Api
                                                      obj_id: business.name))
         render json: {status: 1, data: {individual: individual, business: business}}
       end
-
-      private
 
       def uuid_param
         params[:uuid]

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
       match '/agents/me',           to: 'agents#update_me',    via: :put, format: false, defaults: {format: :json}
       match '/individuals/:uuid/businesses', to: 'businesses#create', via: :post, format: false, defaults: {format: :json}
+      match '/individuals/create_business', to: 'businesses#create_business', via: :post, format: false, defaults: {format: :json}
       match '/individuals/:uuid/vehicles', to: 'vehicles#create', via: :post, format: false, defaults: {format: :json}
       match '/vehicles', to: 'vehicles#create_alone', via: :post, format: false, defaults: {format: :json}
       match '/individuals/vehicle', to: 'vehicles#vehicle', via: :post, format: false, defaults: {format: :json}
