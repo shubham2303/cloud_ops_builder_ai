@@ -3,7 +3,7 @@ module Api
     class BusinessesController < BaseController
       before_action :check_headers
 
-      # POST   /api/v1/individuals/:uuid/businesses
+      # POST   /api/v1/individuals/:individual_id/businesses
       #
       # {
       # "business":
@@ -15,12 +15,10 @@ module Api
       #         "turnover": 2000
       #     }
       # }
-      # ---
-      def create
-          business
-      end
-
-      # POST   /api/v1/individuals/create_business
+      #
+      # --- OR ---
+      #
+      # POST   /api/v1/businesses
       #
       # {
       # "business":
@@ -31,21 +29,10 @@ module Api
       #         "year": "2017",
       #         "turnover": 2000
       #     },
-      #   "uuid": "32r34"
+      #   "individual_id": "id | payer_id | 234-phone"
       # }
       # ---
-      def create_business
-        business
-      end
-
-      private
-
-      def business
-        if uuid_param.to_i == 0
-          individual = Individual.find_by!(uuid: uuid_param)
-        else
-          individual = Individual.find_by!(phone: uuid_param)
-        end
+      def create
         verify_lga = Individual.check_lga_with_agent(theAgent, business_params[:lga])
         unless verify_lga
           message = I18n.t(:lga_access_not_allowed)
@@ -53,21 +40,11 @@ module Api
           render json: {status: 0, message: message}
           return
         end
-        try = 0
-        begin
-          unless business_params[:uuid]
-            business = individual.businesses.create!(business_params.merge(uuid: ShortUUID.unique))
-          else
-            business = individual.businesses.create!(business_params)
-          end
-        rescue Exception=> e
-          Rails.logger.debug "exception --------#{e}----------"
-          if (e.message.include? ("index_businesses_on_uuid")) && (try< 5)
-            try+=1
-            retry
-          else
-            raise e
-          end
+        individual = get_individual
+        if business_params[:uuid]
+          business = individual.businesses.create!(business_params)
+        else
+          business = individual.businesses.create!(business_params.merge(uuid: SecureRandom.uuid))
         end
         IndiBusiCollecSmsWorker.perform_async(individual.phone,
                                               I18n.t(:sms_object_registered,
@@ -77,12 +54,23 @@ module Api
         render json: {status: 1, data: {individual: individual, business: business}}
       end
 
-      def uuid_param
-        params[:uuid]
-      end  
+      private
+
+      def get_individual
+        id = params.require(:individual_id)
+        if id.to_i == 0
+          return Individual.find_by!(uuid: id)
+        else
+          begin
+            return Individual.find(id.to_i)
+          rescue
+            return Individual.find_by!(phone: uuid_param)
+          end
+        end
+      end
 
       def business_params
-        params.require(:business).permit(:name, :address, :turnover, :year, :lga, :uuid)
+        params.require(:business).permit(:name, :address, :turnover, :year, :lga, :uuid, :created_at)
       end
     end
   end
