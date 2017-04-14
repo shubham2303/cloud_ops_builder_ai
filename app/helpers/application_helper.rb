@@ -55,6 +55,10 @@ module ApplicationHelper
       type['enabled'] == true
     end
 
+    def self.master_otp_enabled?
+      return ENV['MASTER_OTP_ENABLED'].to_i == 1
+    end
+
     def self.master_otp_bypass?(otp)
       return ENV['MASTER_OTP_ENABLED'].to_i == 1 &&
               ENV['MASTER_OTP_VALUE'] == otp

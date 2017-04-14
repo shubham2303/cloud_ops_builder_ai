@@ -12,8 +12,8 @@ module Api
           $redis.expire(params[:number], 600)
           if Rails.env.production?
             response = Message.send_sms(params[:number], "OTP for EIRS Connect Agent login is #{otp}")
-            if response.include? "OK"
-              render json: { status: 1, data: {otp: otp} }
+            if response.include? "OK" || ApplicationHelper::AppConfig.master_otp_enabled?
+              render json: { status: 1, data: {otp: ''} }
             else
               Rails.logger.debug "response from sms provider --------#{response}----------"
               render json: { status: 0, message: I18n.t(:unable_to_send_otp) }
