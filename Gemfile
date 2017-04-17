@@ -50,8 +50,8 @@ gem 'rest-client'
 gem 'sidekiq'
 gem 'axlsx'
 # gem 'will_paginate', '~> 3.1.0'
-gem 'derailed_benchmarks', group: :development
-gem 'stackprof', group: :development
+gem 'derailed_benchmarks'
+gem 'stackprof'
 
 group :development, :test, :staging do
   gem 'factory_girl_rails'
