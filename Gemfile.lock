@@ -340,6 +340,7 @@ DEPENDENCIES
   jquery-rails
   letter_opener
   listen (~> 3.0.5)
+  memory_profiler
   pg (~> 0.18)
   pry
   pry-doc
