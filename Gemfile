@@ -57,8 +57,10 @@ group :development, :test, :staging do
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  gem 'memory_profiler'
+  # gem 'ruby-prof'
   gem 'tunemygc'
-  gem 'scout_apm'
+
 end
 
 group :development do
