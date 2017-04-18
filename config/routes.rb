@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get '/admin/bulk', to: 'admin/agents#bulk'
   post '/admin/agents/bulk_creation'
   post 'admin/reports', to: 'admin/dashboard#generate_reports'
+  post 'admin/timely_reports', to: 'admin/dashboard#timely_reports'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :api, format: false, defaults: {format: :json} do

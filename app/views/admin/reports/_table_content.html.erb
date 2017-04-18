@@ -8,7 +8,7 @@
 		</tr>
 	</thead>
 	<tbody id='show_reports_tb1'>
-	  <%= render 'admin/reports/tb1_stat', stat: 'daily' %>
+	  <%= render 'admin/reports/tb1_stat', stat: params['type'] || 'daily' %>
 	</tbody>
 </table>
 
@@ -21,7 +21,7 @@
 		</tr>
 	</thead>
 	<tbody id='show_reports_tb2'>
-		<%= render 'admin/reports/tb2_stat', stat: 'daily' %>
+		<%= render 'admin/reports/tb2_stat', stat: params['type'] || 'daily'%>
 	</tbody>
 </table>
 

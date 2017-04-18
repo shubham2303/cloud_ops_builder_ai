@@ -14,6 +14,11 @@ ActiveAdmin.register_page "Dashboard" do
   end # content
 
   controller do
+
+    def timely_reports
+      render 'admin/reports/dashboard.html.erb'
+    end
+
     def generate_reports
       if(params[:start_date] > params[:end_date])
         render 'admin/reports/date_range_error.js.erb'

@@ -27,9 +27,8 @@ $(document).ready(function(){
             $(this).text(date.toLocaleDateString() +' '+date.toLocaleTimeString());
         }
     });
-        var offset = new Date().getTimezoneOffset();
-        $('.time_format').val(offset);
 
-
+    var offset = new Date().getTimezoneOffset();
+    $('.time_format').val(offset);
     // $(".flashes" ).fadeOut(5000);
 });

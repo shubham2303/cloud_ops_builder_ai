@@ -1,21 +1,8 @@
-<%= radio_button_tag "type", "today", true, :onclick => "render_partial_daily();" %>
-<%= label_tag 'type_today', 'Today' %>
-<%= radio_button_tag "type", "this_month", false, :onclick => "render_partial_monthly();" %>
-<%= label_tag 'type_this_month', 'This Month' %>
-<%= radio_button_tag "type", "this_year", false, :onclick => "render_partial_yearly();" %>
-<%= label_tag 'type_this_year', 'This Year' %>
-
-<script>
-function render_partial_daily() {
-  $('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'daily' %>')
-  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'daily' %>')
-}
-function render_partial_monthly(){
-  $('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'monthly' %>')
-  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'monthly' %>')
-}
-function render_partial_yearly(){
-  $('#show_reports_tb1').html('<%=j render "admin/reports/tb1_stat", stat: 'yearly' %>')
-  $('#show_reports_tb2').html('<%=j render "admin/reports/tb2_stat", stat: 'yearly' %>')
-}
-</script>
+<%= form_tag admin_timely_reports_path do %>
+    <%= radio_button_tag "type", "daily", (params['type']=='daily'||params['type']==nil)? true:false, :onclick => "this.form.submit();" %>
+    <%= label_tag 'type_today', 'Today' %>
+    <%= radio_button_tag "type", "monthly", params['type']== 'monthly'? true:false, :onclick => "this.form.submit();"  %>
+    <%= label_tag 'type_this_month', 'This Month' %>
+    <%= radio_button_tag "type", "yearly", params['type']== 'yearly'? true:false, :onclick => "this.form.submit();" %>
+    <%= label_tag 'type_this_year', 'This Year' %>
+<% end %>
