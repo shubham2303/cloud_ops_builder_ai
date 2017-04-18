@@ -1,8 +1,8 @@
 <%= form_tag({controller: "dashboard", action: "index"}, method: "get") do %>
     <%= radio_button_tag "type", "daily", (params['type']=='daily'||params['type']==nil)? true:false, :onclick => "this.form.submit();" %>
-    <%= label_tag 'type_today', 'Today' %>
+    <%= label_tag 'type_daily', 'Today' %>
     <%= radio_button_tag "type", "monthly", params['type']== 'monthly'? true:false, :onclick => "this.form.submit();"  %>
-    <%= label_tag 'type_this_month', 'This Month' %>
+    <%= label_tag 'type_monthly', 'This Month' %>
     <%= radio_button_tag "type", "yearly", params['type']== 'yearly'? true:false, :onclick => "this.form.submit();" %>
-    <%= label_tag 'type_this_year', 'This Year' %>
+    <%= label_tag 'type_yearly', 'This Year' %>
 <% end %>

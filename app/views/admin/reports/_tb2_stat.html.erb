@@ -32,9 +32,9 @@
         </tr>
     <% else %>
         <tr>
-        <td class="col"><%= lga %></td>
-        <td class="col">0</td>
-        <td class="col">0</td>
+	  <td class="col"><%= lga %></td>
+          <td class="col"><%= number_with_delimiter(0) %></td>
+          <td class="col"><%= naira(0) %></td>
         </tr>
     <%end%>
 <% end %>
