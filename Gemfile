@@ -51,13 +51,10 @@ gem 'sidekiq'
 gem 'axlsx'
 # gem 'will_paginate', '~> 3.1.0'
 
+gem 'scout_apm'
 group :development, :test, :staging do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
-  gem 'memory_profiler'
-  gem 'scout_apm'
   gem 'tunemygc'
 end
 
@@ -74,6 +71,9 @@ group :development do
   gem 'pry-rails'
   gem 'rack-mini-profiler'
   gem "letter_opener"
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platform: :mri
+  gem 'memory_profiler'
 end
 
 group :test do
