@@ -52,9 +52,11 @@ gem 'axlsx'
 gem "sidekiq-cron", "~> 0.4.0"
 # gem 'will_paginate', '~> 3.1.0'
 
+gem 'scout_apm'
 group :development, :test, :staging do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
+  gem 'tunemygc'
 end
 
 group :development do
@@ -72,6 +74,7 @@ group :development do
   gem "letter_opener"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  gem 'memory_profiler'
 end
 
 group :test do
