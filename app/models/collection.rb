@@ -53,9 +53,9 @@ class Collection < ApplicationRecord
     #{Individual.table_name}.phone AS payer_phone,
     #{Individual.table_name}.amount AS payer_tot_amount,
     #{Individual.table_name}.created_at AS payer_cat}.gsub(/\s+/, ' ').strip
-  def self.fetch_for_stats(start_time, end_time, offset)
-    sx = start_time.to_time.to_date.beginning_of_day + offset.minutes
-    ex = end_time.to_time.to_date.end_of_day + offset.minutes
+  def self.fetch_for_stats(start_date, end_date, offset)
+    sx = start_date.to_date.beginning_of_day + offset.minutes
+    ex = end_date.to_date.end_of_day + offset.minutes
     Collection.
         select(SELECT_CLAUSE_FOR_STAT_GENERATION).
         left_outer_joins(:agent).
