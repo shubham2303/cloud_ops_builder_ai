@@ -1,6 +1,7 @@
 class IndiBusiCollecSmsWorker
   include Sidekiq::Worker
   include ApplicationHelper
+  sidekiq_options :queue => 'sms'
 
   def perform(number, message)
     if number.blank?

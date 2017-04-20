@@ -49,6 +49,7 @@ gem 'unicorn'
 gem 'rest-client'
 gem 'sidekiq'
 gem 'axlsx'
+gem "sidekiq-cron", "~> 0.4.0"
 # gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test, :staging do

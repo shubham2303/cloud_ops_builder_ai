@@ -1,7 +1,7 @@
 class Stat
 	include ApplicationHelper
 
-	def self.to_xlsx(start_date, end_date, admin_user, time_format)
+	def self.to_xlsx(start_date, end_date, stat_for, time_format)
 		xlsx_package = Axlsx::Package.new
 		wb = xlsx_package.workbook
     category_data = AppConfig.categories
@@ -85,7 +85,7 @@ class Stat
 		end
 		xlsx_package.use_shared_strings = true
 		sample_file = xlsx_package.serialize('sample.xlsx')
-		ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user, "#{start_date.to_s} - #{end_date.to_s}").deliver
+		ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), "#{start_date.to_s} - #{end_date.to_s}", stat_for).deliver
 	end
 
 	def self.get_agent_name(collection)

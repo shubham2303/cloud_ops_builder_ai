@@ -238,3 +238,4 @@ bower.json
 dump.rdb
 db/structure.sql
 sample.xlsx
+.idea/*

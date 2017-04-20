@@ -7,4 +7,8 @@ module DashboardHelper
     end
     hsh
   end
+
+  def self.last_date_of_month? date
+    date.month != date.next_day.month
+  end
 end
