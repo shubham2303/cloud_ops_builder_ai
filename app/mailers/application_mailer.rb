@@ -2,11 +2,10 @@ class ApplicationMailer < ActionMailer::Base
   default from: 'do-not-reply@esirconnect.ng'
   layout 'mailer'
 
-  def send_stat(file, period = nil, stat_for)
-    subject = "ESIR Connect Report"
-    subject += " :: #{period}" unless period.nil?
+  def send_stat(file, period, stat_for)
+    subject = "ESIR Connect #{stat_for.downcase} report :: #{period}"
   	@username = 'Admin' #current_admin_user.name
-    attachments["#{stat_for}"+".xlsx"] = file
+    attachments["esirconnect.#{stat_for}.#{period}"+".xlsx"] = file
     emails = ENV['EMAILS'].split(" ").map(&:to_s)
     mail to: emails, subject: subject
   end

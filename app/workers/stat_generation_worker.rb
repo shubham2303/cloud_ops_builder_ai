@@ -1,7 +1,7 @@
 class StatGenerationWorker
   include Sidekiq::Worker
   sidekiq_options :queue => 'stat', :retry => false
-  #
+
   def perform(args)
     date = args['date']
     end_date = date.to_date

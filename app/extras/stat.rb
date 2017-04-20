@@ -85,7 +85,8 @@ class Stat
 		end
 		xlsx_package.use_shared_strings = true
 		sample_file = xlsx_package.serialize('sample.xlsx')
-		ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), "#{start_date.to_s} - #{end_date.to_s}", stat_for).deliver
+		period = (stat_for == 'daily' ? start_date.to_s : "#{start_date.to_s} - #{end_date.to_s}")
+		ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), period, stat_for).deliver
 	end
 
 	def self.get_agent_name(collection)
