@@ -4,6 +4,9 @@ class Stat
 	def self.to_xlsx(start_date, end_date, admin_user, time_format)
 		xlsx_package = Axlsx::Package.new
 		wb = xlsx_package.workbook
+    category_data = AppConfig.categories
+    categories = category_data[:categories]
+    sub_categories = category_data[:sub_categories]
 		wb.styles do |style|
 			bold_wid_background = style.add_style(bg_color: "EFC376", b: true, :alignment=>{:horizontal => :center})
 			@center_align = style.add_style(:alignment=>{:horizontal => :center})
@@ -36,51 +39,47 @@ class Stat
 											style: [bold_wid_background]*5
 
 		end
-		Collection.where("Date(created_at) >= ? AND Date(created_at) <= ?", start_date, end_date)
-				.includes(:individual, :collectionable, :agent).find_each do |coll|
+		Collection.fetch_for_stats(start_date, end_date, -1*time_format).find_each do |coll|
 
-				agent = coll.agent
-				ind_or_buss_or_veh = coll.collectionable || coll.individual
-				agent_created_dt = agent.try(:created_at) ? ApplicationHelper.local_time(agent.created_at, time_format).strftime('%d-%m-%Y') : ''
-				@agent_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.agent_id, agent.try(:first_name),
-									agent.try(:last_name), ind_or_buss_or_veh.try(:vehicle_number)||ind_or_buss_or_veh.try(:name),
-									coll.try(:lga), coll.individual.try(:uuid), coll.uuid, agent.try(:address), agent.try(:phone),
+				ind_or_buss_or_veh = coll.collectionable
+				agent_created_dt = coll.agent_cat ? ApplicationHelper.local_time(coll.agent_cat, time_format).strftime('%d-%m-%Y') : ''
+				@agent_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.agent_id, coll.agent_fname,
+									coll.agent_lname, ind_or_buss_or_veh.try(:vehicle_number)||ind_or_buss_or_veh.try(:name)||get_payer_name(coll),
+									coll.lga, coll.payer_id, coll.uuid, coll.agent_address, coll.agent_phone,
 									agent_created_dt, coll.amount], style: [@center_align]*12
 				if coll.collectionable_type == "Business"
 					business = coll.collectionable
 					reg_date = business.try(:created_at) ? ApplicationHelper.local_time(business.created_at, time_format).strftime("%d-%m-%Y") : ''
-					@business_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), business.try(:individual).try(:first_name),
-												 business.try(:individual).try(:last_name), business.try(:individual).try(:phone),
-												 business.try(:name) || business.try(:individual).try(:name), coll.try(:individual).try(:uuid), coll.uuid, reg_date, business.try(:address),
-												 business.try(:lga), AppConfig.categories[:categories][coll.category_type],
-												 AppConfig.categories[:sub_categories][coll.subtype], coll.period,
-												 coll.amount, agent.try(:name), agent.try(:id), business.try(:amount)],
+					@business_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.payer_fname,
+												 coll.payer_lname, coll.payer_phone,
+												 business.name || get_payer_name(coll), coll.payer_id, coll.uuid, reg_date, business.address,
+												 business.lga, categories[coll.category_type],
+												 sub_categories[coll.subtype], coll.period,
+												 coll.amount, get_agent_name(coll), coll.agent_id, business.amount],
 												style: [@center_align]*17
-				end
-				if coll.collectionable_type == "Vehicle"
+				elsif coll.collectionable_type == "Vehicle"
 					vehicle = coll.collectionable
 					reg_date = vehicle.try(:created_at) ? ApplicationHelper.local_time(vehicle.created_at, time_format).strftime("%d-%m-%Y") : ''
-					@vehicle_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), vehicle.try(:phone),
-												 vehicle.try(:vehicle_number), coll.try(:individual).try(:uuid), coll.uuid, reg_date,
-												 vehicle.try(:lga), AppConfig.categories[:categories][coll.category_type],
-												 AppConfig.categories[:sub_categories][coll.subtype], coll.period,
-												 coll.amount, agent.try(:name), agent.try(:id), vehicle.try(:amount)],
+					@vehicle_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), vehicle.phone,
+												 vehicle.vehicle_number, coll.payer_id, coll.uuid, reg_date,
+												 vehicle.lga, categories[coll.category_type],
+												 sub_categories[coll.subtype], coll.period,
+												 coll.amount, get_agent_name(coll), coll.agent_id, vehicle.amount],
 												style: [@center_align]*17
+        else
+          reg_date = coll.payer_cat ? ApplicationHelper.local_time(coll.payer_cat, time_format).strftime("%d-%m-%Y") : ''
+          @individual_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.payer_fname,
+                                     coll.payer_lname, coll.payer_phone,
+                                     get_payer_name(coll), coll.payer_id, coll.uuid,
+                                     reg_date, coll.payer_address, coll.lga,
+                                     categories[coll.category_type],
+                                     sub_categories[coll.subtype], coll.period,
+                                     coll.amount, get_agent_name(coll), coll.agent_id, coll.payer_tot_amount],
+                                    style: [@center_align]*17
 				end
-				individual = coll.individual
-				reg_date = individual.try(:created_at) ? ApplicationHelper.local_time(individual.created_at, time_format).strftime("%d-%m-%Y") : ''
-				@individual_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), individual.try(:first_name),
-											 individual.try(:last_name), individual.try(:phone),
-											 ind_or_buss_or_veh.try(:vehicle_number) || ind_or_buss_or_veh.try(:name), coll.try(:individual).try(:id), coll.uuid,
-											 reg_date, individual.try(:address),  coll.try(:lga),
-											 AppConfig.categories[:categories][coll.category_type],
-											 AppConfig.categories[:sub_categories][coll.subtype], coll.period,
-											 coll.amount, agent.try(:name), agent.try(:id), ind_or_buss_or_veh.try(:amount)],
-											style: [@center_align]*17
-
-				@collection_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.try(:lga),
-											 AppConfig.categories[:categories][coll.category_type],
-											 AppConfig.categories[:sub_categories][coll.subtype], coll.amount],
+				@collection_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.lga,
+											 categories[coll.category_type],
+											 sub_categories[coll.subtype], coll.amount],
 											style: [@center_align]*5
 
 		end
@@ -88,4 +87,13 @@ class Stat
 		sample_file = xlsx_package.serialize('sample.xlsx')
 		ApplicationMailer.send_stat(File.read("#{Rails.root.join('sample.xlsx')}"), admin_user, "#{start_date.to_s} - #{end_date.to_s}").deliver
 	end
+
+	def self.get_agent_name(collection)
+		collection.agent_fname + ' ' + collection.agent_lname
+	end
+
+	def self.get_payer_name(collection)
+		collection.payer_fname + ' ' + collection.payer_lname
+	end
+
 end
