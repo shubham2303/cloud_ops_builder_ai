@@ -29,7 +29,7 @@ class Luhn
   end
 
   def self.generate(length = 16)
-    number = rand.to_s[2..length]
+    number = (15.times.map {|i| rand 10}).join.to_s[2..length]
     if number.length < 15
       number = '%015i' % number.to_i
     end

@@ -1,1 +1,5 @@
+<% if @batch.nil? %>
+$("#reload_me_partial_batch_<%= @id %>").text("failed")
+<%else%>
 $("#reload_me_partial_batch_<%= @batch.id %>").html("<%= j(render '/admin/batches/reload_form') %>")
+<%end%>

@@ -4,6 +4,8 @@ class Batch < ApplicationRecord
   has_many :batch_details, dependent: :delete_all
   has_many :cards, dependent: :delete_all
 
+  after_rollback :delete_batch
+
   def self.generate(arr, async = true)
     raise Exception.new 'Illegal arguments' unless arr.is_a? Array
 
@@ -17,10 +19,16 @@ class Batch < ApplicationRecord
       total += count * denomination
     end
     batch = Batch.create! net_worth: total, details: arr, count: total_count
-
     if async
       Thread.new do
-        generate_internal(arr, batch.id)
+        begin
+          ActiveRecord::Base.transaction do
+            batch.touch
+            generate_internal(arr, batch.id)
+          end
+        rescue Exception=> e
+          Rails.logger.debug "exception --------#{e}----------"
+        end
       end
     else
       generate_internal(arr, batch.id)
@@ -30,7 +38,7 @@ class Batch < ApplicationRecord
   private
 
   def self.generate_internal(arr, batch_id)
-      arr.each do |hsh|
+     arr.each do |hsh|
         count = hsh[:count].to_i
         denomination = hsh[:amount].to_i
         (1..count).each do |i|
@@ -42,6 +50,12 @@ class Batch < ApplicationRecord
           Card.create! batch_id: batch_id, x: x, y: y, z: z, amount: denomination
         end
       end
+  end
+
+  def delete_batch
+    if self.batch_details.count == 0
+      self.delete
+    end
   end
 
 end

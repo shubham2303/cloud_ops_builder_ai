@@ -36,7 +36,11 @@ ActiveAdmin.register Batch do
 		end	
 
 		def show
-			@batch = Batch.find(params[:id])
+			begin
+				@batch = Batch.find_by!(id: params[:id])
+			rescue
+				@id = params[:id]
+			end
 			unless request.xhr?
 				send_data BatchDetail.csv(@batch) , type: 'text/csv; charset=windows-1251; header=present', 
 				disposition: "attachment; filename=batch_#{@batch.created_at}.csv"
