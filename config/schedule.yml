@@ -1,5 +1,5 @@
 state_worker:
-  cron: "06 12 * * *  Asia/Kolkata"
+  cron: "08 39 * * *  Africa/Lagos"
   class: "StatGenerationWorker"
   args:
     date: "date"
