@@ -24,20 +24,22 @@ class Batch < ApplicationRecord
         begin
           ActiveRecord::Base.transaction do
             batch.touch
-            generate_internal(arr, batch.id)
+            generate_internal(arr, batch)
+            $redis.del(batch.id)
           end
         rescue Exception=> e
           Rails.logger.debug "exception --------#{e}----------"
         end
       end
     else
-      generate_internal(arr, batch.id)
+      generate_internal(arr, batch)
     end
   end
 
   private
 
-  def self.generate_internal(arr, batch_id)
+  def self.generate_internal(arr, batch)
+    batch_id = batch.id
      arr.each do |hsh|
         count = hsh[:count].to_i
         denomination = hsh[:amount].to_i
@@ -48,6 +50,7 @@ class Batch < ApplicationRecord
           z = Digester.hash_number_with_secret! n, y
           BatchDetail.create! batch_id: batch_id, n: n, amount: denomination
           Card.create! batch_id: batch_id, x: x, y: y, z: z, amount: denomination
+          $redis.set(batch_id, i)
         end
       end
   end
