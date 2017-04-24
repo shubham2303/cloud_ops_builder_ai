@@ -50,7 +50,7 @@ class Batch < ApplicationRecord
           z = Digester.hash_number_with_secret! n, y
           BatchDetail.create! batch_id: batch_id, n: n, amount: denomination
           Card.create! batch_id: batch_id, x: x, y: y, z: z, amount: denomination
-          $redis.set(batch_id, i)
+          $redis.incr(batch_id)
         end
       end
   end
@@ -58,6 +58,7 @@ class Batch < ApplicationRecord
   def delete_batch
     if self.batch_details.count == 0
       self.delete
+      $redis.del(self.id)
     end
   end
 
