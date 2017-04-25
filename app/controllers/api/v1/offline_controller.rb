@@ -3,7 +3,7 @@ module Api
     class OfflineController < BaseController
       http_basic_authenticate_with name: "Kamille Watsica", password: "J8O4Js5fQp", only: :dump
       before_action :authenticate_headers, except: :dump
-      before_action :check_headers , except: :dump
+      before_action :check_headers_without_expiry , except: :dump
 
 
       def down_sync
