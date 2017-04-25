@@ -116,15 +116,20 @@ module Api
         end  
       end  
 
-      def check_headers
+      def check_headers(expire = true)
         token = theAgent.token.token
         Rails.logger.debug "token received --------#{request.headers["HTTP_TOKEN"]}----------"
         Rails.logger.debug "actual token --------#{token}----------"
         if token != request.headers["HTTP_TOKEN"]
           raise AccessBlocked.new
         elsif theAgent.token.expired?
+          return unless expire
           raise TokenExpired.new
         end
+      end
+
+      def check_headers_without_expiry
+        check_headers(false)
       end
 
       def get_data_using_decryption
