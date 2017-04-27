@@ -78,11 +78,19 @@ module Api
                                       number: @data['number'], amount: @data['amount'], period: @data['period'],
                                       lga: @data['lga'], agent: theAgent, individual: individual, collectionable: @obj)
 
+          theAgent.amount += @data['amount']
+          if offline?
+            theAgent.last_coll_offline = Time.now.utc
+          else
+            theAgent.last_coll_online = Time.now.utc
+          end
+
           ActiveRecord::Base.transaction do
             card = Card.verify_and_use(@data['number'], @data['amount'])
             batch_id = card.batch_id
             collection.batch_id = batch_id
             collection.save!
+            theAgent.save!
             @obj.save! unless @obj.nil?
             individual.save! unless individual.nil?
           end

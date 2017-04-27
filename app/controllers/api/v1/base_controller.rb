@@ -18,6 +18,11 @@ module Api
       rescue_from AgentNotFound, :with => :agent_not_found
 
       ################### start exception handlers ##################
+
+      def offline?
+        return (request.headers["HTTP_UPSYNC"] == "1")
+      end
+
       def create_errors(message, code)
         if request.headers["HTTP_UPSYNC"] == "1"
           UpsyncError.create(agent_id: theAgent.id, message: message, error: {params: params}, code: code)
@@ -68,12 +73,12 @@ module Api
       def blocked_version_detected(exception)
         Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 1003, data: nil, message: exception.message}
-      end  
+      end
 
       def blocked_config_detected(exception)
         Rails.logger.debug "exception --------#{exception.message}----------"
         render json: {status: 1001, data: {config: AppConfig.json}, message: exception.message}
-      end  
+      end
 
       def token_expiration_detected(exception)
         Rails.logger.debug "exception --------#{exception.message}----------"
@@ -100,21 +105,21 @@ module Api
         end
         @theAgent
 
-      end  
+      end
 
       def theToken
         theAgent.token
-      end  
+      end
 
       def authenticate_headers
         unless AppConfig.android_version_valid?(request.headers['HTTP_ANDROID_VER'])
           raise VersionBlocked.new
-        end 
+        end
 
         unless AppConfig.config_version_valid?(request.headers['HTTP_CONFIG_VER'])
           raise ConfigBlocked.new
-        end  
-      end  
+        end
+      end
 
       def check_headers(expire = true)
         token = theAgent.token.token

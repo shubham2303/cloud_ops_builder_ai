@@ -39,6 +39,7 @@ module Api
         else
           try = 1
         end
+        theAgent.update last_downsync: Time.now.utc
         render json: {status: 1, vehicles: vehicles.as_json(only: [:id, :vehicle_number, :lga]),
                       businesses: businesses.as_json(only: [:id, :uuid, :name, :lga, :individual_id]),
                       individuals: individuals.as_json(only: [:id, :uuid, :first_name, :last_name, :lga, :phone]),
@@ -53,6 +54,7 @@ module Api
         else
           last_card_id = last_card.id
         end
+        theAgent.update last_downsync: Time.now.utc
         render json: {status: 1, cards: batch_details.as_json(only: [:n, :amount]), id: last_card_id}
       end
 

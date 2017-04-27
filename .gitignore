@@ -236,6 +236,5 @@ bower.json
 # Ignore Byebug command history file.
 .byebug_history
 dump.rdb
-db/structure.sql
 sample.xlsx
 .idea/*
