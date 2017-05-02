@@ -42,4 +42,8 @@ class BatchDetail < ApplicationRecord
     end
   end
 
+  def amount
+    remaining_amount
+  end
+
 end

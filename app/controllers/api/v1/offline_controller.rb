@@ -47,6 +47,12 @@ module Api
       end
 
       def cards
+        agent_id = theAgent.id
+        agent_table = AgentTable.find_by(agent_id: agent_id)
+        if agent_table.nil?
+          params[:id] = 0
+          AgentTable.create!(agent_id: agent_id, migration_version: 1, migration_target: "card")
+        end
         batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).order(id: :ASC).limit(ENV['CARD_LIMIT'])
         last_card = batch_details.last
         if last_card.nil?
@@ -55,7 +61,7 @@ module Api
           last_card_id = last_card.id
         end
         theAgent.update last_downsync: Time.now.utc
-        render json: {status: 1, cards: batch_details.as_json(only: [:n, :amount]), id: last_card_id}
+        render json: {status: 1, cards: batch_details.as_json(only: :n, methods: :amount), id: last_card_id}
       end
 
     end

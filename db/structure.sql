@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.1
--- Dumped by pg_dump version 9.6.1
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -140,6 +140,38 @@ ALTER SEQUENCE admin_users_id_seq OWNED BY admin_users.id;
 
 
 --
+-- Name: agent_tables; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE agent_tables (
+    id integer NOT NULL,
+    migration_version character varying,
+    migration_target character varying,
+    extras json,
+    agent_id integer
+);
+
+
+--
+-- Name: agent_tables_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE agent_tables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: agent_tables_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE agent_tables_id_seq OWNED BY agent_tables.id;
+
+
+--
 -- Name: agents; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -155,7 +187,7 @@ CREATE TABLE agents (
     lga character varying,
     first_name character varying,
     last_name character varying,
-    amount double precision,
+    amount double precision DEFAULT 0.0,
     last_downsync timestamp without time zone,
     last_coll_offline timestamp without time zone,
     last_coll_online timestamp without time zone
@@ -203,7 +235,8 @@ CREATE TABLE batch_details (
     amount integer NOT NULL,
     batch_id integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    remaining_amount integer
 );
 
 
@@ -576,6 +609,13 @@ ALTER TABLE ONLY admin_users ALTER COLUMN id SET DEFAULT nextval('admin_users_id
 
 
 --
+-- Name: agent_tables id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY agent_tables ALTER COLUMN id SET DEFAULT nextval('agent_tables_id_seq'::regclass);
+
+
+--
 -- Name: agents id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -666,6 +706,14 @@ ALTER TABLE ONLY active_admin_comments
 
 ALTER TABLE ONLY admin_users
     ADD CONSTRAINT admin_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: agent_tables agent_tables_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY agent_tables
+    ADD CONSTRAINT agent_tables_pkey PRIMARY KEY (id);
 
 
 --
@@ -808,6 +856,13 @@ CREATE UNIQUE INDEX index_admin_users_on_reset_password_token ON admin_users USI
 
 
 --
+-- Name: index_agent_tables_on_agent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_agent_tables_on_agent_id ON agent_tables USING btree (agent_id);
+
+
+--
 -- Name: index_agents_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -931,6 +986,13 @@ CREATE INDEX index_collections_on_individual_id ON collections USING btree (indi
 --
 
 CREATE INDEX index_collections_on_lga ON collections USING btree (lga);
+
+
+--
+-- Name: index_collections_on_number; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_collections_on_number ON collections USING btree (number);
 
 
 --
@@ -1112,6 +1174,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170413065615'),
 ('20170414082110'),
 ('20170414091430'),
-('20170427065359');
+('20170427065359'),
+('20170502073718'),
+('20170502092954'),
+('20170502094617'),
+('20170502095000'),
+('20170502101741');
 
 

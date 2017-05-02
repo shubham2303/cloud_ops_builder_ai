@@ -93,6 +93,8 @@ module Api
             theAgent.save!
             @obj.save! unless @obj.nil?
             individual.save! unless individual.nil?
+            batch_detail = BatchDetail.find_by!(n: @data['number'])
+            batch_detail.update!(remaining_amount: card.amount - card.usage)
           end
           phone = individual.try(:phone) || @obj.try(:phone)
           unless phone.blank?
@@ -111,6 +113,7 @@ module Api
           render json: {status: 0, message: ex.message }
           return
         rescue Exception => ex
+          Rails.logger.debug "exception --------#{ex}----------"
           message = "Unable to record revenue collection at the moment, please try again later"
           create_errors(message, 2006)
           render json: {status: 0, message: message }
