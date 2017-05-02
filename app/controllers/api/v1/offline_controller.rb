@@ -60,8 +60,9 @@ module Api
         else
           last_card_id = last_card.id
         end
+        out = BatchDetail.detail_json(batch_details)
         theAgent.update last_downsync: Time.now.utc
-        render json: {status: 1, cards: batch_details.as_json(only: :n, methods: :amount), id: last_card_id}
+        render json: {status: 1, cards: out, id: last_card_id}
       end
 
     end

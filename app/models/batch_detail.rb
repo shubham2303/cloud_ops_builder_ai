@@ -42,8 +42,12 @@ class BatchDetail < ApplicationRecord
     end
   end
 
-  def amount
-    remaining_amount
+  def self.detail_json(batch_details)
+    out= []
+    batch_details.each do |bd|
+      out << {n: bd.n, amount: bd.remaining_amount}
+    end
+    out
   end
 
 end
