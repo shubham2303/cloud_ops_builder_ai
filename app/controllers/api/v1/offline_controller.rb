@@ -29,11 +29,11 @@ module Api
         vehicles = Vehicle.where("updated_at >= ? AND updated_at < ?", timestamp, end_timestamp)
         businesses = Business.where("updated_at >= ? AND updated_at < ?", timestamp, end_timestamp)
         individuals = Individual.where("updated_at >= ? AND updated_at < ?", timestamp, end_timestamp)
-        # batch_details = BatchDetail.where("updated_at >= ? AND updated_at < ?", timestamp, end_timestamp)
+        # batch_details = BatchDetail.where("updated_at >= ?", end_timestamp).or("updated_at = ? AND id > ?", params[:id]).where('cast(extract(epoch from created_at) as float) != cast(extract(epoch from updated_at) as float)').order(:updated_at, id: :ASC)
         vehicles_count = Vehicle.where("updated_at >= ?",end_timestamp).limit(1)
         businesses_count = Business.where("updated_at >= ?", end_timestamp).limit(1)
         individuals_count = Individual.where("updated_at >= ?", end_timestamp).limit(1)
-        # batch_details_count = BatchDetail.where("updated_at >= ?", end_timestamp).limit(1)
+        # batch_details_count = BatchDetail.where("updated_at >= ?", last_card_timestamp).or("updated_at = ? AND id > ?",end_timestamp params[:id]||0).where('cast(extract(epoch from created_at) as float) != cast(extract(epoch from updated_at) as float)').limit(1)
         if vehicles_count.empty? && businesses_count.empty? && individuals_count.empty?
           try = 0
         else
@@ -53,7 +53,7 @@ module Api
           params[:id] = 0
           AgentTable.create!(agent_id: agent_id, migration_version: 1, migration_target: "card")
         end
-        batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).order(id: :ASC).limit(ENV['CARD_LIMIT'])
+        batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).where('created_at = updated_at').order(id: :ASC).limit(ENV['CARD_LIMIT'])
         last_card = batch_details.last
         if last_card.nil?
           last_card_id = nil
@@ -63,6 +63,23 @@ module Api
         out = BatchDetail.detail_json(batch_details)
         theAgent.update last_downsync: Time.now.utc
         render json: {status: 1, cards: out, id: last_card_id}
+      end
+
+      def card_down_sync
+        timestamp = Time.parse(ENV['ADMIN_CREATION_TIME'])
+        batch_details = BatchDetail.where("(updated_at > ?) or (updated_at = ? AND id > ?)",params[:timestamp]||timestamp, params[:timestamp]||timestamp, params[:card_id]||0)
+                            .where('created_at != updated_at').order(updated_at: :ASC, id: :ASC).limit(ENV['CARD_LIMIT'])
+        last_card = batch_details.last
+        if last_card.nil?
+          last_card_id = nil
+          last_card_timestamp = nil
+        else
+          last_card_id = last_card.id
+          last_card_timestamp = last_card.updated_at
+        end
+        out = BatchDetail.detail_json(batch_details)
+        theAgent.update last_downsync: Time.now.utc
+        render json: {status: 1, cards: out, card_id: last_card_id, timestamp: last_card_timestamp}
       end
 
     end
