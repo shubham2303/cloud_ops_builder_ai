@@ -64,6 +64,10 @@ module ApplicationHelper
               ENV['MASTER_OTP_VALUE'] == otp
     end
 
+    def self.beat_json
+      JSON.parse ENV['BEAT']
+    end
+
   end
 
   class DynamicRSAHelper

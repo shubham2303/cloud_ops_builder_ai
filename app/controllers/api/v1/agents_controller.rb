@@ -27,7 +27,7 @@ module Api
       end
 
       def show
-        render json: {status: 1, data: {agent: theAgent}}
+        render json: {status: 1, data: {agent: theAgent.as_json.merge(revenue_beat: theAgent.revenue_beat)}}
       end
 
       private

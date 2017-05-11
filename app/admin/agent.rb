@@ -3,7 +3,7 @@ ActiveAdmin.register Agent do
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
   actions :bulk, :index, :new, :create, :edit, :destroy, :update, :show
-  permit_params :phone, :first_name, :last_name, :address, :birthplace, :state, :lga
+  permit_params :phone, :first_name, :last_name, :address, :birthplace, :state, :lga, :beat_code
 #
 # or
 #
@@ -27,8 +27,34 @@ ActiveAdmin.register Agent do
     column :birthplace
     column :state
     column :lga
+    column :beat_code do |p|
+      p.revenue_beat
+    end
     column :created_at, :class => 'col-created_at time'
     actions
+  end
+  #
+  show do
+    attributes_table do
+      row :id
+      row :phone
+      row :address
+      row :birthplace
+      row :state
+      row :created_at
+      row :updated_at
+      row :dob
+      row :lga
+      row :first_name
+      row :last_name
+      row :amount
+      row :last_downsync
+      row :last_coll_offline
+      row :last_coll_online
+      row :beat_code do |p|
+        p.revenue_beat
+      end
+    end
   end
 
   action_item(:bulk, method: :post, only: :index) do
@@ -48,7 +74,17 @@ ActiveAdmin.register Agent do
       f.input :address
       f.input :birthplace
       f.input :state, collection: JSON.parse(ENV["APP_CONFIG"])['states'], prompt: 'Please select'
-      f.input :lga, :label => "LGA", collection: JSON.parse(ENV["APP_CONFIG"])['lga'], prompt: 'Please select'
+      f.input :lga, :label => "LGA", collection: JSON.parse(ENV["APP_CONFIG"])['lga'],
+              prompt: 'Please select', :input_html => {:class => 'lga'}
+      lga = f.object.lga
+      beat_list = []
+      unless lga.nil?
+        ApplicationHelper::AppConfig.beat_json['Egor'].each do |key, value|
+          arr = [value, key]
+          beat_list << arr
+        end
+      end
+      f.input :beat_code,:as => :select, :label => "Beat Code", collection: beat_list, :input_html => {:class => 'beat_code'}, prompt: 'Please select'
     end
     f.actions do
       f.action :submit, :wrapper_html => {:class => 'submit_valid'}
@@ -58,6 +94,7 @@ ActiveAdmin.register Agent do
 
 
   controller do
+
     def bulk
       @error_csv_invalidate = nil
     end
@@ -68,7 +105,7 @@ ActiveAdmin.register Agent do
       phone_regex = /^(234|0)?[1-9]\d{9}$/
       phone_lga = params[:phone_lga].split(/[\r\n]+/)
       phone_lga.each_with_index do |a, index|
-        phone, lga = a.split(/,\s*/)
+        phone, lga, beat = a.split(/,\s*/)
         if phone_regex.match(phone).nil?
           flash.now[:error] = "Invalid phone number '#{phone}' on line number #{index + 1}"
           render "admin/agents/bulk"
@@ -79,8 +116,16 @@ ActiveAdmin.register Agent do
           render "admin/agents/bulk"
           return
         end
+        beat_list_hsh = ApplicationHelper::AppConfig.beat_json[lga]
+        beat_list_val =  beat_list_hsh.values
+        unless beat_list_val.include?(beat)
+          flash.now[:error] = "Invalid beat '#{beat}' for '#{lga}' lga on line number #{index + 1}"
+          render "admin/agents/bulk"
+          return
+        end
+        beat_code = beat_list_hsh.key(beat)
         last_ten_digit_phone = phone.last(10)
-        q +="('234#{last_ten_digit_phone}','#{lga}',now(), now()),"
+        q +="('234#{last_ten_digit_phone}','#{lga}','#{beat_code}',now(), now()),"
       end
 
       if q.empty?
@@ -90,9 +135,13 @@ ActiveAdmin.register Agent do
       end
 
       values = q.first(-1)
-      ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
+      ActiveRecord::Base.connection.execute "INSERT INTO agents (phone, lga, beat_code, created_at, updated_at) values"+values+ " ON CONFLICT DO NOTHING;"
       flash[:notice] = "#{phone_lga.count} Agents created"
       redirect_to admin_agents_path
+    end
+
+    def revenue_beats
+      render json: ApplicationHelper::AppConfig.beat_json[params["lga"]]
     end
 
     def active_admin_collection

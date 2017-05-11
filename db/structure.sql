@@ -190,7 +190,8 @@ CREATE TABLE agents (
     amount double precision DEFAULT 0.0,
     last_downsync timestamp without time zone,
     last_coll_offline timestamp without time zone,
-    last_coll_online timestamp without time zone
+    last_coll_online timestamp without time zone,
+    beat_code character varying
 );
 
 
@@ -1179,6 +1180,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170502092954'),
 ('20170502094617'),
 ('20170502095000'),
-('20170502101741');
+('20170502101741'),
+('20170510074312');
 
 

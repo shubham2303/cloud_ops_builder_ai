@@ -3,6 +3,8 @@ $(document).ready(function(){
         $(".phone_margin").remove();
         // $(".inline-errors").remove();
         var value = $(".phone_valid").val();
+        var beat_code = $( ".beat_code" ).val();
+
         if (value.length >11 || value.length < 10) {
             $('.phone_valid').after(
                 '<div class="c_dark_red phone_margin">length should be between 10 or 11 digits</div>'
@@ -12,6 +14,12 @@ $(document).ready(function(){
         else if((value.length == 11 && value[0] != '0')||(value.length == 10 && value[0] == '0')){
             $('.phone_valid').after(
                 '<div class="c_dark_red phone_margin">please enter correct number</div>'
+            );
+            return false;
+        }
+        else if(beat_code == ""){
+            $('.beat_code').after(
+                '<div class="c_dark_red phone_margin">please choose some value according to lga</div>'
             );
             return false;
         }
@@ -31,4 +39,28 @@ $(document).ready(function(){
     var offset = new Date().getTimezoneOffset();
     $('.time_format').val(offset);
     // $(".flashes" ).fadeOut(5000);
+
+    //
+    $(document).on('change',".lga",function(){
+        //lga, []
+        var lga  = this.value;
+        $.ajax({
+            url: "/admin/revenue_beats",
+            type: "GET",
+            data: {lga : lga},
+            success: function(data){
+                // alert(data);
+                // for (i= 0; i<data.length;i++){
+                //     $(".beat_code").append('<option value="">' + data[i] + '</option>');
+                // }
+                // var p = prompt("Please select!","")
+                $(".beat_code").html('<option value="">Please select</option>');
+                for(var k in data){
+                    $(".beat_code").append('<option value="'+k+'">' + data[k] + '</option>');
+                }
+                // $("#results").append(html);
+            }
+        });
+
+    });
 });
