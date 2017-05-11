@@ -27,8 +27,8 @@ ActiveAdmin.register Agent do
     column :birthplace
     column :state
     column :lga
-    column :beat_code do |p|
-      p.revenue_beat
+    column  "Revenue Beat", :beat_code do |obj|
+      obj.revenue_beat
     end
     column :created_at, :class => 'col-created_at time'
     actions
@@ -51,8 +51,8 @@ ActiveAdmin.register Agent do
       row :last_downsync
       row :last_coll_offline
       row :last_coll_online
-      row :beat_code do |p|
-        p.revenue_beat
+      row "Revenue Beat", :beat_code  do |obj|
+        obj.revenue_beat
       end
     end
   end
@@ -84,7 +84,7 @@ ActiveAdmin.register Agent do
           beat_list << arr
         end
       end
-      f.input :beat_code,:as => :select, :label => "Beat Code", collection: beat_list, :input_html => {:class => 'beat_code'}, prompt: 'Please select'
+      f.input :beat_code, :as => :select, :label => "Revenue Beat", collection: beat_list, :input_html => {:class => 'beat_code'}, prompt: 'Please select'
     end
     f.actions do
       f.action :submit, :wrapper_html => {:class => 'submit_valid'}

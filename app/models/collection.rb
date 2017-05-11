@@ -46,6 +46,7 @@ class Collection < ApplicationRecord
     #{Agent.table_name}.address AS agent_address,
     #{Agent.table_name}.phone AS agent_phone,
     #{Agent.table_name}.created_at AS agent_cat,
+    #{Agent.table_name}.beat_code AS agent_beat,
     #{Individual.table_name}.uuid AS payer_id,
     #{Individual.table_name}.first_name AS payer_fname,
     #{Individual.table_name}.last_name AS payer_lname,

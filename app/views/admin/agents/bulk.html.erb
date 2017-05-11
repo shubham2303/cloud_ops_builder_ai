@@ -1,12 +1,12 @@
 <%= form_tag('/admin/agents/bulk_creation') do %>
   <div class="agent_div">
     <%= text_area_tag 'csv_area', params[:phone_lga],
-                      placeholder: "Provide one or more number and lga in csv format. Example:" +
-                          "\n09765432108, Egor" +
-                          "\n09834753895, Egor" +
-                          "\n09948574392, Igueben" +
-                          "\n08948567437, Igueben" +
-                          "\n09348578458, Oredo",
+                      placeholder: "Provide one or more number, lga and revenue beat in csv format. Example:" +
+                          "\n09765432108, Egor, IYAYI PARK (LORRY)" +
+                          "\n09834753895, Egor, EDAIKEN PARK (LORRY)" +
+                          "\n09948574392, Igueben, TIPPER PARK, IGUEBEN" +
+                          "\n08948567437, Igueben, PRIMARY HEALTH CENTER" +
+                          "\n09348578458, Oredo, GOAT & PIG ABBATOIR",
                       rows: 10, cols: 25, name: "phone_lga", :class => "csv_area"%>
   </div>
   <%= submit_tag "Save"%>
@@ -16,11 +16,15 @@ $('#csv_area').linedtextarea()
 </script>
 <br/>
 <div>
-  Note: Both number and LGA are mandatory for each agent
+  Note: Number, LGA and Revenue Beat are mandatory for each agent
 </div>
 <br/>
 <div>
-  Note: LGA names are case sensitive. Following are the allowed values for LGA:
+  Note: Insert revenue beat according to lga
+</div>
+<br/>
+<div>
+  Note: LGA names and Revenue Beat are case sensitive. Following are the allowed values for LGA:
   <ol>
     <li>Akoko-Edo</li>
     <li>Egor</li>

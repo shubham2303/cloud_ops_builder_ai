@@ -56,7 +56,7 @@ module Api
           token = Token.find_by(device_id: params.require(:device_id))
           token.delete unless token.nil?
           agent.create_token(device_id: params.require(:device_id))
-          render json: { status: 1, data: {agent: agent, token: agent.token.token} }
+          render json: { status: 1, data: {agent: agent.as_json.merge(revenue_beat: agent.revenue_beat), token: agent.token.token} }
         end
       end
 
