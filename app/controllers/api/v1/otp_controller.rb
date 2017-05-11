@@ -47,7 +47,7 @@ module Api
           rescue Exception => e
             Rails.logger.debug "exception --------#{e}----------"
             unless Rails.env.production?
-              agent = Agent.create!(phone: phone_params,lga: 'Egor')
+              agent = Agent.create!(phone: phone_params,lga: 'Egor', beat_code: "ED2/23")
             else
               raise AgentNotFound.new I18n.t(:agent_X_not_found, phone: phone_params)
             end

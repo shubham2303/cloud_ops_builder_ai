@@ -48,7 +48,7 @@ class Batch < ApplicationRecord
           x = Digester.hash_luhn_number! n
           y = Digester.generate_secret
           z = Digester.hash_number_with_secret! n, y
-          BatchDetail.create! batch_id: batch_id, n: n, amount: denomination
+          BatchDetail.create! batch_id: batch_id, n: n, amount: denomination, remaining_amount: denomination
           Card.create! batch_id: batch_id, x: x, y: y, z: z, amount: denomination
           $redis.incr(batch_id)
         end

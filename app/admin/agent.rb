@@ -79,7 +79,7 @@ ActiveAdmin.register Agent do
       lga = f.object.lga
       beat_list = []
       unless lga.nil?
-        ApplicationHelper::AppConfig.beat_json['Egor'].each do |key, value|
+        ApplicationHelper::AppConfig.beat_json[lga].each do |key, value|
           arr = [value, key]
           beat_list << arr
         end
