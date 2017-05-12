@@ -39,8 +39,10 @@ class Stat
 											style: [bold_wid_background]*5
 
 		end
+
+    beats_data = AppConfig.beat_json
 		Collection.fetch_for_stats(start_date, end_date, -1*time_format).find_each do |coll|
-				revenue_beat = AppConfig.beat_json[coll.lga][coll.agent_beat]
+				revenue_beat = beats_data[coll.lga][coll.agent_beat]
 				ind_or_buss_or_veh = coll.collectionable
 				agent_created_dt = coll.agent_cat ? ApplicationHelper.local_time(coll.agent_cat, time_format).strftime('%d-%m-%Y') : ''
 				@agent_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.agent_id, coll.agent_fname,
@@ -78,7 +80,7 @@ class Stat
                                     style: [@center_align]*17
 				end
 				@collection_sheet.add_row [ApplicationHelper.local_time(coll.created_at, time_format).strftime('%d-%m-%Y'), coll.lga,
-																	 revenue_beat, categories[coll.category_type],
+                       revenue_beat, categories[coll.category_type],
 											 sub_categories[coll.subtype], coll.amount],
 											style: [@center_align]*5
 

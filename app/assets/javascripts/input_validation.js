@@ -40,25 +40,17 @@ $(document).ready(function(){
     $('.time_format').val(offset);
     // $(".flashes" ).fadeOut(5000);
 
-    //
     $(document).on('change',".lga",function(){
-        //lga, []
         var lga  = this.value;
         $.ajax({
             url: "/admin/revenue_beats",
             type: "GET",
             data: {lga : lga},
             success: function(data){
-                // alert(data);
-                // for (i= 0; i<data.length;i++){
-                //     $(".beat_code").append('<option value="">' + data[i] + '</option>');
-                // }
-                // var p = prompt("Please select!","")
                 $(".beat_code").html('<option value="">Please select</option>');
                 for(var k in data){
                     $(".beat_code").append('<option value="'+k+'">' + data[k] + '</option>');
                 }
-                // $("#results").append(html);
             }
         });
 

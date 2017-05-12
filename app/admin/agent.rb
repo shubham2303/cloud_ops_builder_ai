@@ -23,37 +23,27 @@ ActiveAdmin.register Agent do
     column :first_name
     column :last_name
     column :phone
-    column :address
-    column :birthplace
-    column :state
     column :lga
     column  "Revenue Beat", :beat_code do |obj|
       obj.revenue_beat
     end
-    column :created_at, :class => 'col-created_at time'
     actions
   end
-  #
+
   show do
     attributes_table do
       row :id
       row :phone
-      row :address
-      row :birthplace
-      row :state
-      row :created_at
-      row :updated_at
-      row :dob
-      row :lga
       row :first_name
       row :last_name
-      row :amount
-      row :last_downsync
-      row :last_coll_offline
-      row :last_coll_online
+      row :lga
       row "Revenue Beat", :beat_code  do |obj|
         obj.revenue_beat
       end
+      row :address
+      row :birthplace
+      row :state
+      row :dob
     end
   end
 
@@ -94,7 +84,6 @@ ActiveAdmin.register Agent do
 
 
   controller do
-
     def bulk
       @error_csv_invalidate = nil
     end

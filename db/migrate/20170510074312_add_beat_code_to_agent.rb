@@ -5,7 +5,7 @@ class AddBeatCodeToAgent < ActiveRecord::Migration[5.0]
     Agent.where(lga: "Egor").update_all(beat_code: "ED2/1")
     Agent.where(lga: "Esan Central").update_all(beat_code: "ED3/1")
     Agent.where(lga: "Esan North-East").update_all(beat_code: "ED4/1")
-    Agent.where(lga: "Esan South-East").update_all(beat_code: "ED15/1")
+    Agent.where(lga: "Esan South-East").update_all(beat_code: "ED5/1")
     Agent.where(lga: "Esan West").update_all(beat_code: "ED6/1")
     Agent.where(lga: "Etsako Central").update_all(beat_code: "ED7/1")
     Agent.where(lga: "Etsako East").update_all(beat_code: "ED8/1")
