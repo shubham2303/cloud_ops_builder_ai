@@ -5,3 +5,4 @@ class AddIndexToBatchDetails < ActiveRecord::Migration[5.0]
     add_index :batch_details, [:id, :created_at]
   end
 end
+
