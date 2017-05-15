@@ -75,8 +75,8 @@ module Api
         unless last_card.nil?
           @last_card_id = last_card.id
           @last_card_timestamp = last_card.updated_at.to_f.to_s
-          if @last_card_id == params[:card_id].to_i && last_card.remaining_amount == params[:amount].to_i
-            @last_card_id = nil
+          if batch_details.size ==1 && @last_card_id == params[:card_id].to_i && last_card.remaining_amount == params[:amount].to_i
+            batch_details = []
           end
         end
         out = BatchDetail.detail_json(batch_details)
