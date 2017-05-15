@@ -55,11 +55,9 @@ gem 'pry-doc'
 gem 'pry-rails'
 # gem 'will_paginate', '~> 3.1.0'
 
-gem 'scout_apm'
 group :development, :test, :staging do
   gem 'factory_girl_rails'
   gem 'dotenv-rails', :require => 'dotenv/rails-now'
-  gem 'tunemygc'
 end
 
 group :development do
