@@ -65,7 +65,7 @@ module ApplicationHelper
     end
 
     def self.beat_json
-      JSON.parse ENV['BEAT']
+      JSON.parse(ENV['BEAT'] || File.read('app/assets/javascripts/beat_data.json'))
     end
 
   end
