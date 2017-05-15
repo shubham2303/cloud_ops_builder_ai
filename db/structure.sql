@@ -906,13 +906,6 @@ CREATE INDEX index_batch_details_on_updated_at ON batch_details USING btree (upd
 
 
 --
--- Name: index_batch_details_on_updated_at_and_created_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_batch_details_on_updated_at_and_created_at ON batch_details USING btree (updated_at, created_at);
-
-
---
 -- Name: index_batch_details_on_updated_at_and_id_and_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
