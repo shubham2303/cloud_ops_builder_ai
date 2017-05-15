@@ -16,9 +16,9 @@ module Api
 
       def get_offline_data
         if params[:timestamp]
-          timestamp = Time.parse(params[:timestamp])
+          timestamp = Time.parse(params[:timestamp]).utc
         else
-          timestamp = Time.parse(ENV['ADMIN_CREATION_TIME'])
+          timestamp = Time.parse(ENV['ADMIN_CREATION_TIME']).utc
         end
         time = ENV['TIME'].to_i
         if ((Time.now.utc - timestamp)/3600) > time
@@ -53,7 +53,7 @@ module Api
           params[:id] = 0
           AgentTable.create!(agent_id: agent_id, migration_version: 1, migration_target: "card")
         end
-        batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).order(id: :ASC).limit(ENV['CARD_LIMIT'])
+        batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).where('created_at = updated_at').order(id: :ASC).limit(ENV['CARD_LIMIT'])
         last_card = batch_details.last
         if last_card.nil?
           last_card_id = nil
@@ -63,6 +63,25 @@ module Api
         out = BatchDetail.detail_json(batch_details)
         theAgent.update last_downsync: Time.now.utc
         render json: {status: 1, cards: out, id: last_card_id}
+      end
+
+      def card_down_sync
+        timestamp = params[:timestamp]|| Time.parse(ENV['ADMIN_CREATION_TIME']).to_f.to_s
+        time = DashboardHelper.time_conversion(timestamp)
+
+        batch_details = BatchDetail.where("(updated_at > ?) or (updated_at = ? AND id > ?)",time, time, params[:card_id]||0)
+                            .where('created_at != updated_at').order(updated_at: :ASC, id: :ASC).limit(ENV['CARD_LIMIT'])
+        last_card = batch_details.last
+        unless last_card.nil?
+          @last_card_id = last_card.id
+          @last_card_timestamp = last_card.updated_at.to_f.to_s
+          if batch_details.size ==1 && @last_card_id == params[:card_id].to_i && last_card.remaining_amount == params[:amount].to_i
+            batch_details = []
+          end
+        end
+        out = BatchDetail.detail_json(batch_details)
+        theAgent.update last_downsync: Time.now.utc
+        render json: {status: 1, cards: out, card_id: @last_card_id, timestamp: @last_card_timestamp}
       end
 
     end

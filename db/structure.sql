@@ -885,6 +885,13 @@ CREATE INDEX index_batch_details_on_batch_id ON batch_details USING btree (batch
 
 
 --
+-- Name: index_batch_details_on_id_and_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_batch_details_on_id_and_created_at ON batch_details USING btree (id, created_at);
+
+
+--
 -- Name: index_batch_details_on_n; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -896,6 +903,20 @@ CREATE UNIQUE INDEX index_batch_details_on_n ON batch_details USING btree (n);
 --
 
 CREATE INDEX index_batch_details_on_updated_at ON batch_details USING btree (updated_at);
+
+
+--
+-- Name: index_batch_details_on_updated_at_and_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_batch_details_on_updated_at_and_created_at ON batch_details USING btree (updated_at, created_at);
+
+
+--
+-- Name: index_batch_details_on_updated_at_and_id_and_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_batch_details_on_updated_at_and_id_and_created_at ON batch_details USING btree (updated_at, id, created_at);
 
 
 --
@@ -1181,6 +1202,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170502094617'),
 ('20170502095000'),
 ('20170502101741'),
-('20170510074312');
+('20170510074312'),
+('20170511115619');
 
 
