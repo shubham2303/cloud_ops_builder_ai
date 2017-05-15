@@ -72,13 +72,11 @@ module Api
         batch_details = BatchDetail.where("(updated_at > ?) or (updated_at = ? AND id > ?)",time, time, params[:card_id]||0)
                             .where('created_at != updated_at').order(updated_at: :ASC, id: :ASC).limit(ENV['CARD_LIMIT'])
         last_card = batch_details.last
-
         unless last_card.nil?
           @last_card_id = last_card.id
           @last_card_timestamp = last_card.updated_at.to_f.to_s
           if @last_card_id == params[:card_id].to_i && last_card.remaining_amount == params[:amount].to_i
             @last_card_id = nil
-            @last_card_timestamp = nil
           end
         end
         out = BatchDetail.detail_json(batch_details)
