@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.1
--- Dumped by pg_dump version 9.6.1
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -903,13 +903,6 @@ CREATE UNIQUE INDEX index_batch_details_on_n ON batch_details USING btree (n);
 --
 
 CREATE INDEX index_batch_details_on_updated_at ON batch_details USING btree (updated_at);
-
-
---
--- Name: index_batch_details_on_updated_at_and_created_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_batch_details_on_updated_at_and_created_at ON batch_details USING btree (updated_at, created_at);
 
 
 --

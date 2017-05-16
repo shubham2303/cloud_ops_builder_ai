@@ -40,7 +40,11 @@ Rails.application.routes.draw do
           post :test_decryption
         end  
       end
-
+      resources :vas2nets do
+        collection do
+          get :card_verify
+        end
+      end
     end
   end
 
