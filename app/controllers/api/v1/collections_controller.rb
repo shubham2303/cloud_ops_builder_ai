@@ -93,8 +93,10 @@ module Api
             theAgent.save!
             @obj.save! unless @obj.nil?
             individual.save! unless individual.nil?
-            batch_detail = BatchDetail.find_by!(n: @data['number'])
-            batch_detail.update!(remaining_amount: card.amount - card.usage)
+            if Rails.env.production? || @data['number'] != '0'*16
+              batch_detail = BatchDetail.find_by!(n: @data['number'])
+              batch_detail.update!(remaining_amount: card.amount - card.usage)
+            end
           end
           phone = individual.try(:phone) || @obj.try(:phone)
           unless phone.blank?
