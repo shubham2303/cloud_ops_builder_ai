@@ -49,11 +49,12 @@ module Api
       def cards
         agent_id = theAgent.id
         agent_table = AgentTable.find_by(agent_id: agent_id)
-        if agent_table.nil?
+        if agent_table.nil? || (agent_table.migration_version.to_i < ENV['MIGRATION_VERSION'].to_i)
           params[:id] = 0
-          AgentTable.create!(agent_id: agent_id, migration_version: 1, migration_target: "card")
+          agent_table = AgentTable.find_or_create_by!(agent_id: agent_id)
+          agent_table.update( migration_version: ENV['MIGRATION_VERSION'], migration_target: "card")
         end
-        batch_details = BatchDetail.where("id > ?", params[:id] || ENV['FALLBACK_CARD_ID'] || 0).where('created_at = updated_at').order(id: :ASC).limit(ENV['CARD_LIMIT'])
+        batch_details = BatchDetail.where("id > ?", params[:id] || 0).where('created_at = updated_at').order(id: :ASC).limit(ENV['CARD_LIMIT'])
         last_card = batch_details.last
         if last_card.nil?
           last_card_id = nil
