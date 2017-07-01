@@ -4,7 +4,7 @@ class Token < ApplicationRecord
   before_save :update_other_fields
 
   def update_other_fields
-    self.assign_attributes(expiry:  Time.now.utc + 1.hour, token: SecureRandom.uuid)
+    self.assign_attributes(expiry:  Time.now.utc + 1.year, token: SecureRandom.uuid)
   end
 
   def expired?
