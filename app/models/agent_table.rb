@@ -1,3 +1,0 @@
-class AgentTable < ApplicationRecord
-
-end

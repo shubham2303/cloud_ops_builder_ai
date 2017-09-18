@@ -1,9 +1,0 @@
-<% batch ||= batch %>
-<% @batch = batch unless batch.nil? %>
-<% r_count = $redis.get(@batch.id) ||  @batch.batch_details.count %>
-<% if @batch.count == r_count.to_i %>
-<%= link_to "Download CSV", admin_batch_path(@batch)  %>
-<% else %>
-<%= "#{(r_count.to_f/(@batch.count)*100).floor}% completed" %>
-<%= link_to "Refresh", admin_batch_path(@batch), remote: true %>
-<% end %>
