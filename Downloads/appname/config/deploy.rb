@@ -18,7 +18,7 @@ set :user, 'deploy' # Username in the server to SSH to.
 set :port, '22' # SSH port number.
 set :forward_agent, true # SSH forward_agent.
 set :bundle_gemfile, "#{fetch(:deploy_to)}/#{fetch(:current_path)}/Gemfile"
-
+set :rvm_ruby_version, '2.3.0'
 # Optional settings:
 #   set :user, 'foobar'          # Username in the server to SSH to.
 #   set :port, '30000'           # SSH port number.
@@ -36,7 +36,7 @@ task :environment do
   # invoke :'rbenv:load'
 
   # For those using RVM, use this to load an RVM version@gemset.
-  # invoke :'rvm:use[ruby-2.3.0]'
+  invoke :'rvm:use[ruby-2.3.0@default]'
 end
 
 # Put any custom commands you need to run at setup
