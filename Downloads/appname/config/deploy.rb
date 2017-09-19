@@ -10,10 +10,14 @@ require 'mina/git'
 #   repository   - Git repo to clone from. (needed by mina/git)
 #   branch       - Branch name to deploy. (needed by mina/git)
 
-set :domain, 'foobar.com'
-set :deploy_to, '/var/www/foobar.com'
-set :repository, 'git://...'
+set :domain, '35.154.72.114'
+set :deploy_to, '/home/deploy/TEST'
+set :repository, 'git@bitbucket.org:shubham_2303/aws_test.git'
 set :branch, 'master'
+set :user, 'deploy' # Username in the server to SSH to.
+set :port, '22' # SSH port number.
+set :forward_agent, true # SSH forward_agent.
+set :bundle_gemfile, "#{fetch(:deploy_to)}/#{fetch(:current_path)}/Gemfile"
 
 # For system-wide RVM install.
 #   set :rvm_path, '/usr/local/rvm/bin/rvm'
