@@ -187,7 +187,7 @@ GEM
     pry-rails (0.3.5)
       pry (>= 0.9.10)
     public_suffix (2.0.5)
-    puma (3.7.1)
+    puma (3.12.3)
     rack (2.0.1)
     rack-mini-profiler (0.10.2)
       rack (>= 1.2.0)
@@ -340,7 +340,7 @@ DEPENDENCIES
   pry
   pry-doc
   pry-rails
-  puma (~> 3.0)
+  puma (~> 3.12)
   rack-mini-profiler
   rails (~> 5.0.1)
   redis (~> 3.2)
